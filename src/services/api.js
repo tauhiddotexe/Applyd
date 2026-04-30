@@ -1,88 +1,143 @@
+import { supabase } from './supabase';
+
 const API_BASE = 'http://localhost:8000/api/v1';
 
-function getHeaders() {
-  const token = localStorage.getItem('applyd_token');
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  return headers;
-}
+let sessionPromise = null;
+let refreshPromise = null;
 
-async function request(endpoint, options = {}) {
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers: { ...getHeaders(), ...options.headers },
+export async function getSafeSession() {
+  if (!sessionPromise) {
+    sessionPromise = supabase.auth.getSession().finally(() => {
+      sessionPromise = null;
     });
-    if (res.status === 401) {
-      localStorage.removeItem('applyd_token');
-      window.location.href = '/login';
-      return null;
-    }
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: res.statusText }));
-      throw new Error(err.detail || `Request failed: ${res.status}`);
-    }
-    if (res.status === 204) return null;
-    return res.json();
-  } catch (error) {
-    console.error(`[API] ${options.method || 'GET'} ${endpoint} failed:`, error);
-    throw error;
   }
+  return sessionPromise;
 }
 
-// Auth
-export const authAPI = {
-  login: (email, password) =>
-    request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    }),
-  signup: (data) =>
-    request('/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  me: () => request('/auth/me'),
-};
+function decodeJwt(token) {
+  try { return JSON.parse(atob(token.split('.')[1])); }
+  catch { return {}; }
+}
 
-// Applications
+function isExpired(token, buffer = 30) {
+  const { exp } = decodeJwt(token);
+  if (!exp) return true;
+  return Date.now() >= (exp - buffer) * 1000;
+}
+
+async function doRefresh() {
+  if (!refreshPromise) {
+    refreshPromise = supabase.auth.refreshSession().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
+// 1. Single helper to get a valid token (waits for refresh, reads once, refreshes if needed)
+async function getValidToken() {
+  if (refreshPromise) {
+    try { await refreshPromise; } catch {}
+  }
+
+  const { data } = await getSafeSession();
+  let token = data?.session?.access_token;
+
+  if (!token) return null;
+
+  if (isExpired(token)) {
+    const { data: rd, error: re } = await doRefresh();
+    if (re || !rd?.session?.access_token) return null;
+    
+    // IMPORTANT: use refreshed token DIRECTLY
+    token = rd.session.access_token;
+  }
+
+  return token;
+}
+
+function buildHeaders(token) {
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h.Authorization = `Bearer ${token}`;
+  return h;
+}
+
+function rawFetch(endpoint, opts, token) {
+  const headers = buildHeaders(token);
+  if (opts?.body instanceof FormData) delete headers['Content-Type'];
+  return fetch(`${API_BASE}${endpoint}`, {
+    ...opts,
+    headers: { ...headers, ...(opts?.headers || {}) },
+  });
+}
+
+// 3. Stop using hard sign-out for recoverable failures
+async function request(endpoint, opts = {}) {
+  let token = await getValidToken();
+
+  if (!token) {
+    throw new Error('No valid session'); // Let UI/ProtectedRoute handle redirect, no hard signOut
+  }
+
+  let res = await rawFetch(endpoint, opts, token);
+
+  if (res.status === 401) {
+    const { data: rd, error: re } = await doRefresh();
+    if (re || !rd?.session?.access_token) {
+      await supabase.auth.signOut(); // Hard signout ONLY on confirmed unrecoverable failure
+      throw new Error('Session expired');
+    }
+    
+    token = rd.session.access_token;
+    res = await rawFetch(endpoint, opts, token);
+    
+    if (res.status === 401) {
+      await supabase.auth.signOut(); // Hard signout ONLY on second failed try
+      throw new Error('Session expired');
+    }
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || `Request failed: ${res.status}`);
+  }
+  
+  if (res.status === 204) return null;
+  return res.json();
+}
+
 export const applicationsAPI = {
-  list: (params = '') => request(`/applications${params ? '?' + params : ''}`),
+  list: (params = '') => request(`/applications${params ? `?${params}` : ''}`),
   get: (id) => request(`/applications/${id}`),
-  create: (data) =>
-    request('/applications', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  update: (id, data) =>
-    request(`/applications/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-  delete: (id) =>
-    request(`/applications/${id}`, { method: 'DELETE' }),
+  create: (d) => request('/applications', { method: 'POST', body: JSON.stringify(d) }),
+  update: (id, d) => request(`/applications/${id}`, { method: 'PUT', body: JSON.stringify(d) }),
+  delete: (id) => request(`/applications/${id}`, { method: 'DELETE' }),
+  listEvents: (id) => request(`/applications/${id}/events`),
+  createEvent: (id, d) => request(`/applications/${id}/events`, { method: 'POST', body: JSON.stringify(d) }),
+  deleteEvent: (eid) => request(`/events/${eid}`, { method: 'DELETE' }),
+  uploadDocument: (id, file) => {
+    const fd = new FormData(); fd.append('file', file);
+    return request(`/applications/${id}/documents`, { method: 'POST', body: fd });
+  },
 };
 
-// Job extraction
 export const jobsAPI = {
-  extract: (url) =>
-    request('/jobs/extract', {
-      method: 'POST',
-      body: JSON.stringify({ url }),
-    }),
+  extract: (url) => request('/jobs/extract', { method: 'POST', body: JSON.stringify({ url }) }),
 };
 
-// Resume analysis
 export const resumeAPI = {
-  analyze: (data) =>
-    request('/analyze', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
+  extractResume: (file) => {
+    const fd = new FormData(); fd.append('file', file);
+    return request('/ai/extract-resume', { method: 'POST', body: fd });
+  },
+  analyze: (file, jd) => {
+    const fd = new FormData(); fd.append('resume_file', file); fd.append('job_description', jd);
+    return request('/ai/analyze', { method: 'POST', body: fd });
+  },
 };
 
-// Dashboard/Analytics
 export const analyticsAPI = {
   dashboard: () => request('/dashboard'),
   analytics: () => request('/analytics'),
+  reminders: () => request('/reminders'),
 };

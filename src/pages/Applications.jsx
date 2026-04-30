@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI } from '../services/api';
 
-const STATUS_OPTIONS = ['All', 'applied', 'interviewing', 'offer', 'rejected', 'wishlist'];
+const STATUS_OPTIONS = [
+  { value: '', label: 'All Statuses' },
+  { value: 'applied', label: 'Applied' },
+  { value: 'interviewing', label: 'Interviewing' },
+  { value: 'offer', label: 'Offer' },
+  { value: 'rejected', label: 'Rejected' },
+  { value: 'wishlist', label: 'Wishlist' },
+];
 const STATUS_LABELS = { applied: 'Applied', interviewing: 'Interviewing', offer: 'Offer', rejected: 'Rejected', wishlist: 'Wishlist' };
 const STATUS_COLORS = {
   applied: 'bg-blue-100 text-blue-800',
@@ -19,17 +27,27 @@ function fmtDate(iso) {
 
 export default function Applications() {
   const nav = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const userId = user?.id;
   const [apps, setApps] = useState([]);
-  const [filter, setFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [sort, setSort] = useState('newest');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchApps = async () => {
+    if (authLoading || !userId) return;
+
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (statusFilter) params.set('status', statusFilter);
+    if (sort) params.set('sort', sort);
+
     setLoading(true);
     setError(null);
     try {
-      const data = await applicationsAPI.list();
+      const data = await applicationsAPI.list(params.toString());
       setApps(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message || 'Failed to load applications');
@@ -38,7 +56,13 @@ export default function Applications() {
     }
   };
 
-  useEffect(() => { fetchApps(); }, []);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchApps();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [authLoading, search, userId, sort, statusFilter]);
 
   const handleDelete = async (e, id) => {
     e.stopPropagation();
@@ -50,11 +74,6 @@ export default function Applications() {
       alert(err.message || 'Delete failed');
     }
   };
-
-  const filtered = apps.filter(a =>
-    (filter === 'All' || a.status === filter) &&
-    ((a.company || '').toLowerCase().includes(search.toLowerCase()) || (a.role || '').toLowerCase().includes(search.toLowerCase()))
-  );
 
   return (
     <div className="p-xl max-w-max_width mx-auto">
@@ -71,10 +90,16 @@ export default function Applications() {
       {/* Filters */}
       <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm mb-lg">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex gap-2 flex-wrap">
-            {STATUS_OPTIONS.map(s => (
-              <button key={s} onClick={() => setFilter(s)} className={`px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all ${filter === s ? 'bg-primary text-on-primary shadow-sm' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}`}>{s === 'All' ? 'All' : STATUS_LABELS[s] || s}</button>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-2 border border-outline-variant rounded-lg text-sm bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all min-w-44">
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.label} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+            <select value={sort} onChange={(e) => setSort(e.target.value)} className="px-4 py-2 border border-outline-variant rounded-lg text-sm bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all min-w-36">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
           </div>
           <div className="relative w-full md:w-64">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[18px]">search</span>
@@ -111,7 +136,7 @@ export default function Applications() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(app => (
+            {apps.map(app => (
               <tr key={app.id} onClick={() => nav(`/applications/${app.id}`)} className="border-b border-outline-variant/10 hover:bg-surface transition-colors cursor-pointer">
                 <td className="px-lg py-md">
                   <div className="flex items-center gap-3">
@@ -133,7 +158,7 @@ export default function Applications() {
             ))}
           </tbody>
         </table>
-        {filtered.length === 0 && (
+        {apps.length === 0 && (
           <div className="p-xl text-center text-on-surface-variant">No applications found.</div>
         )}
       </div>

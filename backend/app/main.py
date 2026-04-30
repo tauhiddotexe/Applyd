@@ -1,23 +1,58 @@
+from pathlib import Path
 from contextlib import asynccontextmanager
+from sqlalchemy import text
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
 from app.db.session import engine, Base
-from app.api.v1.routes import applications
+from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders
+
+UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: create tables if they don't exist
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables verified")
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_min INTEGER"))
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_max INTEGER"))
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency VARCHAR(8)"))
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS location VARCHAR(255)"))
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS recruiter VARCHAR(255)"))
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS application_events (
+                    id UUID PRIMARY KEY,
+                    application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+                    type VARCHAR(255) NOT NULL,
+                    date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    notes TEXT NULL
+                )
+                """
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_events_application_id ON application_events (application_id)"))
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS application_documents (
+                    id UUID PRIMARY KEY,
+                    application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+                    name VARCHAR(255) NOT NULL,
+                    file_url VARCHAR(2048) NOT NULL,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+                """
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_documents_application_id ON application_documents (application_id)"))
     logger.info("Applyd API started")
     yield
-    # Shutdown
-    await engine.dispose()
+    engine.dispose()
     logger.info("Applyd API shutdown")
 
 
@@ -50,6 +85,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Mount routes
 app.include_router(applications.router, prefix="/api/v1")
+app.include_router(dashboard.router, prefix="/api/v1")
+app.include_router(analytics.router, prefix="/api/v1")
+app.include_router(events.router, prefix="/api/v1")
+app.include_router(reminders.router, prefix="/api/v1")
+app.include_router(ai.router, prefix="/api/v1")
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 @app.get("/health")

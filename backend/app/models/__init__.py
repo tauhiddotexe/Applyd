@@ -1,3 +1,3 @@
-from app.models.models import User, Application, ApplicationStatus
+from app.models.models import Application, ApplicationDocument, ApplicationEvent, ApplicationStatus, User
 
-__all__ = ["User", "Application", "ApplicationStatus"]
+__all__ = ["User", "Application", "ApplicationEvent", "ApplicationDocument", "ApplicationStatus"]

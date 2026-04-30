@@ -1,49 +1,87 @@
 import uuid
-from fastapi import APIRouter, Depends, status, Header
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Literal
+
+from fastapi import APIRouter, Depends, File, Query, UploadFile, status
+from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.schemas import ApplicationCreate, ApplicationUpdate, ApplicationResponse
+from app.schemas import (
+    ApplicationCreate,
+    ApplicationDetailResponse,
+    ApplicationDocumentResponse,
+    ApplicationEventCreate,
+    ApplicationEventResponse,
+    ApplicationUpdate,
+    ApplicationResponse,
+    StatusEnum,
+)
 from app.services import application_service
+from app.core.deps import get_current_user
 from app.core.logging import logger
 
 router = APIRouter(prefix="/applications", tags=["Applications"])
 
-# Temp: extract user_id from header until auth is implemented
-DEMO_USER_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
-
-
-async def get_current_user_id(x_user_id: str | None = Header(None)) -> uuid.UUID:
-    if x_user_id:
-        try:
-            return uuid.UUID(x_user_id)
-        except ValueError:
-            pass
-    return DEMO_USER_ID
-
 
 @router.post("", response_model=ApplicationResponse, status_code=status.HTTP_201_CREATED)
-async def create(data: ApplicationCreate, db: AsyncSession = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user_id)):
+def create(data: ApplicationCreate, db: Session = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user)):
     logger.info(f"POST /applications | user={user_id} | payload={data.model_dump()}")
-    app = await application_service.create_application(db, user_id, data)
+    app = application_service.create_application(db, user_id, data)
     return app
 
 
 @router.get("", response_model=list[ApplicationResponse])
-async def list_all(db: AsyncSession = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user_id)):
-    return await application_service.get_applications(db, user_id)
+def list_all(
+    search: str | None = Query(None),
+    status_filter: StatusEnum | None = Query(None, alias="status"),
+    sort: Literal["newest", "oldest"] = Query("newest"),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    return application_service.get_applications(db, user_id, search, status_filter, sort)
 
 
-@router.get("/{app_id}", response_model=ApplicationResponse)
-async def get_one(app_id: uuid.UUID, db: AsyncSession = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user_id)):
-    return await application_service.get_application(db, app_id, user_id)
+@router.get("/{app_id}", response_model=ApplicationDetailResponse)
+def get_one(app_id: uuid.UUID, db: Session = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user)):
+    return application_service.get_application_detail(db, app_id, user_id)
 
 
 @router.put("/{app_id}", response_model=ApplicationResponse)
-async def update(app_id: uuid.UUID, data: ApplicationUpdate, db: AsyncSession = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user_id)):
+def update(app_id: uuid.UUID, data: ApplicationUpdate, db: Session = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user)):
     logger.info(f"PUT /applications/{app_id} | payload={data.model_dump(exclude_unset=True)}")
-    return await application_service.update_application(db, app_id, user_id, data)
+    return application_service.update_application(db, app_id, user_id, data)
 
 
 @router.delete("/{app_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(app_id: uuid.UUID, db: AsyncSession = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user_id)):
-    await application_service.delete_application(db, app_id, user_id)
+def delete(app_id: uuid.UUID, db: Session = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user)):
+    application_service.delete_application(db, app_id, user_id)
+
+
+@router.get("/{app_id}/events", response_model=list[ApplicationEventResponse])
+def list_events(app_id: uuid.UUID, db: Session = Depends(get_db), user_id: uuid.UUID = Depends(get_current_user)):
+    return application_service.list_application_events(db, app_id, user_id)
+
+
+@router.post("/{app_id}/events", response_model=ApplicationEventResponse, status_code=status.HTTP_201_CREATED)
+def create_event(
+    app_id: uuid.UUID,
+    data: ApplicationEventCreate,
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    return application_service.create_application_event(db, app_id, user_id, data)
+
+
+@router.post("/{app_id}/documents", response_model=ApplicationDocumentResponse, status_code=status.HTTP_201_CREATED)
+async def upload_document(
+    app_id: uuid.UUID,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    file_bytes = await file.read()
+    return application_service.create_application_document(
+        db,
+        app_id,
+        user_id,
+        file.filename or "document",
+        file_bytes,
+    )

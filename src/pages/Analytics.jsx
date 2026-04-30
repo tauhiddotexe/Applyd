@@ -1,30 +1,76 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { analyticsAPI } from '../services/api';
 
-const barH = ['h-12','h-24','h-32','h-48','h-40','h-56'];
-const innerH = ['h-8','h-16','h-24','h-40','h-32','h-48'];
-const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+const EMPTY_ANALYTICS = {
+  total: 0,
+  by_status: {
+    applied: 0,
+    interviewing: 0,
+    offer: 0,
+    rejected: 0,
+    wishlist: 0,
+  },
+  by_month: [],
+  recent: [],
+};
 
-const platforms = [
-  { name:'LinkedIn', n:24, pct:80, color:'bg-primary', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuCqQ88OK4dEEgxilMmJITSk1OGZ53YQFfVpDWaaSP2H5r1DbWZCIPkP6OTHEGB3gGX5Aaj5VWYK1F0o4SdS-pgtTCKPl8et8IyhZ19o5OlWaG6fWSGiTrAecUBsL0AWAqPtDzLlCzuYbwR6Hle11cE7pZD2e5cpf6tqEb4xVr5KhQOXIisdqkbR_UwC4txap09a9n3UVdQ6MRbeMXUGMtkD_ZxTgEsINOwmHCOGHqNAdFIie0LuMeU6koD6Ky4W5qKI7UCNHVtzqCo' },
-  { name:'Indeed', n:12, pct:45, color:'bg-secondary', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuBmi8fiVa-KPOP-vbjx4v70dKCR45YoZ26xoctXM-pEQja3V-YeICB2vVWaQMcS_eI93VzcK99OcAp1ZboQKLuntViIcvTFSTOXFZCZxBWTvwwcJEDH7Jj9-gdqhPUlJPOcypYtPvQennJ9ZeHXrxUTm160-shUTt7iJd5PnDKP6TmAejKHY8g0u0PEtCwmQgKKUfkT2fuR-efrzyp84TBxDbHXV5nnHpbj21BogZfCAh3fOYvYyiBbWaEEdPjFCdBuIedBne_AT00' },
-  { name:'Referrals', n:38, pct:95, color:'bg-tertiary-container', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDzz5AvWaqNRDbs6dvpmW9c7lKd_5q2N-jlql2TfJLwUJMPbz0DQtuZGSCOza-7gmQSRh5TkNDS1VqxwZ2kJ7_dqfDs3JIsoJJUWXGHsh9-ERKUKgKUgJenbtddxquC-MBwWHvuttsQHql2qgdWhoiDWe6ZNN20nOfvEezFrgpnDkvwsEr2de5UJhrfMQfKuHfH7jmESeFE5GlpxQjGvXZu_-OwM1KK3lK2pKQQdWCkSV2v-2ylxF8fOM5pEpVuPLDhAyr_xbF09kk' },
-  { name:'Direct Sites', n:19, pct:60, color:'bg-on-surface-variant', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuCUDaXlgP51lVnd2pe1uROUT4FVDPnuZP_7k_O2t8wme3bokDvpzq1sG6WIVXXuGO1N2ykgxtNIQzw6RkGw2SggB-bQyUdZL6xgS35u3tcoMdpU2S1hX2ZKHw8gli_z2C40KDQ1UsV91zv2hXpyFo8apXuztXMIIBIh9m5eBWIX7K8ivBqE1J1B_V0CGmq0Oy8IoxzCrKZWbLbnHjCcdxt92gOve6j63ua2t7hFQOGFdTend-eLXoIFv6RXKMuB_PUzYUydajMX4oQ' },
+const STATUS_META = [
+  { key: 'interviewing', label: 'Interviewing', color: 'bg-primary', text: 'text-primary' },
+  { key: 'applied', label: 'Applied', color: 'bg-secondary', text: 'text-secondary' },
+  { key: 'offer', label: 'Offers', color: 'bg-tertiary-container', text: 'text-tertiary-container' },
+  { key: 'rejected', label: 'Rejected', color: 'bg-error', text: 'text-error' },
+  { key: 'wishlist', label: 'Wishlist', color: 'bg-on-surface-variant', text: 'text-on-surface-variant' },
 ];
 
-const insights = [
-  { icon:'auto_awesome', bg:'bg-primary-container/10', cl:'text-primary', t:'Peak Activity Detected', d:'You are most productive on Tuesdays. Your application volume peaks between 10 AM and 2 PM.' },
-  { icon:'trending_up', bg:'bg-tertiary-container/10', cl:'text-tertiary-container', t:'Conversion Rate Improvement', d:'Interview calls from LinkedIn apps have increased by 22% after your recent resume update.' },
-  { icon:'lightbulb', bg:'bg-secondary-container/10', cl:'text-secondary', t:'Skill Gap Analysis', d:'3 of your last 5 rejections mentioned "Cloud Infrastructure" as a missing core skill.' },
-];
+const RECENT_STATUS = {
+  applied: 'bg-blue-100 text-blue-800',
+  interviewing: 'bg-secondary-fixed text-on-secondary-fixed-variant',
+  offer: 'bg-emerald-100 text-emerald-800',
+  rejected: 'bg-red-100 text-red-800',
+  wishlist: 'bg-amber-100 text-amber-800',
+};
 
-const statuses = [
-  { label:'Interviewing', pct:'45%', color:'bg-primary', da:'45, 100', off:'0' },
-  { label:'Applied', pct:'25%', color:'bg-secondary', da:'25, 100', off:'-45' },
-  { label:'Offers', pct:'15%', color:'bg-tertiary-container', da:'15, 100', off:'-70' },
-  { label:'Rejected', pct:'15%', color:'bg-error', da:'15, 100', off:'-85' },
-];
+function formatDate(value) {
+  if (!value) return '';
+  return new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatMonth(value) {
+  if (!value) return '';
+  const [year, month] = value.split('-');
+  return new Date(Number(year), Number(month) - 1, 1).toLocaleDateString('en-US', { month: 'short' });
+}
 
 export default function Analytics() {
+  const { user, loading: authLoading } = useAuth();
+  const userId = user?.id;
+  const [analytics, setAnalytics] = useState(EMPTY_ANALYTICS);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (authLoading || !userId) return;
+
+    setLoading(true);
+    setError(null);
+    analyticsAPI.analytics()
+      .then((data) => {
+        setAnalytics(data || EMPTY_ANALYTICS);
+      })
+      .catch((err) => {
+        setAnalytics(EMPTY_ANALYTICS);
+        setError(err.message || 'Failed to load analytics');
+      })
+      .finally(() => setLoading(false));
+  }, [authLoading, userId]);
+
+  const total = analytics.total;
+  const interviewing = analytics.by_status.interviewing || 0;
+  const offers = analytics.by_status.offer || 0;
+  const interviewRate = total > 0 ? Math.round(((interviewing + offers) / total) * 100) : 0;
+  const maxMonthCount = Math.max(...analytics.by_month.map((item) => item.count), 1);
+
   return (
     <div className="p-xl max-w-max_width mx-auto">
       <div className="mb-xl flex items-end justify-between">
@@ -34,125 +80,163 @@ export default function Analytics() {
         </div>
         <div className="bg-surface-container-highest/50 px-md py-sm rounded-lg flex items-center gap-2 border border-outline-variant/30">
           <span className="material-symbols-outlined text-on-surface-variant">calendar_today</span>
-          <span className="text-data-tabular font-data-tabular">Last 30 Days</span>
-          <span className="material-symbols-outlined text-on-surface-variant text-sm">expand_more</span>
+          <span className="text-data-tabular font-data-tabular">Real User Data</span>
         </div>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-lg mb-lg flex items-center gap-3">
+          <span className="material-symbols-outlined text-red-500">error</span>
+          <span className="text-red-700 text-body-sm">{error}</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-12 gap-lg">
-        {/* Gauge */}
         <div className="col-span-12 lg:col-span-4 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-md">
-              <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Success Rate</span>
-              <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded text-[10px] font-bold">+12% vs last month</span>
+              <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Summary</span>
+              <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded text-[10px] font-bold">{interviewRate}% rate</span>
             </div>
             <div className="relative flex items-center justify-center py-xl">
               <svg className="w-40 h-40 transform -rotate-90">
                 <circle className="text-surface-container" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeWidth="8"/>
-                <circle className="text-primary" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeDasharray="440" strokeDashoffset="110" strokeWidth="8"/>
+                <circle className="text-primary" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeDasharray="440" strokeDashoffset={440 - (440 * interviewRate) / 100} strokeWidth="8"/>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-h1 text-h1">75%</span>
+                <span className="font-h1 text-h1">{interviewRate}%</span>
                 <span className="font-label-caps text-label-caps text-on-surface-variant">Interview Rate</span>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-md pt-lg border-t border-outline-variant/10">
-            <div className="text-center"><p className="font-label-caps text-label-caps text-on-surface-variant">Applied</p><p className="font-h3 text-h3">124</p></div>
-            <div className="text-center border-l border-outline-variant/10"><p className="font-label-caps text-label-caps text-on-surface-variant">Interviews</p><p className="font-h3 text-h3">93</p></div>
+            <div className="text-center"><p className="font-label-caps text-label-caps text-on-surface-variant">Total</p><p className="font-h3 text-h3">{total}</p></div>
+            <div className="text-center border-l border-outline-variant/10"><p className="font-label-caps text-label-caps text-on-surface-variant">Offers</p><p className="font-h3 text-h3">{offers}</p></div>
           </div>
         </div>
 
-        {/* Bar Chart */}
         <div className="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
           <div className="flex items-center justify-between mb-xl">
             <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Applications Per Month</span>
-            <div className="flex gap-md">
-              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary"/><span className="text-[11px] font-semibold text-on-surface-variant">Current</span></div>
-              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-surface-container-highest"/><span className="text-[11px] font-semibold text-on-surface-variant">Average</span></div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary"/>
+              <span className="text-[11px] font-semibold text-on-surface-variant">Monthly Count</span>
             </div>
           </div>
           <div className="h-64 flex items-end justify-between gap-4 px-2 relative">
             <div className="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none">
-              {[0,1,2,3].map(i=><div key={i} className="border-b border-outline-variant/10 w-full"/>)}
+              {[0, 1, 2, 3].map((i) => <div key={i} className="border-b border-outline-variant/10 w-full"/>)}
             </div>
-            {months.map((m,i)=>(
-              <div key={m} className="flex-1 flex flex-col items-center group">
-                <div className={`w-full bg-surface-container-low rounded-t-sm ${barH[i]} group-hover:bg-primary/20 transition-colors relative`}>
-                  <div className={`absolute bottom-0 w-full ${i>=3?'bg-primary':'bg-primary/40'} ${innerH[i]} rounded-t-sm`}/>
+            {!loading && analytics.by_month.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center text-on-surface-variant">No data yet</div>
+            )}
+            {analytics.by_month.map((item) => (
+              <div key={item.month} className="flex-1 flex flex-col items-center group">
+                <div className="w-full bg-surface-container-low rounded-t-sm h-56 group-hover:bg-primary/20 transition-colors relative">
+                  <div
+                    className="absolute bottom-0 w-full bg-primary rounded-t-sm"
+                    style={{ height: `${Math.max((item.count / maxMonthCount) * 100, item.count > 0 ? 10 : 0)}%` }}
+                  />
                 </div>
-                <span className="mt-4 font-label-caps text-label-caps text-on-surface-variant">{m}</span>
+                <span className="mt-4 font-label-caps text-label-caps text-on-surface-variant">{formatMonth(item.month)}</span>
+                <span className="text-[11px] text-on-surface-variant">{item.count}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Donut */}
         <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
           <span className="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-xl">Status Distribution</span>
           <div className="flex items-center gap-xl">
             <div className="relative w-48 h-48 flex-shrink-0">
               <svg className="w-full h-full" viewBox="0 0 36 36">
                 <path className="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="100, 100" strokeWidth="3"/>
-                <path className="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="45, 100" strokeWidth="3.5"/>
-                <path className="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="25, 100" strokeDashoffset="-45" strokeWidth="3.5"/>
-                <path className="text-tertiary-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="15, 100" strokeDashoffset="-70" strokeWidth="3.5"/>
-                <path className="text-error" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="15, 100" strokeDashoffset="-85" strokeWidth="3.5"/>
+                {(() => {
+                  let offset = 0;
+                  return STATUS_META.map((item) => {
+                    const value = analytics.by_status[item.key] || 0;
+                    const pct = total > 0 ? (value / total) * 100 : 0;
+                    const path = (
+                      <path
+                        key={item.key}
+                        className={item.text}
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeDasharray={`${pct}, 100`}
+                        strokeDashoffset={-offset}
+                        strokeWidth="3.5"
+                      />
+                    );
+                    offset += pct;
+                    return path;
+                  });
+                })()}
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-h3 text-h3">432</span>
+                <span className="font-h3 text-h3">{total}</span>
                 <span className="text-[10px] text-on-surface-variant font-medium">Total Apps</span>
               </div>
             </div>
             <div className="flex-1 grid grid-cols-1 gap-md">
-              {statuses.map(s=>(
-                <div key={s.label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2"><div className={`w-3 h-3 rounded-full ${s.color}`}/><span className="font-body-sm text-body-sm text-on-surface-variant">{s.label}</span></div>
-                  <span className="font-data-tabular text-data-tabular">{s.pct}</span>
-                </div>
-              ))}
+              {STATUS_META.map((item) => {
+                const value = analytics.by_status[item.key] || 0;
+                const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                return (
+                  <div key={item.key} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2"><div className={`w-3 h-3 rounded-full ${item.color}`}/><span className="font-body-sm text-body-sm text-on-surface-variant">{item.label}</span></div>
+                    <span className="font-data-tabular text-data-tabular">{pct}%</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Insights */}
         <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
-          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-xl">Insights &amp; Trends</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-xl">Status Counts</span>
           <div className="space-y-md">
-            {insights.map((ins,i)=>(
-              <div key={i} className="flex items-start gap-md p-md bg-surface-container-low/50 rounded-lg border border-outline-variant/10">
-                <div className={`w-10 h-10 rounded-full ${ins.bg} flex items-center justify-center flex-shrink-0`}>
-                  <span className={`material-symbols-outlined ${ins.cl}`}>{ins.icon}</span>
+            {STATUS_META.map((item) => (
+              <div key={item.key} className="flex items-center gap-md p-md bg-surface-container-low/50 rounded-lg border border-outline-variant/10">
+                <div className={`w-10 h-10 rounded-full ${item.color} flex items-center justify-center flex-shrink-0`}>
+                  <span className="material-symbols-outlined text-white">bar_chart</span>
                 </div>
-                <div>
-                  <p className="font-h3 text-[14px] leading-tight mb-1 text-on-surface">{ins.t}</p>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">{ins.d}</p>
+                <div className="flex-1">
+                  <p className="font-h3 text-[14px] leading-tight mb-1 text-on-surface">{item.label}</p>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant">{analytics.by_status[item.key] || 0} application(s)</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Platforms */}
         <div className="col-span-12 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
           <div className="flex items-center justify-between mb-xl">
-            <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Platform Performance</span>
-            <button className="text-primary text-[12px] font-bold hover:underline">View All Sources</button>
+            <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Recent Applications</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-lg">
-            {platforms.map(p=>(
-              <div key={p.name} className="bg-surface rounded-lg p-md border border-outline-variant/10">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-lg">
+            {loading && (
+              <div className="col-span-12 flex items-center justify-center py-12">
+                <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
+              </div>
+            )}
+            {!loading && analytics.recent.length === 0 && (
+              <div className="col-span-12 text-center text-on-surface-variant py-8">No data yet</div>
+            )}
+            {!loading && analytics.recent.map((item) => (
+              <div key={item.id} className="bg-surface rounded-lg p-md border border-outline-variant/10">
                 <div className="flex items-center gap-md mb-md">
-                  <img alt="Platform logo" className="w-8 h-8 rounded" src={p.img}/>
-                  <p className="font-h3 text-[14px]">{p.name}</p>
+                  <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-outline text-[18px]">apartment</span>
+                  </div>
+                  <div>
+                    <p className="font-h3 text-[14px]">{item.company}</p>
+                    <p className="text-body-sm text-on-surface-variant">{item.role}</p>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-body-sm text-on-surface-variant">Interviews</span>
-                  <span className="font-data-tabular text-data-tabular">{p.n}</span>
-                </div>
-                <div className="w-full h-1 bg-surface-container-highest mt-sm rounded-full overflow-hidden">
-                  <div className={`${p.color} h-full`} style={{width:`${p.pct}%`}}/>
+                  <span className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${RECENT_STATUS[item.status] || 'bg-slate-100 text-slate-700'}`}>{item.status}</span>
+                  <span className="text-body-sm text-on-surface-variant">{formatDate(item.created_at)}</span>
                 </div>
               </div>
             ))}

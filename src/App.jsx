@@ -14,7 +14,14 @@ import Autofill from './pages/Autofill';
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="flex items-center justify-center min-h-screen"><span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span></div>;
-  // For demo, allow access without auth
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function PublicRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span></div>;
+  if (user) return <Navigate to="/dashboard" replace />;
   return children;
 }
 
@@ -23,9 +30,9 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          {/* Public — redirect to dashboard if already logged in */}
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
           {/* Protected with shell */}
           <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
