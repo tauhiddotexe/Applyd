@@ -2,7 +2,16 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 import { supabase } from '../services/supabase';
 import { getSafeSession } from '../services/api';
 
-const AuthContext = createContext(null);
+const defaultAuthContext = {
+  user: null,
+  session: null,
+  loading: true,
+  login: async () => {},
+  signup: async () => {},
+  logout: async () => {}
+};
+
+const AuthContext = createContext(defaultAuthContext);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -89,4 +98,11 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    console.warn('useAuth must be used within an AuthProvider');
+    return defaultAuthContext;
+  }
+  return context;
+};

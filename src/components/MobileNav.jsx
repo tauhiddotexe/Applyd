@@ -4,6 +4,8 @@ const navItems = [
   { path: '/dashboard', icon: 'dashboard', label: 'Home' },
   { path: '/applications', icon: 'work', label: 'Apps', fillWhenActive: true },
   { path: '/analytics', icon: 'bar_chart', label: 'Stats' },
+  { path: '/resume', icon: 'psychology', label: 'Match', fillWhenActive: true },
+  { path: '/resume-tailor', icon: 'auto_awesome', label: 'Tailor', fillWhenActive: true },
 ];
 
 export default function MobileNav() {

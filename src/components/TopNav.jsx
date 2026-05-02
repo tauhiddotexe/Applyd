@@ -1,20 +1,56 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from 'react';
+import { userAPI } from '../services/api';
+import PricingModal from './PricingModal';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/applications', label: 'Applications' },
   { path: '/analytics', label: 'Analytics' },
+  { path: '/resume', label: 'Resume Match' },
 ];
 
 export default function TopNav() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [showPricing, setShowPricing] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    try {
+      const data = await userAPI.getProfile();
+      setProfile(data);
+    } catch (err) {
+      console.error('[TopNav] Failed to fetch profile:', err);
+    }
+  };
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+    if (logout) {
+      await logout();
+      navigate('/login');
+    }
   };
+
+  if (loading || !user) {
+    return (
+      <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 shadow-sm dark:shadow-none flex items-center justify-between w-full h-16 px-10">
+        <div className="flex items-center gap-6">
+          <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">Applyd</span>
+        </div>
+        <div className="flex items-center">
+          <span className="material-symbols-outlined text-primary animate-spin">progress_activity</span>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 shadow-sm dark:shadow-none flex items-center justify-between w-full h-16 px-10">
@@ -39,6 +75,22 @@ export default function TopNav() {
         </div>
       </div>
       <div className="flex items-center gap-6">
+        {/* Credit Display & Upgrade Button */}
+        {user && profile && (
+          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full">
+              <span className="material-symbols-outlined text-primary text-[18px]">token</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{profile.credits} Credits</span>
+            </div>
+            <button 
+              onClick={() => setShowPricing(true)}
+              className="text-xs font-bold text-primary hover:bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 transition-all uppercase tracking-wider"
+            >
+              Upgrade
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center gap-3">
           <div className="relative hidden lg:block">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-sm">search</span>
@@ -72,6 +124,11 @@ export default function TopNav() {
           </button>
         </div>
       </div>
+
+      <PricingModal 
+        isOpen={showPricing} 
+        onClose={() => setShowPricing(false)} 
+      />
     </nav>
   );
 }

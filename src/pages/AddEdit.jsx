@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI } from '../services/api';
+import { getSkills } from '../data/skills';
 
 export default function AddEdit() {
   const nav = useNavigate();
@@ -21,10 +22,42 @@ export default function AddEdit() {
     recruiter: '',
     followUp: '',
     notes: '',
+    skills: [],
   });
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState(null);
+  
+  const [skillInput, setSkillInput] = useState('');
+  const [skillSuggestions, setSkillSuggestions] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
+
+  useEffect(() => {
+    setAllSkills(getSkills());
+  }, []);
+
+  const handleSkillInputChange = (e) => {
+    const val = e.target.value;
+    setSkillInput(val);
+    if (val.trim() === '') {
+      setSkillSuggestions([]);
+    } else {
+      const match = val.toLowerCase();
+      setSkillSuggestions(allSkills.filter(s => s.name.toLowerCase().includes(match) || s.description.toLowerCase().includes(match)).slice(0, 5));
+    }
+  };
+
+  const addSkill = (skill) => {
+    if (!form.skills.find(s => s.id === skill.id)) {
+      setForm(p => ({ ...p, skills: [...p.skills, skill] }));
+    }
+    setSkillInput('');
+    setSkillSuggestions([]);
+  };
+
+  const removeSkill = (id) => {
+    setForm(p => ({ ...p, skills: p.skills.filter(s => s.id !== id) }));
+  };
 
   useEffect(() => {
     if (authLoading || !userId) return;
@@ -43,6 +76,7 @@ export default function AddEdit() {
           recruiter: d.recruiter || '',
           followUp: d.followUp || d.follow_up || '',
           notes: d.notes || '',
+          skills: d.skills || [],
         });
       }).catch(() => setError('Failed to load application')).finally(() => setFetching(false));
     }
@@ -166,6 +200,40 @@ export default function AddEdit() {
               <div className="space-y-2">
                 <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Notes</label>
                 <textarea className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface resize-none" rows="4" value={form.notes} onChange={(e) => set('notes', e.target.value)}/>
+              </div>
+
+              <div className="space-y-2 relative">
+                <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Skills (Tags)</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {form.skills.map(s => (
+                    <span key={s.id} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      {s.name}
+                      <button type="button" onClick={() => removeSkill(s.id)} className="hover:text-red-500 font-bold ml-1">&times;</button>
+                    </span>
+                  ))}
+                </div>
+                <input 
+                  className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" 
+                  placeholder="Type to search skills..." 
+                  value={skillInput} 
+                  onChange={handleSkillInputChange}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && skillInput.trim()) {
+                      e.preventDefault();
+                      if (skillSuggestions.length > 0) addSkill(skillSuggestions[0]);
+                    }
+                  }}
+                />
+                {skillSuggestions.length > 0 && (
+                  <ul className="absolute z-10 w-full bg-white border border-outline-variant rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
+                    {skillSuggestions.map(s => (
+                      <li key={s.id} className="px-4 py-2 hover:bg-surface-container cursor-pointer border-b border-outline-variant/50 last:border-0" onClick={() => addSkill(s)}>
+                        <div className="font-bold text-on-surface">{s.name}</div>
+                        <div className="text-xs text-on-surface-variant truncate">{s.description}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="pt-6 border-t border-outline-variant flex items-center justify-end gap-4">

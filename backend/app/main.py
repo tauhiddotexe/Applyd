@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
 from app.db.session import engine, Base
-from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders
+from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders, payments, users
 
 UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
@@ -17,6 +17,8 @@ UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS credits INTEGER DEFAULT 3"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(32) DEFAULT 'free'"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_min INTEGER"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_max INTEGER"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency VARCHAR(8)"))
@@ -50,6 +52,20 @@ async def lifespan(app: FastAPI):
             )
         )
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_documents_application_id ON application_documents (application_id)"))
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS processed_payments (
+                    id UUID PRIMARY KEY,
+                    stripe_session_id VARCHAR(255) UNIQUE NOT NULL,
+                    user_id UUID NOT NULL REFERENCES users(id),
+                    amount_credits INTEGER NOT NULL,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+                """
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_processed_payments_stripe_session_id ON processed_payments (stripe_session_id)"))
     logger.info("Applyd API started")
     yield
     engine.dispose()
@@ -90,6 +106,8 @@ app.include_router(analytics.router, prefix="/api/v1")
 app.include_router(events.router, prefix="/api/v1")
 app.include_router(reminders.router, prefix="/api/v1")
 app.include_router(ai.router, prefix="/api/v1")
+app.include_router(payments.router, prefix="/api/v1")
+app.include_router(users.router, prefix="/api/v1")
 app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 

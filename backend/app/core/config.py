@@ -12,6 +12,14 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     OPENAI_API_KEY: str | None = None
     OPENAI_MODEL: str = "gpt-5.5"
+    GOOGLE_API_KEY: str | None = None
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+    
+    STRIPE_API_KEY: str | None = None
+    STRIPE_WEBHOOK_SECRET: str | None = None
+    STRIPE_BASIC_PRICE_ID: str | None = None
+    STRIPE_PRO_PRICE_ID: str | None = None
+    FRONTEND_URL: str = "http://localhost:5173"
 
     @property
     def cors_origins_list(self) -> list[str]:

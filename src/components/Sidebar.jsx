@@ -4,6 +4,8 @@ const navItems = [
   { path: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
   { path: '/applications', icon: 'work', label: 'Applications', fillWhenActive: true },
   { path: '/analytics', icon: 'bar_chart', label: 'Analytics' },
+  { path: '/resume', icon: 'psychology', label: 'Resume Match', fillWhenActive: true },
+  { path: '/resume-tailor', icon: 'auto_awesome', label: 'Resume Tailor', fillWhenActive: true },
 ];
 
 export default function Sidebar() {

@@ -13,6 +13,7 @@ from app.schemas.application import (
     DashboardResponse,
     ReminderResponse,
     ResumeExtractionResponse,
+    ResumeTailorResponse,
     StatusEnum,
 )
 
@@ -31,5 +32,6 @@ __all__ = [
     "DashboardResponse",
     "ReminderResponse",
     "ResumeExtractionResponse",
+    "ResumeTailorResponse",
     "StatusEnum",
 ]

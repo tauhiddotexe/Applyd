@@ -25,3 +25,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Project specific
+my-skills/
+src/data/

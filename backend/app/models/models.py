@@ -19,8 +19,23 @@ class User(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    credits: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
+    plan: Mapped[str] = mapped_column(String(32), default="free", nullable=False)
 
     applications: Mapped[list["Application"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    payments: Mapped[list["ProcessedPayment"]] = relationship(back_populates="user")
+
+
+class ProcessedPayment(Base):
+    __tablename__ = "processed_payments"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    stripe_session_id: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    amount_credits: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    user: Mapped["User"] = relationship(back_populates="payments")
 
 
 class Application(Base):

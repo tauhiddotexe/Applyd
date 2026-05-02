@@ -1,35 +1,40 @@
 import { useState } from 'react';
 import { resumeAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ResumeAnalyzer() {
+  const { user, loading: authLoading } = useAuth();
   const [resumeFile, setResumeFile] = useState(null);
-  const [resumeText, setResumeText] = useState('');
   const [jobDesc, setJobDesc] = useState('');
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
-  const score = result?.matchScore ?? 0;
+  const score = result?.score ?? 0;
   const scoreTone = score >= 80 ? 'text-green-600' : score >= 60 ? 'text-yellow-500' : 'text-red-500';
   const scoreRing = score >= 80 ? 'text-green-500' : score >= 60 ? 'text-yellow-500' : 'text-red-500';
 
-  const handleFileUpload = async (e) => {
+  if (authLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
+      </div>
+    );
+  }
+
+  const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File size must be under 5MB');
+      return;
+    }
+    
     setResumeFile(file);
     setResult(null);
-    setUploading(true);
     setError(null);
-    try {
-      const data = await resumeAPI.extractResume(file);
-      setResumeText(data.resumeText || '');
-    } catch (err) {
-      setError(err.message || 'Resume upload failed');
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
   };
 
   const handleAnalyze = async () => {
@@ -44,13 +49,20 @@ export default function ResumeAnalyzer() {
     setLoading(true);
     setError(null);
     try {
-      const data = await resumeAPI.analyze(resumeFile, jobDesc.trim());
+      const data = await resumeAPI.score(resumeFile, jobDesc.trim());
       setResult(data);
     } catch (err) {
       setError(err.message || 'Analysis failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setResumeFile(null);
+    setJobDesc('');
+    setResult(null);
+    setError(null);
   };
 
   return (
@@ -80,14 +92,11 @@ export default function ResumeAnalyzer() {
                   <span className="material-symbols-outlined">upload_file</span>
                 </div>
                 <div className="text-center">
-                  <p className="text-body-sm font-semibold text-on-surface">{uploading ? 'Extracting resume...' : 'Drop PDF here'}</p>
+                  <p className="text-body-sm font-semibold text-on-surface">Drop PDF or DOCX here</p>
                   <p className="text-[11px] text-slate-500">or click to browse</p>
                 </div>
-                <input type="file" accept="application/pdf" className="hidden" onChange={handleFileUpload} disabled={uploading || loading} />
+                <input type="file" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" className="hidden" onChange={handleFileUpload} disabled={loading} />
               </label>
-              <div className="mt-4">
-                <textarea className="w-full h-40 bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none outline-none" placeholder="Extracted resume text appears here..." value={resumeText} onChange={e => setResumeText(e.target.value)} />
-              </div>
             </div>
 
             <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
@@ -98,9 +107,12 @@ export default function ResumeAnalyzer() {
             </div>
           </div>
 
-          <div className="flex justify-center">
-            <button onClick={handleAnalyze} disabled={loading || uploading} className="bg-primary-container text-on-primary px-10 py-4 rounded-xl font-h3 flex items-center gap-3 shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all disabled:opacity-60">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>{loading ? 'Analyzing...' : 'Analyze with AI'}
+          <div className="flex justify-center gap-4">
+            <button onClick={handleReset} disabled={loading} className="bg-surface border border-outline-variant text-on-surface-variant px-6 py-4 rounded-xl font-h3 flex items-center gap-2 hover:bg-surface-container transition-all disabled:opacity-60">
+              <span className="material-symbols-outlined text-[20px]">refresh</span> Reset
+            </button>
+            <button onClick={handleAnalyze} disabled={loading} className="bg-primary-container text-on-primary px-10 py-4 rounded-xl font-h3 flex items-center gap-3 shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all disabled:opacity-60">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>{loading ? 'Analyzing...' : 'Analyze Match Score'}
             </button>
           </div>
         </div>
@@ -126,63 +138,41 @@ export default function ResumeAnalyzer() {
           </div>
 
           <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
-            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Summary</h3>
-            <p className="text-body-sm text-on-surface-variant">{result?.summary || 'Run analysis to see ATS evaluation.'}</p>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
-            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Missing Keywords</h3>
+            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Matched Keywords</h3>
             <div className="flex flex-wrap gap-2">
-              {result?.missingKeywords?.length ? result.missingKeywords.map((keyword) => (
-                <span key={keyword} className="px-3 py-1.5 bg-red-50 text-red-700 border border-red-100 rounded-lg font-label-caps text-label-caps flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[16px]">add_circle</span>{keyword}
+              {result?.matched_keywords?.length ? result.matched_keywords.map((keyword) => (
+                <span key={keyword} className="px-3 py-1.5 bg-green-50 text-green-700 border border-green-100 rounded-lg font-label-caps text-label-caps flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[16px]">check_circle</span>{keyword}
                 </span>
               )) : (
-                <span className="text-body-sm text-on-surface-variant">No missing keywords yet.</span>
+                <span className="text-body-sm text-on-surface-variant">No matched keywords yet.</span>
               )}
             </div>
           </div>
 
           <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
-            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Strengths</h3>
-            <ul className="space-y-3">
-              {result?.strengths?.length ? result.strengths.map((item, index) => (
-                <li key={`${item}-${index}`} className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-700">
-                    <span className="material-symbols-outlined text-[18px]">check</span>
-                  </div>
-                  <p className="text-[12px] text-on-surface-variant leading-snug">{item}</p>
-                </li>
+            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Missing Keywords</h3>
+            <div className="flex flex-wrap gap-2">
+              {result?.missing_keywords?.length ? result.missing_keywords.map((keyword) => (
+                <span key={keyword} className="px-3 py-1.5 bg-red-50 text-red-700 border border-red-100 rounded-lg font-label-caps text-label-caps flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[16px]">add_circle</span>{keyword}
+                </span>
               )) : (
-                <li className="text-body-sm text-on-surface-variant">No strengths yet.</li>
+                <span className="text-body-sm text-on-surface-variant">No missing keywords found.</span>
               )}
-            </ul>
+            </div>
           </div>
 
           <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
-            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Improvements</h3>
+            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Suggestions</h3>
             <ul className="space-y-3">
-              {result?.improvements?.length ? result.improvements.map((item, index) => (
+              {result?.suggestions?.length ? result.suggestions.map((item, index) => (
                 <li key={`${item}-${index}`} className="flex gap-3">
                   <div className="shrink-0 w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary font-bold text-sm">{index + 1}</div>
                   <p className="text-[12px] text-on-surface-variant leading-snug">{item}</p>
                 </li>
               )) : (
                 <li className="text-body-sm text-on-surface-variant">No suggestions yet.</li>
-              )}
-            </ul>
-          </div>
-
-          <div className="bg-surface-container-lowest border border-slate-200 rounded-xl p-md shadow-sm">
-            <h3 className="font-label-caps text-label-caps text-on-surface mb-4 uppercase">Rewrite Suggestions</h3>
-            <ul className="space-y-3">
-              {result?.resumeRewriteSuggestions?.length ? result.resumeRewriteSuggestions.map((item, index) => (
-                <li key={`${item}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">After</div>
-                  <p className="text-[12px] text-on-surface-variant leading-snug">{item}</p>
-                </li>
-              )) : (
-                <li className="text-body-sm text-on-surface-variant">No rewrite suggestions yet.</li>
               )}
             </ul>
           </div>

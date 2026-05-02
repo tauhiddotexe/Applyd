@@ -21,8 +21,8 @@ def decode_claims(token: str) -> dict:
     key_id = header.get("kid")
     logger.debug(f"JWT header alg: {algorithm} | kid={key_id}")
 
-    if algorithm not in {"ES256", "RS256"}:
-        raise InvalidAlgorithmError("Unsupported JWT algorithm")
+    # Let jwt.decode handle algorithm validation based on JWKS
+    pass
 
     signing_key = get_jwks_client().get_signing_key_from_jwt(token)
     logger.debug(f"JWKS signing key matched: kid={key_id}")

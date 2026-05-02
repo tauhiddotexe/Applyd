@@ -1,0 +1,53 @@
+import uuid
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from app.models.models import User, ProcessedPayment
+from app.core.logging import logger
+
+def get_user_by_id(db: Session, user_id: uuid.UUID) -> User | None:
+    return db.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
+
+def check_credits(db: Session, user_id: uuid.UUID) -> bool:
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return False
+    return user.credits > 0
+
+def deduct_credit(db: Session, user_id: uuid.UUID) -> bool:
+    user = get_user_by_id(db, user_id)
+    if not user or user.credits <= 0:
+        return False
+    
+    user.credits -= 1
+    db.add(user)
+    db.commit()
+    logger.info(f"Credit deducted for user {user_id}. Remaining: {user.credits}")
+    return True
+
+def add_credits(db: Session, user_id: uuid.UUID, amount: int, plan_type: str, session_id: str):
+    # Check if this session has already been processed (idempotency)
+    existing_payment = db.execute(
+        select(ProcessedPayment).where(ProcessedPayment.stripe_session_id == session_id)
+    ).scalar_one_or_none()
+    
+    if existing_payment:
+        logger.warning(f"Payment session {session_id} already processed. Skipping.")
+        return False
+
+    user = get_user_by_id(db, user_id)
+    if user:
+        user.credits += amount
+        user.plan = plan_type
+        
+        # Record the processed payment
+        payment = ProcessedPayment(
+            stripe_session_id=session_id,
+            user_id=user_id,
+            amount_credits=amount
+        )
+        db.add(user)
+        db.add(payment)
+        db.commit()
+        logger.info(f"Added {amount} credits to user {user_id}. New total: {user.credits}. Plan: {plan_type}. Session: {session_id}")
+        return True
+    return False

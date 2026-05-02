@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 let sessionPromise = null;
 let refreshPromise = null;
@@ -79,7 +79,13 @@ async function request(endpoint, opts = {}) {
     throw new Error('No valid session'); // Let UI/ProtectedRoute handle redirect, no hard signOut
   }
 
-  let res = await rawFetch(endpoint, opts, token);
+  let res;
+  try {
+    res = await rawFetch(endpoint, opts, token);
+  } catch (err) {
+    console.error(`Network error on ${endpoint}:`, err);
+    throw new Error(`Connection failed: Please check if the backend is running and reachable. (${err.message})`);
+  }
 
   if (res.status === 401) {
     const { data: rd, error: re } = await doRefresh();
@@ -89,7 +95,11 @@ async function request(endpoint, opts = {}) {
     }
     
     token = rd.session.access_token;
-    res = await rawFetch(endpoint, opts, token);
+    try {
+      res = await rawFetch(endpoint, opts, token);
+    } catch (err) {
+      throw new Error(`Connection failed during retry: ${err.message}`);
+    }
     
     if (res.status === 401) {
       await supabase.auth.signOut(); // Hard signout ONLY on second failed try
@@ -98,8 +108,8 @@ async function request(endpoint, opts = {}) {
   }
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || `Request failed: ${res.status}`);
+    const errData = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(errData.detail || `Request failed: ${res.status}`);
   }
   
   if (res.status === 204) return null;
@@ -130,9 +140,21 @@ export const resumeAPI = {
     const fd = new FormData(); fd.append('file', file);
     return request('/ai/extract-resume', { method: 'POST', body: fd });
   },
-  analyze: (file, jd) => {
-    const fd = new FormData(); fd.append('resume_file', file); fd.append('job_description', jd);
+  analyzeResume: (file, jd) => {
+    const fd = new FormData();
+    fd.append('resume_file', file);
+    fd.append('job_description', jd);
     return request('/ai/analyze', { method: 'POST', body: fd });
+  },
+  tailorResume: (file, jd) => {
+    const fd = new FormData();
+    fd.append('resume_file', file);
+    fd.append('job_description', jd);
+    return request('/ai/resume-tailor', { method: 'POST', body: fd });
+  },
+  score: (file, jd) => {
+    const fd = new FormData(); fd.append('resume_file', file); fd.append('job_description', jd);
+    return request('/ai/resume-score', { method: 'POST', body: fd });
   },
 };
 
@@ -140,4 +162,12 @@ export const analyticsAPI = {
   dashboard: () => request('/dashboard'),
   analytics: () => request('/analytics'),
   reminders: () => request('/reminders'),
+};
+
+export const userAPI = {
+  getProfile: () => request('/users/profile'),
+};
+
+export const paymentsAPI = {
+  createCheckoutSession: (planType) => request(`/payments/create-checkout-session?plan_type=${planType}`, { method: 'POST' }),
 };

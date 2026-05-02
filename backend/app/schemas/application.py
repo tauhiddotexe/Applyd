@@ -145,3 +145,10 @@ class AIAnalyzeResponse(BaseModel):
     resume_rewrite_suggestions: list[str] = Field(serialization_alias="resumeRewriteSuggestions")
 
     model_config = {"populate_by_name": True}
+
+class ResumeTailorResponse(BaseModel):
+    improved_points: list[str] = Field(serialization_alias="improvedPoints")
+    suggestions: list[str]
+
+    model_config = {"populate_by_name": True}
+

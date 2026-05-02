@@ -36,6 +36,14 @@ export default function Applications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  if (authLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
+      </div>
+    );
+  }
+
   const fetchApps = async () => {
     if (authLoading || !userId) return;
 

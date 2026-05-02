@@ -9,7 +9,10 @@ import Analytics from './pages/Analytics';
 import AddEdit from './pages/AddEdit';
 import Details from './pages/Details';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
+import ResumeTailor from './pages/ResumeTailor';
 import Autofill from './pages/Autofill';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancelled from './pages/PaymentCancelled';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -42,7 +45,10 @@ export default function App() {
             <Route path="/applications/:id/edit" element={<AddEdit />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/resume" element={<ResumeAnalyzer />} />
+            <Route path="/resume-tailor" element={<ResumeTailor />} />
             <Route path="/autofill" element={<Autofill />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancelled" element={<PaymentCancelled />} />
           </Route>
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
