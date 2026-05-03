@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { applicationsAPI } from '../services/api';
+import { applicationsAPI, API_ROOT } from '../services/api';
 
 const STATUS_LABELS = { applied: 'APPLIED', interviewing: 'INTERVIEWING', offer: 'OFFER', rejected: 'REJECTED', wishlist: 'WISHLIST' };
 
@@ -37,7 +37,7 @@ function formatEventType(value) {
 function fileUrl(path) {
   if (!path) return '#';
   if (path.startsWith('http')) return path;
-  return `http://localhost:8000${path}`;
+  return `${API_ROOT}${path}`;
 }
 
 export default function Details() {

@@ -1,6 +1,8 @@
 import { supabase } from './supabase';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+export const API_ROOT = API_BASE.replace('/api/v1', ''); // For static file access
+
 
 let sessionPromise = null;
 let refreshPromise = null;
@@ -65,7 +67,9 @@ function buildHeaders(token) {
 function rawFetch(endpoint, opts, token) {
   const headers = buildHeaders(token);
   if (opts?.body instanceof FormData) delete headers['Content-Type'];
-  return fetch(`${API_BASE}${endpoint}`, {
+  
+  const url = `${API_BASE}${endpoint}`;
+  return fetch(url, {
     ...opts,
     headers: { ...headers, ...(opts?.headers || {}) },
   });
@@ -83,8 +87,10 @@ async function request(endpoint, opts = {}) {
   try {
     res = await rawFetch(endpoint, opts, token);
   } catch (err) {
-    console.error(`Network error on ${endpoint}:`, err);
-    throw new Error(`Connection failed: Please check if the backend is running and reachable. (${err.message})`);
+    if (err.message.includes('Failed to fetch') || err.message.includes('ERR_CONNECTION_REFUSED')) {
+      throw new Error(`Backend unreachable: Ensure the FastAPI server is running at ${API_BASE}. (${err.message})`);
+    }
+    throw new Error(`Connection failed: ${err.message}`);
   }
 
   if (res.status === 401) {

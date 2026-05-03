@@ -19,11 +19,15 @@ async def lifespan(app: FastAPI):
     with engine.begin() as conn:
         conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS credits INTEGER DEFAULT 3"))
         conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(32) DEFAULT 'free'"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(255)"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(255)"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS settings JSONB DEFAULT '{\"notifications\": true}'::jsonb"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_min INTEGER"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_max INTEGER"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency VARCHAR(8)"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS location VARCHAR(255)"))
         conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS recruiter VARCHAR(255)"))
+        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS link VARCHAR(2048)"))
         conn.execute(
             text(
                 """
@@ -66,6 +70,7 @@ async def lifespan(app: FastAPI):
             )
         )
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_processed_payments_stripe_session_id ON processed_payments (stripe_session_id)"))
+    logger.info(f"CORS Origins: {settings.cors_origins_list}")
     logger.info("Applyd API started")
     yield
     engine.dispose()
