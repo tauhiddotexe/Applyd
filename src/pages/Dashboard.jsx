@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { analyticsAPI, userAPI, paymentsAPI } from '../services/api';
+import { STATUS_COLORS, STATUS_LABELS } from '../constants/status';
 
 const EMPTY_DASHBOARD = {
   total_applications: 0,
@@ -13,14 +14,6 @@ const EMPTY_DASHBOARD = {
     wishlist: 0,
   },
   recent_applications: [],
-};
-
-const STATUS_META = {
-  applied: { label: 'Applied', sc: 'bg-blue-100 text-blue-800' },
-  interviewing: { label: 'Interviewing', sc: 'bg-secondary-fixed text-on-secondary-fixed-variant' },
-  offer: { label: 'Offer', sc: 'bg-emerald-100 text-emerald-800' },
-  rejected: { label: 'Rejected', sc: 'bg-red-100 text-red-800' },
-  wishlist: { label: 'Wishlist', sc: 'bg-amber-100 text-amber-800' },
 };
 
 function formatDate(value) {
@@ -184,8 +177,8 @@ export default function Dashboard() {
                       <div className="hidden md:block text-right">
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{relativeTime(app.created_at)}</p>
                       </div>
-                      <span className={`px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider ${STATUS_META[app.status]?.sc || 'bg-slate-100 text-slate-700'}`}>
-                        {STATUS_META[app.status]?.label || app.status}
+                      <span className={`px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider ${STATUS_COLORS[app.status] || 'bg-slate-100 text-slate-700'}`}>
+                        {STATUS_LABELS[app.status] || app.status}
                       </span>
                     </div>
                   </div>

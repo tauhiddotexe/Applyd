@@ -2,23 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI } from '../services/api';
+import { STATUS_COLORS, STATUS_LABELS } from '../constants/status';
 
 const STATUS_OPTIONS = [
   { value: '', label: 'All Statuses' },
-  { value: 'applied', label: 'Applied' },
-  { value: 'interviewing', label: 'Interviewing' },
-  { value: 'offer', label: 'Offer' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'wishlist', label: 'Wishlist' },
+  ...Object.entries(STATUS_LABELS).map(([value, label]) => ({ value, label }))
 ];
-const STATUS_LABELS = { applied: 'Applied', interviewing: 'Interviewing', offer: 'Offer', rejected: 'Rejected', wishlist: 'Wishlist' };
-const STATUS_COLORS = {
-  applied: 'bg-blue-100 text-blue-800',
-  interviewing: 'bg-secondary-fixed text-on-secondary-fixed-variant',
-  offer: 'bg-emerald-100 text-emerald-800',
-  rejected: 'bg-red-100 text-red-800',
-  wishlist: 'bg-amber-100 text-amber-800',
-};
 
 function fmtDate(iso) {
   if (!iso) return '—';

@@ -2,8 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI, API_ROOT } from '../services/api';
+import { STATUS_COLORS, STATUS_LABELS, EVENT_STYLES } from '../constants/status';
 
-const STATUS_LABELS = { applied: 'APPLIED', interviewing: 'INTERVIEWING', offer: 'OFFER', rejected: 'REJECTED', wishlist: 'WISHLIST' };
+const getEventStyle = (type) => {
+  const t = type?.toLowerCase() || '';
+  if (t.includes('interview')) return EVENT_STYLES.interview;
+  if (t.includes('tech')) return EVENT_STYLES.technical;
+  if (t.includes('hr')) return EVENT_STYLES.hr;
+  if (t.includes('offer')) return EVENT_STYLES.offer;
+  if (t.includes('reject')) return EVENT_STYLES.rejection;
+  return EVENT_STYLES.default;
+};
 
 function formatSalary(app) {
   const { salaryMin, salaryMax, currency } = app;
