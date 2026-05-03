@@ -14,62 +14,82 @@ UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def run_migrations():
+    """Run ad-hoc migrations. Failure here should not crash the app."""
+    try:
+        logger.info("Running database migrations...")
+        with engine.begin() as conn:
+            # User table updates
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS credits INTEGER DEFAULT 3"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(32) DEFAULT 'free'"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS settings JSONB DEFAULT '{\"notifications\": true}'::jsonb"))
+            
+            # Application table updates
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_min INTEGER"))
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_max INTEGER"))
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency VARCHAR(8)"))
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS location VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS recruiter VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS link VARCHAR(2048)"))
+            
+            # Table creations
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS application_events (
+                        id UUID PRIMARY KEY,
+                        application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+                        type VARCHAR(255) NOT NULL,
+                        date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                        notes TEXT NULL
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_events_application_id ON application_events (application_id)"))
+            
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS application_documents (
+                        id UUID PRIMARY KEY,
+                        application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+                        name VARCHAR(255) NOT NULL,
+                        file_url VARCHAR(2048) NOT NULL,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_documents_application_id ON application_documents (application_id)"))
+            
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS processed_payments (
+                        id UUID PRIMARY KEY,
+                        stripe_session_id VARCHAR(255) UNIQUE NOT NULL,
+                        user_id UUID NOT NULL REFERENCES users(id),
+                        amount_credits INTEGER NOT NULL,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX IF NOT EXISTS ix_processed_payments_stripe_session_id ON processed_payments (stripe_session_id)"))
+        logger.info("Database migrations completed successfully")
+    except Exception as e:
+        logger.error(f"Database migration failed: {e}")
+        logger.warning("Application starting in degraded mode (DB features may fail)")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    with engine.begin() as conn:
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS credits INTEGER DEFAULT 3"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(32) DEFAULT 'free'"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(255)"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(255)"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS settings JSONB DEFAULT '{\"notifications\": true}'::jsonb"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_min INTEGER"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS salary_max INTEGER"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS currency VARCHAR(8)"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS location VARCHAR(255)"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS recruiter VARCHAR(255)"))
-        conn.execute(text("ALTER TABLE applications ADD COLUMN IF NOT EXISTS link VARCHAR(2048)"))
-        conn.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS application_events (
-                    id UUID PRIMARY KEY,
-                    application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
-                    type VARCHAR(255) NOT NULL,
-                    date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    notes TEXT NULL
-                )
-                """
-            )
-        )
-        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_events_application_id ON application_events (application_id)"))
-        conn.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS application_documents (
-                    id UUID PRIMARY KEY,
-                    application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
-                    name VARCHAR(255) NOT NULL,
-                    file_url VARCHAR(2048) NOT NULL,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-                """
-            )
-        )
-        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_application_documents_application_id ON application_documents (application_id)"))
-        conn.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS processed_payments (
-                    id UUID PRIMARY KEY,
-                    stripe_session_id VARCHAR(255) UNIQUE NOT NULL,
-                    user_id UUID NOT NULL REFERENCES users(id),
-                    amount_credits INTEGER NOT NULL,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-                """
-            )
-        )
-        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_processed_payments_stripe_session_id ON processed_payments (stripe_session_id)"))
+    # Run migrations in a way that doesn't block startup if DB is down
+    run_migrations()
+    
     logger.info(f"CORS Origins: {settings.cors_origins_list}")
     logger.info("Applyd API started")
     yield

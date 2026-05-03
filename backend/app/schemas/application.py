@@ -149,6 +149,9 @@ class AIAnalyzeResponse(BaseModel):
 class ResumeTailorResponse(BaseModel):
     improved_points: list[str] = Field(serialization_alias="improvedPoints")
     suggestions: list[str]
+    before_score: int
+    after_score: int
+    improvement: int
 
     model_config = {"populate_by_name": True}
 

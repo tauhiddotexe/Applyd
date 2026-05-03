@@ -23,7 +23,11 @@ from app.schemas import AIAnalyzeResponse, ResumeExtractionResponse, ResumeTailo
 
 # Configure Gemini
 if settings.GOOGLE_API_KEY:
+    masked_key = f"{settings.GOOGLE_API_KEY[:8]}...{settings.GOOGLE_API_KEY[-4:]}"
+    logger.info(f"Configuring Gemini with key: {masked_key}")
     genai.configure(api_key=settings.GOOGLE_API_KEY)
+else:
+    logger.warning("GOOGLE_API_KEY not found in settings")
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
@@ -31,140 +35,185 @@ router = APIRouter(prefix="/ai", tags=["AI"])
 # Removed extract_response_text as Gemini SDK handles it better
 
 
-def analyze_resume_with_gemini(resume_text: str, job_description: str) -> dict:
+from app.services.ai_limiter import ai_limiter
+
+def extract_resume_summary(resume_text: str) -> str:
+    """Extracts key experience points and skills to reduce token noise."""
+    lines = [line.strip() for line in resume_text.split('\n') if line.strip()]
+    # Priority: lines starting with bullets or numbers, or short impactful sentences
+    bullet_points = [l for l in lines if l.startswith(('-', '*', '•')) or (len(l) > 15 and l[0].isdigit())]
+    
+    if len(bullet_points) >= 5:
+        points = bullet_points[:12]
+    else:
+        # Fallback to meaningful lines
+        points = [l for l in lines if 20 < len(l) < 200][:15]
+    
+    return "\n".join(points)
+
+def extract_top_keywords_for_prompt(jd_text: str) -> str:
+    """Extracts top 10-12 keywords for the prompt."""
+    keywords = normalize_and_tokenize(jd_text)
+    # Sort by length or frequency if we had it, but length is a decent proxy for 'meaningful' tech terms
+    sorted_kws = sorted(list(keywords), key=len, reverse=True)
+    return ", ".join(sorted_kws[:12])
+
+
+def calculate_local_score(text: str, keywords: list) -> int:
+    """Deterministic keyword-based scoring (fast, no AI)."""
+    if not keywords:
+        return 0
+    text = text.lower()
+    matched = sum(1 for kw in keywords if kw.lower() in text)
+    return int((matched / len(keywords)) * 100)
+
+
+async def call_gemini_unified(resume_text: str, job_description: str, mode: str = "both") -> dict:
+    """
+    Unified Gemini caller optimized for token efficiency and deterministic scoring.
+    """
     if not settings.GOOGLE_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="GOOGLE_API_KEY is not configured",
         )
 
-    model = genai.GenerativeModel(
-        model_name=settings.GEMINI_MODEL,
-        generation_config={"response_mime_type": "application/json"}
-    )
-    
-    prompt = (
-        "You are an expert ATS system. Analyze how well the resume matches the job description.\n\n"
-        "Be strict. Do not inflate scores.\n\n"
-        "Return JSON only with the following schema:\n"
-        "{\n"
-        '  "match_score": number (0-100),\n'
-        '  "summary": "short evaluation",\n'
-        '  "strengths": ["point"],\n'
-        '  "missing_keywords": ["keyword"],\n'
-        '  "improvements": ["actionable suggestion"],\n'
-        '  "resume_rewrite_suggestions": ["improved bullet point"]\n'
-        "}\n\n"
-        f"Resume:\n{resume_text}\n\n"
-        f"Job Description:\n{job_description}"
-    )
+    # Preprocessing
+    resume_summary = extract_resume_summary(resume_text)
+    keywords_set = normalize_and_tokenize(job_description)
+    # Filter for quality
+    valid_kws = sorted(list(keywords_set), key=len, reverse=True)[:12]
+    top_keywords_str = ", ".join(valid_kws)
 
+    # Calculate 'Before' score
+    before_score = calculate_local_score(resume_summary, valid_kws)
+
+    await ai_limiter.acquire()
     try:
-        response = model.generate_content(prompt)
-        if not response.text:
-            raise ValueError("Empty response from Gemini")
-        return json.loads(response.text)
+        model = genai.GenerativeModel(
+            model_name=settings.GEMINI_MODEL,
+            generation_config={"response_mime_type": "application/json"}
+        )
+        
+        base_context = (
+            "Role: Senior recruiter optimizing resumes for ATS and hiring managers.\n\n"
+            "Constraints:\n"
+            "- Do NOT invent experience, tools, or metrics.\n"
+            "- Use metrics ONLY if present or clearly implied.\n"
+            "- Avoid generic phrases (e.g., 'worked on', 'helped').\n"
+            "- Use strong action verbs.\n"
+            "- Keep each bullet concise (max 2 lines).\n"
+            "- Ensure natural language (no keyword stuffing).\n\n"
+            "Focus:\n"
+            "- Align resume content with job description keywords.\n"
+            "- Emphasize impact, results, and relevance.\n"
+        )
+
+        if mode == "analyze":
+            prompt = (
+                f"{base_context}\nTask: Analyze how well the resume matches the JD.\n\n"
+                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
+                "Return JSON: {\"match_score\": 0-100, \"summary\": \"\", \"strengths\": [], \"missing_keywords\": [], \"improvements\": []}"
+            )
+        elif mode == "tailor":
+            prompt = (
+                f"{base_context}\nTask: Generate high-impact, ATS-optimized bullet points based on the resume and JD.\n\n"
+                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
+                "Return JSON only with this schema:\n"
+                "{\n"
+                "  \"summary\": \"a brief 2-3 sentence overview of the original resume\",\n"
+                "  \"improved_points\": [\n"
+                "    {\"original\": \"brief snippet of original point\", \"improved\": \"full rewritten bullet point\"}\n"
+                "  ],\n"
+                "  \"suggestions\": [\"short explanation of strategic changes\"]\n"
+                "}"
+            )
+        else: # both
+            prompt = (
+                f"{base_context}\nTask: Perform ATS analysis and provide tailored bullet points.\n\n"
+                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
+                "Return JSON only with this schema:\n"
+                "{\n"
+                "  \"analysis\": {\"match_score\": 0-100, \"summary\": \"\", \"strengths\": [], \"missing_keywords\": [], \"improvements\": []},\n"
+                "  \"tailoring\": {\n"
+                "    \"summary\": \"...\",\n"
+                "    \"improved_points\": [{\"original\": \"...\", \"improved\": \"...\"}],\n"
+                "    \"suggestions\": []\n"
+                "  }\n"
+                "}"
+            )
+
+        # 3. Call Gemini with Retry
+        max_retries = 3
+        retry_delay = 2
+        for attempt in range(max_retries):
+            try:
+                response = await run_in_threadpool(model.generate_content, prompt)
+                if not response.text:
+                    raise ValueError("Empty response from Gemini")
+                result = json.loads(response.text)
+                break
+            except google_exceptions.ResourceExhausted:
+                if attempt == max_retries - 1:
+                    raise
+                wait_time = retry_delay * (2 ** attempt)
+                logger.warning(f"Gemini 429 (Quota Exceeded). Retrying in {wait_time}s... (Attempt {attempt+1}/{max_retries})")
+                await asyncio.sleep(wait_time)
+            except Exception as e:
+                logger.error(f"Error during Gemini call: {e}")
+                raise
+
+        # Post-processing: Calculate 'After' score for tailoring modes
+        if mode in ("tailor", "both"):
+            tailor_data = result if mode == "tailor" else result.get("tailoring", {})
+            raw_improved = tailor_data.get("improved_points", [])
+            
+            # Extract strings for the final response if they were objects
+            if raw_improved and isinstance(raw_improved[0], dict):
+                improved_strings = [p.get("improved", "") for p in raw_improved]
+                tailor_data["improved_points"] = [s for s in improved_strings if s]
+            
+            improved_text = " ".join(tailor_data.get("improved_points", []))
+            after_score = calculate_local_score(improved_text, valid_kws)
+            
+            # Boost after_score slightly if improvements were made
+            improvement = max(0, after_score - before_score)
+            
+            score_data = {
+                "before_score": before_score,
+                "after_score": after_score,
+                "improvement": improvement
+            }
+            
+            if mode == "tailor":
+                result.update(score_data)
+            else:
+                result["tailoring"].update(score_data)
+
+        return result
+
     except google_exceptions.ResourceExhausted:
-        logger.error("Gemini API quota exceeded")
+        logger.error("Gemini API quota exceeded (429)")
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="AI service is currently busy (quota exceeded). Please try again in a minute.",
+            detail="The AI is currently at its free-tier limit. Please wait a few minutes before trying again.",
         )
     except Exception as exc:
         logger.error(f"Gemini API error: {exc}")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"AI analysis failed: {str(exc)}",
+            detail="AI service encountered an error. Please try again shortly.",
         )
+    finally:
+        ai_limiter.release()
+
+
+def analyze_resume_with_gemini(resume_text: str, job_description: str) -> dict:
+    return asyncio.run(call_gemini_unified(resume_text, job_description, mode="analyze"))
 
 
 def tailor_resume_with_gemini(resume_text: str, job_description: str) -> dict:
-    if not settings.GOOGLE_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="GOOGLE_API_KEY is not configured",
-        )
-
-    model = genai.GenerativeModel(
-        model_name=settings.GEMINI_MODEL,
-        generation_config={"response_mime_type": "application/json"}
-    )
-    
-    # Extract keywords from JD to explicitly guide the AI
-    jd_keywords = list(normalize_and_tokenize(job_description))[:15]
-    
-    prompt = (
-        "You are a senior recruiter optimizing a resume for ATS and hiring managers. "
-        "Based on the Job Description provided, rewrite the key bullet points from the Resume to match the JD requirements.\n\n"
-        "STRICT STYLE RULES:\n"
-        "* Each bullet point MUST start with a strong action verb (e.g., Developed, Orchestrated, Optimized, Engineered).\n"
-        "* Include measurable impact (%, numbers, scale, or specific tools) for EVERY point.\n"
-        "* Be concise (1–2 lines max).\n"
-        "* Be specific: AVOID vague words like 'helped', 'worked on', 'assisted', 'responsible for', 'involved in'.\n"
-        "* Prioritize impact and results over just listing tasks.\n"
-        "* DO NOT invent fake experience; only enhance and quantify existing content.\n"
-        "* Align wording precisely with these job description keywords: " + ", ".join(jd_keywords) + ".\n"
-        "* MAX 5-7 bullet points total.\n\n"
-        "EXAMPLE TRANSFORMATION:\n"
-        "Input: 'Worked on a React project'\n"
-        "Output: 'Developed a React-based web application improving load performance by 25% and enhancing user engagement'\n\n"
-        "FORCE STRUCTURE:\n"
-        "1. Improved Experience Points: The rewritten list of high-impact statements.\n"
-        "2. Key Improvements: A short list of specific strategic changes made (e.g., 'Added quantification', 'Aligned with X keyword').\n\n"
-        "Return JSON only with the following schema:\n"
-        "{\n"
-        '  "improved_points": ["Action Verb + Task + Quantified Result"],\n'
-        '  "suggestions": ["Concise improvement strategy 1", "Concise improvement strategy 2"]\n'
-        "}\n\n"
-        f"Resume:\n{resume_text}\n\n"
-        f"Job Description:\n{job_description}"
-    )
-
-
-    try:
-        response = model.generate_content(prompt)
-        if not response.text:
-            raise ValueError("Empty response from Gemini")
-        
-        result = json.loads(response.text)
-        
-        # Post-processing
-        raw_points = result.get("improved_points", [])
-        vague_phrases = ["helped", "worked on", "assisted", "responsible for", "participated in", "involved in"]
-        
-        processed_points = []
-        seen = set()
-        for p in raw_points:
-            p = p.strip().strip("*").strip("-").strip()
-            if not p or p.lower() in seen:
-                continue
-            
-            # Remove points containing vague phrases
-            if any(phrase in p.lower() for phrase in vague_phrases):
-                continue
-                
-            # Basic action verb check (first word usually ends in 'ed' or 'ing' or is a known verb)
-            # We'll trust the prompt mostly but can filter out obviously bad ones if needed.
-            
-            seen.add(p.lower())
-            processed_points.append(p)
-            
-        result["improved_points"] = processed_points[:7]
-        result["suggestions"] = [s.strip() for s in result.get("suggestions", [])][:5]
-        
-        return result
-    except google_exceptions.ResourceExhausted:
-        logger.error("Gemini API quota exceeded")
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="AI service is currently busy (quota exceeded). Please try again in a minute.",
-        )
-    except Exception as exc:
-        logger.error(f"Gemini API error: {exc}")
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"AI tailoring failed: {str(exc)}",
-        )
+    return asyncio.run(call_gemini_unified(resume_text, job_description, mode="tailor"))
 
 
 
@@ -216,7 +265,7 @@ async def analyze_resume(
             detail="Job description is required",
         )
 
-    return analyze_resume_with_gemini(resume_text, job_description.strip())
+    return await call_gemini_unified(resume_text, job_description.strip(), mode="analyze")
 
 
 @router.post("/resume-tailor", response_model=ResumeTailorResponse)
@@ -257,11 +306,35 @@ async def tailor_resume(
             detail="Resume text is empty",
         )
 
-    result = tailor_resume_with_gemini(resume_text, job_description.strip())
+    result = await call_gemini_unified(resume_text, job_description.strip(), mode="tailor")
     
     # 2. Deduct credit
     user_service.deduct_credit(db, user_id)
     
+    return result
+
+
+@router.post("/optimize")
+async def optimize_resume(
+    resume_file: UploadFile = File(...),
+    job_description: str = Form(...),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    """Combined analysis and tailoring in one AI call."""
+    if not user_service.check_credits(db, user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient credits.",
+        )
+
+    file_bytes = await resume_file.read()
+    resume_text = await run_in_threadpool(
+        extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
+    )
+    
+    result = await call_gemini_unified(resume_text, job_description.strip(), mode="both")
+    user_service.deduct_credit(db, user_id)
     return result
 
 

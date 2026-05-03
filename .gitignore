@@ -45,3 +45,4 @@ graphify-out/cost.json
 
 # Ignore Antigravity local config
 .agents/
+scratch/

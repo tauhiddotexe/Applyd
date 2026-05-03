@@ -141,24 +141,52 @@ export const jobsAPI = {
   extract: (url) => request('/jobs/extract', { method: 'POST', body: JSON.stringify({ url }) }),
 };
 
+let lastAIRequestTime = 0;
+const AI_COOLDOWN_MS = 6000; // 6s frontend cooldown to be safe
+
 export const resumeAPI = {
   extractResume: (file) => {
     const fd = new FormData(); fd.append('file', file);
     return request('/ai/extract-resume', { method: 'POST', body: fd });
   },
-  analyzeResume: (file, jd) => {
+  analyzeResume: async (file, jd) => {
+    const now = Date.now();
+    if (now - lastAIRequestTime < AI_COOLDOWN_MS) {
+      const wait = Math.ceil((AI_COOLDOWN_MS - (now - lastAIRequestTime)) / 1000);
+      throw new Error(`AI Cooldown: Please wait ${wait}s before another request.`);
+    }
+    lastAIRequestTime = now;
     const fd = new FormData();
     fd.append('resume_file', file);
     fd.append('job_description', jd);
     return request('/ai/analyze', { method: 'POST', body: fd });
   },
-  tailorResume: (file, jd) => {
+  tailorResume: async (file, jd) => {
+    const now = Date.now();
+    if (now - lastAIRequestTime < AI_COOLDOWN_MS) {
+      const wait = Math.ceil((AI_COOLDOWN_MS - (now - lastAIRequestTime)) / 1000);
+      throw new Error(`AI Cooldown: Please wait ${wait}s before another request.`);
+    }
+    lastAIRequestTime = now;
     const fd = new FormData();
     fd.append('resume_file', file);
     fd.append('job_description', jd);
     return request('/ai/resume-tailor', { method: 'POST', body: fd });
   },
+  optimize: async (file, jd) => {
+    const now = Date.now();
+    if (now - lastAIRequestTime < AI_COOLDOWN_MS) {
+      const wait = Math.ceil((AI_COOLDOWN_MS - (now - lastAIRequestTime)) / 1000);
+      throw new Error(`AI Cooldown: Please wait ${wait}s before another request.`);
+    }
+    lastAIRequestTime = now;
+    const fd = new FormData();
+    fd.append('resume_file', file);
+    fd.append('job_description', jd);
+    return request('/ai/optimize', { method: 'POST', body: fd });
+  },
   score: (file, jd) => {
+    // Note: score uses local model, no Gemini, so no cooldown needed
     const fd = new FormData(); fd.append('resume_file', file); fd.append('job_description', jd);
     return request('/ai/resume-score', { method: 'POST', body: fd });
   },
