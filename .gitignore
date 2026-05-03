@@ -29,3 +29,19 @@ Thumbs.db
 # Project specific
 my-skills/
 src/data/
+
+# graphify
+# Ignore everything inside graphify-out
+graphify-out/*
+
+# But keep these two
+!graphify-out/GRAPH_REPORT.md
+!graphify-out/graph.json
+
+# Ignore heavy / local-only files
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json
+
+# Ignore Antigravity local config
+.agents/

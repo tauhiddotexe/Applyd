@@ -130,46 +130,84 @@ export default function Applications() {
         </div>
       )}
 
-      {/* Table */}
+      {/* Card Grid */}
       {!loading && (
-      <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-outline-variant/20">
-              <th className="text-left px-lg py-md font-label-caps text-label-caps text-on-surface-variant uppercase">Company</th>
-              <th className="text-left px-lg py-md font-label-caps text-label-caps text-on-surface-variant uppercase hidden md:table-cell">Role</th>
-              <th className="text-left px-lg py-md font-label-caps text-label-caps text-on-surface-variant uppercase">Status</th>
-              <th className="text-left px-lg py-md font-label-caps text-label-caps text-on-surface-variant uppercase hidden lg:table-cell">Date</th>
-              <th className="px-lg py-md"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {apps.map(app => (
-              <tr key={app.id} onClick={() => nav(`/applications/${app.id}`)} className="border-b border-outline-variant/10 hover:bg-surface transition-colors cursor-pointer">
-                <td className="px-lg py-md">
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 bg-surface-container flex items-center justify-center rounded-lg shrink-0">
-                      <span className="material-symbols-outlined text-outline text-[18px]">apartment</span>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+            {apps.map(app => {
+              // Extract domain for Clearbit logo
+              const domain = app.company.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+              const initials = app.company.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+              return (
+                <div 
+                  key={app.id} 
+                  onClick={() => nav(`/applications/${app.id}`)} 
+                  className="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between mb-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="relative h-12 w-12 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden border border-outline-variant/10 shrink-0">
+                          <img 
+                            src={`https://logo.clearbit.com/${domain}`} 
+                            alt={app.company}
+                            className="h-full w-full object-contain p-2 transition-opacity duration-300"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div className="hidden absolute inset-0 flex items-center justify-center bg-primary-fixed text-on-primary-fixed-variant font-bold text-lg">
+                            {initials}
+                          </div>
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-h3 text-[16px] text-on-surface truncate leading-tight group-hover:text-primary transition-colors">{app.company}</h3>
+                          <p className="text-body-sm text-on-surface-variant truncate">{app.role}</p>
+                        </div>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 ${STATUS_COLORS[app.status] || 'bg-slate-100 text-slate-700'}`}>
+                        {STATUS_LABELS[app.status] || app.status}
+                      </span>
                     </div>
-                    <span className="font-h3 text-[14px] text-on-surface">{app.company}</span>
+
+                    <div className="space-y-2.5 mb-lg">
+                      <div className="flex items-center gap-2 text-on-surface-variant">
+                        <span className="material-symbols-outlined text-[18px]">location_on</span>
+                        <span className="text-body-sm truncate">{app.location || 'Remote / Not specified'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-on-surface-variant">
+                        <span className="material-symbols-outlined text-[18px]">payments</span>
+                        <span className="text-body-sm">{app.salaryMin || app.salaryMax ? `${app.currency || '$'}${app.salaryMin?.toLocaleString() || '0'} - ${app.salaryMax?.toLocaleString() || 'N/A'}` : 'Salary not disclosed'}</span>
+                      </div>
+                    </div>
                   </div>
-                </td>
-                <td className="px-lg py-md text-body-sm text-on-surface-variant hidden md:table-cell">{app.role}</td>
-                <td className="px-lg py-md"><span className={`px-2 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${STATUS_COLORS[app.status] || 'bg-slate-100 text-slate-700'}`}>{STATUS_LABELS[app.status] || app.status}</span></td>
-                <td className="px-lg py-md text-body-sm text-on-surface-variant hidden lg:table-cell">{fmtDate(app.created_at)}</td>
-                <td className="px-lg py-md">
-                  <button onClick={(e) => handleDelete(e, app.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Delete">
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {apps.length === 0 && (
-          <div className="p-xl text-center text-on-surface-variant">No applications found.</div>
-        )}
-      </div>
+
+                  <div className="flex items-center justify-between pt-lg border-t border-outline-variant/10">
+                    <div className="flex items-center gap-2 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+                      <span className="text-[12px]">{fmtDate(app.created_at)}</span>
+                    </div>
+                    <button 
+                      onClick={(e) => handleDelete(e, app.id)} 
+                      className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100" 
+                      title="Delete"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {apps.length === 0 && (
+            <div className="bg-surface-container-lowest border border-dashed border-outline-variant rounded-2xl p-20 text-center text-on-surface-variant">
+              <span className="material-symbols-outlined text-4xl mb-4 block opacity-20">inventory_2</span>
+              <p>No applications found matching your criteria.</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

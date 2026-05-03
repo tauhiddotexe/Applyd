@@ -141,96 +141,172 @@ export default function Details() {
     </div>
   );
 
+  const eventStyles = {
+    applied: { color: 'bg-blue-500', icon: 'send', border: 'border-blue-100' },
+    interview: { color: 'bg-indigo-500', icon: 'forum', border: 'border-indigo-100' },
+    technical_interview: { color: 'bg-violet-500', icon: 'terminal', border: 'border-violet-100' },
+    behavioral_interview: { color: 'bg-purple-500', icon: 'groups', border: 'border-purple-100' },
+    offer: { color: 'bg-emerald-500', icon: 'celebration', border: 'border-emerald-100' },
+    rejected: { color: 'bg-red-500', icon: 'cancel', border: 'border-red-100' },
+    withdrawn: { color: 'bg-amber-500', icon: 'backspace', border: 'border-amber-100' },
+    follow_up: { color: 'bg-cyan-500', icon: 'rebase_edit', border: 'border-cyan-100' },
+    default: { color: 'bg-slate-500', icon: 'event', border: 'border-slate-100' }
+  };
+
+  const getEventStyle = (type) => {
+    const t = type.toLowerCase();
+    if (t.includes('offer')) return eventStyles.offer;
+    if (t.includes('reject')) return eventStyles.rejected;
+    if (t.includes('technical')) return eventStyles.technical_interview;
+    if (t.includes('behavioral')) return eventStyles.behavioral_interview;
+    if (t.includes('interview')) return eventStyles.interview;
+    if (t.includes('applied')) return eventStyles.applied;
+    if (t.includes('follow')) return eventStyles.follow_up;
+    if (t.includes('withdrawn')) return eventStyles.withdrawn;
+    return eventStyles.default;
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
+    </div>
+  );
+
+  if (error || !app) return (
+    <div className="max-w-[1200px] mx-auto p-xl">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-lg flex items-center gap-3">
+        <span className="material-symbols-outlined text-red-500">error</span>
+        <span className="text-red-700">{error || 'Application not found'}</span>
+        <button onClick={() => nav('/applications')} className="ml-auto text-red-600 font-semibold hover:underline">Back to list</button>
+      </div>
+    </div>
+  );
+
+  const domain = app.company.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+  const initials = app.company.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
   return (
     <div className="max-w-[1200px] mx-auto p-xl">
-      <div className="flex items-center justify-between mb-xl">
-        <div className="flex items-center gap-4">
-          <button onClick={() => nav(-1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors text-slate-600">
-            <span className="material-symbols-outlined">arrow_back</span>
-          </button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="font-h1 text-h1 text-on-surface">{app.role}</h2>
-              <span className="px-3 py-1 bg-surface-container-high text-on-surface-variant text-label-caps rounded-full">{STATUS_LABELS[app.status] || app.status}</span>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-8 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-start gap-6">
+          <div className="relative h-20 w-20 rounded-3xl bg-white dark:bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-700 shadow-xl shrink-0 group">
+            <img 
+              src={`https://logo.clearbit.com/${domain}`} 
+              alt={app.company}
+              className="h-full w-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div className="hidden absolute inset-0 flex items-center justify-center bg-blue-600 text-white font-bold text-2xl">
+              {initials}
             </div>
-            <p className="font-body-main text-body-main text-on-surface-variant">at <span className="font-semibold text-primary">{app.company}</span></p>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-none">{app.role}</h2>
+              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${app.status === 'offer' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                {app.status}
+              </span>
+            </div>
+            <p className="text-xl text-slate-500 dark:text-slate-400 font-medium">
+              at <span className="text-slate-900 dark:text-white font-bold">{app.company}</span>
+              <span className="mx-3 text-slate-300">•</span>
+              <span className="text-sm">{app.location || 'Remote'}</span>
+            </p>
+            
+            <div className="flex items-center gap-4 text-sm font-bold text-slate-400 uppercase tracking-wider">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[18px]">payments</span>
+                {formatSalary(app)}
+              </div>
+              {app.recruiter && (
+                <div className="flex items-center gap-1.5 border-l border-slate-200 dark:border-slate-700 pl-4">
+                  <span className="material-symbols-outlined text-[18px]">person</span>
+                  {app.recruiter}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex gap-3">
+        
+        <div className="flex gap-3 h-12">
           {app.link && (
-            <a href={app.link} target="_blank" rel="noreferrer" className="px-lg py-2 border border-slate-200 bg-white text-on-surface font-h3 text-body-sm rounded-lg shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px]">open_in_new</span>Job Link
+            <a href={app.link} target="_blank" rel="noreferrer" className="px-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-2xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2">
+              <span className="material-symbols-outlined text-[20px]">open_in_new</span>Visit
             </a>
           )}
-          <button onClick={() => nav(`/applications/${id}/edit`)} className="px-lg py-2 bg-primary text-on-primary font-h3 text-body-sm rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">edit</span>Edit
+          <button onClick={() => nav(`/applications/${id}/edit`)} className="px-6 bg-blue-600 text-white font-bold text-sm rounded-2xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all flex items-center gap-2">
+            <span className="material-symbols-outlined text-[20px]">edit</span>Edit
           </button>
-          <button onClick={handleDelete} className="px-lg py-2 border border-red-200 text-red-600 font-h3 text-body-sm rounded-lg shadow-sm hover:bg-red-50 transition-colors flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">delete</span>Delete
+          <button onClick={handleDelete} className="w-12 flex items-center justify-center border border-red-100 dark:border-red-900/30 text-red-500 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all">
+            <span className="material-symbols-outlined text-[20px]">delete</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-lg">
+      <div className="grid grid-cols-12 gap-lg items-start">
+        {/* LEFT COLUMN: Main Info */}
         <div className="col-span-12 lg:col-span-8 space-y-lg">
-          <section className="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
-            <div className="flex gap-xl">
-              <div className="w-24 h-24 rounded-xl bg-surface flex items-center justify-center border border-slate-100 shrink-0">
-                <span className="material-symbols-outlined text-outline text-4xl">apartment</span>
+          {/* Main Description */}
+          <section className="bg-white dark:bg-slate-900 p-xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                <span className="material-symbols-outlined">description</span>
               </div>
-              <div className="flex-1">
-                <h3 className="font-h2 text-h2 mb-2">{app.company}</h3>
-                <p className="font-body-main text-on-surface-variant mb-4">{app.notes || 'No notes yet.'}</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-                  {[['LOCATION', app.location || 'Not specified'], ['SALARY RANGE', formatSalary(app)], ['RECRUITER', app.recruiter || 'Not specified']].map(([label, value]) => (
-                    <div key={label} className="p-md rounded-lg bg-surface">
-                      <span className="text-label-caps text-on-surface-variant block mb-1">{label}</span>
-                      <span className="font-h3 text-body-main">{value}</span>
-                    </div>
-                  ))}
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Job Description & Notes</h3>
+            </div>
+            <div className="prose prose-slate dark:prose-invert max-w-none">
+              <p className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap leading-relaxed text-lg">
+                {app.notes || 'No specific notes or description provided for this application.'}
+              </p>
+            </div>
+          </section>
+
+          {/* Expanded Journey Timeline */}
+          <section className="bg-white dark:bg-slate-900 p-xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600">
+                  <span className="material-symbols-outlined">timeline</span>
                 </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Journey Timeline</h3>
               </div>
-            </div>
-          </section>
-
-          <section className="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
-            <div className="flex items-center justify-between mb-lg">
-              <h3 className="font-h3 text-h3 flex items-center gap-2"><span className="material-symbols-outlined text-primary">notes</span>Application Notes</h3>
-            </div>
-            <div className="p-md border border-slate-100 rounded-lg bg-surface/50">
-              <p className="font-body-main text-body-main text-on-surface whitespace-pre-wrap">{app.notes || 'No notes yet.'}</p>
-            </div>
-          </section>
-        </div>
-
-        <div className="col-span-12 lg:col-span-4 space-y-lg">
-          <section className="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
-            <div className="flex items-center justify-between mb-xl">
-              <h3 className="font-h3 text-h3">Journey Timeline</h3>
-              <button onClick={() => setEventModalOpen(true)} className="text-primary font-h3 text-body-sm hover:underline">Add Event</button>
+              <button onClick={() => setEventModalOpen(true)} className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-600/10 hover:bg-blue-700 transition-all flex items-center gap-2 text-sm">
+                <span className="material-symbols-outlined text-[18px]">add</span>Add Event
+              </button>
             </div>
             {timeline.length ? (
-              <div className="relative">
-                <div className="absolute left-[11px] top-2 bottom-2 w-[2px] bg-slate-100" />
-                <div className="space-y-xl relative">
-                  {timeline.map((event, index) => {
-                    const isLast = index === timeline.length - 1;
+              <div className="relative pl-4">
+                <div className="absolute left-[31px] top-6 bottom-6 w-[2px] bg-slate-100 dark:bg-slate-800" />
+                <div className="space-y-12 relative">
+                  {timeline.map((event) => {
+                    const style = getEventStyle(event.type);
                     return (
-                      <div key={event.id} className="flex gap-4">
-                        <div className={`w-6 h-6 rounded-full shrink-0 z-10 flex items-center justify-center ${isLast ? 'bg-primary border-4 border-primary-fixed' : 'bg-emerald-500 border-4 border-emerald-100'}`}>
-                          <span className="material-symbols-outlined text-white text-[12px] font-bold">{isLast ? 'schedule' : 'check'}</span>
+                      <div key={event.id} className="flex gap-8 group">
+                        <div className={`w-10 h-10 rounded-2xl shrink-0 z-10 flex items-center justify-center ${style.color} text-white shadow-xl ring-4 ring-white dark:ring-slate-900 transition-transform group-hover:scale-110`}>
+                          <span className="material-symbols-outlined text-[18px] font-bold">{style.icon}</span>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 group-hover:border-blue-200 dark:group-hover:border-blue-900/50 transition-all">
+                          <div className="flex items-start justify-between gap-3 mb-2">
                             <div>
-                              <h4 className={`font-h3 text-body-main leading-none mb-1 ${isLast ? 'text-primary' : ''}`}>{formatEventType(event.type)}</h4>
-                              <p className="text-body-sm text-on-surface-variant">{formatEventDate(event.date)}</p>
+                              <h4 className="text-lg font-bold text-slate-900 dark:text-white">{formatEventType(event.type)}</h4>
+                              <p className="text-sm font-medium text-slate-500 flex items-center gap-2 mt-1">
+                                <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+                                {formatEventDate(event.date)}
+                              </p>
                             </div>
-                            <button onClick={() => handleDeleteEvent(event.id)} className="text-slate-400 hover:text-red-500 transition-colors">
+                            <button onClick={() => handleDeleteEvent(event.id)} className="h-8 w-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100">
                               <span className="material-symbols-outlined text-[18px]">delete</span>
                             </button>
                           </div>
-                          <p className="text-body-sm text-on-surface mt-2">{event.notes || 'No details provided.'}</p>
+                          {event.notes && (
+                            <div className="mt-4 text-slate-600 dark:text-slate-400 leading-relaxed italic border-l-4 border-slate-200 dark:border-slate-700 pl-4 py-1">
+                              {event.notes}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -238,38 +314,90 @@ export default function Details() {
                 </div>
               </div>
             ) : (
-              <div className="text-body-sm text-on-surface-variant p-md bg-surface rounded border border-slate-100">No timeline events yet.</div>
+              <div className="text-center py-20 px-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl bg-slate-50/30">
+                <span className="material-symbols-outlined text-slate-300 text-6xl mb-4">route</span>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No events recorded</h4>
+                <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto">Track your interviews, offers, and feedback by adding events to your journey.</p>
+              </div>
             )}
           </section>
+        </div>
 
-          <section className="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
-            <div className="flex items-center justify-between mb-lg">
-              <h3 className="font-h3 text-h3">Documents</h3>
-              <label className="text-primary font-h3 text-body-sm hover:underline cursor-pointer">
-                {uploading ? 'Uploading...' : 'Upload'}
+        {/* RIGHT COLUMN: Sidebar Stats & Docs */}
+        <div className="col-span-12 lg:col-span-4 space-y-lg sticky top-24">
+          {/* Application Insights */}
+          <section className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl shadow-blue-600/20">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined">insights</span>
+              Application Insights
+            </h3>
+            <div className="space-y-4">
+              <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-1">Response Chance</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-black">74%</span>
+                  <span className="text-xs bg-emerald-400 text-emerald-950 px-2 py-0.5 rounded font-bold">HIGH</span>
+                </div>
+              </div>
+              <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-1">Market Match</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-black">92/100</span>
+                  <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Compact Timeline Summary */}
+          <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Quick Summary</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800">
+                <span className="text-sm text-slate-500">Status</span>
+                <span className="text-sm font-bold text-blue-600">{app.status.toUpperCase()}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800">
+                <span className="text-sm text-slate-500">Applied</span>
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{new Date(app.created_at).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-slate-500">Events</span>
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{timeline.length} Total</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Documents */}
+          <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Documents</h3>
+              <label className="text-blue-600 font-bold text-xs hover:underline cursor-pointer flex items-center gap-1">
+                <span className="material-symbols-outlined text-[16px]">upload</span>
+                {uploading ? '...' : 'Upload'}
                 <input type="file" className="hidden" onChange={handleUploadDocument} disabled={uploading} />
               </label>
             </div>
             {uploadError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-sm mb-md text-red-700 text-body-sm">{uploadError}</div>
+              <div className="bg-red-50 text-red-600 text-[11px] p-2 rounded mb-3 font-medium">{uploadError}</div>
             )}
             {app.documents?.length ? (
-              <div className="space-y-sm">
+              <div className="space-y-2">
                 {app.documents.map((document) => (
-                  <a key={document.id} href={fileUrl(document.fileUrl)} target="_blank" rel="noreferrer" className="flex items-center justify-between p-sm hover:bg-surface rounded-lg transition-colors border border-transparent hover:border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-outline">description</span>
-                      <div>
-                        <span className="text-body-sm font-medium block">{document.name}</span>
-                        <span className="text-[11px] text-on-surface-variant">{formatEventDate(document.createdAt)}</span>
+                  <a key={document.id} href={fileUrl(document.fileUrl)} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-xl transition-all border border-transparent hover:border-blue-100">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <span className="material-symbols-outlined text-slate-400">description</span>
+                      <div className="overflow-hidden">
+                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block truncate">{document.name}</span>
+                        <span className="text-[10px] text-slate-400">{new Date(document.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-slate-300 text-[20px]">download</span>
+                    <span className="material-symbols-outlined text-slate-300 text-[18px]">download</span>
                   </a>
                 ))}
               </div>
             ) : (
-              <div className="text-body-sm text-on-surface-variant p-md bg-surface rounded border border-slate-100">No documents yet.</div>
+              <div className="text-[12px] text-slate-400 text-center py-6 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">No documents yet.</div>
             )}
           </section>
         </div>

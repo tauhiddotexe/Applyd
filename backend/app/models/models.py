@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Integer, String, Text, func, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.session import Base
 import enum
@@ -19,8 +19,11 @@ class User(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    role: Mapped[str | None] = mapped_column(String(255), nullable=True)
     credits: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
     plan: Mapped[str] = mapped_column(String(32), default="free", nullable=False)
+    settings: Mapped[dict | None] = mapped_column(JSON, nullable=True, default=lambda: {"notifications": True})
 
     applications: Mapped[list["Application"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     payments: Mapped[list["ProcessedPayment"]] = relationship(back_populates="user")

@@ -166,6 +166,9 @@ export const analyticsAPI = {
 
 export const userAPI = {
   getProfile: () => request('/users/profile'),
+  updateProfile: (d) => request('/users/profile', { method: 'PUT', body: JSON.stringify(d) }),
+  deleteAccount: () => request('/users/account', { method: 'DELETE' }),
+  getNotifications: () => request('/reminders'), // Reusing reminders as notifications
 };
 
 export const paymentsAPI = {

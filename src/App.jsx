@@ -11,6 +11,9 @@ import Details from './pages/Details';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
 import ResumeTailor from './pages/ResumeTailor';
 import Autofill from './pages/Autofill';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Notifications from './pages/Notifications';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancelled from './pages/PaymentCancelled';
 
@@ -47,6 +50,9 @@ export default function App() {
             <Route path="/resume" element={<ResumeAnalyzer />} />
             <Route path="/resume-tailor" element={<ResumeTailor />} />
             <Route path="/autofill" element={<Autofill />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-cancelled" element={<PaymentCancelled />} />
           </Route>

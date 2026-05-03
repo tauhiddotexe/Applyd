@@ -51,3 +51,25 @@ def add_credits(db: Session, user_id: uuid.UUID, amount: int, plan_type: str, se
         logger.info(f"Added {amount} credits to user {user_id}. New total: {user.credits}. Plan: {plan_type}. Session: {session_id}")
         return True
     return False
+def update_user(db: Session, user_id: uuid.UUID, user_data: dict) -> User | None:
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return None
+    
+    for key, value in user_data.items():
+        if hasattr(user, key) and value is not None:
+            setattr(user, key, value)
+    
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def delete_user(db: Session, user_id: uuid.UUID) -> bool:
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return False
+    
+    db.delete(user)
+    db.commit()
+    return True

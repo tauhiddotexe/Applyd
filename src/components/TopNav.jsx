@@ -100,22 +100,28 @@ export default function TopNav() {
               type="text"
             />
           </div>
-          <button className="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors duration-200">
-            <span className="material-symbols-outlined">notifications</span>
-          </button>
-          <button className="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors duration-200">
-            <span className="material-symbols-outlined">settings</span>
-          </button>
+          <NavLink 
+            to="/notifications"
+            className={({ isActive }) => `p-2 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+          >
+            <span className="material-symbols-outlined" style={window.location.pathname === '/notifications' ? { fontVariationSettings: "'FILL' 1" } : {}}>notifications</span>
+          </NavLink>
+          <NavLink 
+            to="/settings"
+            className={({ isActive }) => `p-2 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+          >
+            <span className="material-symbols-outlined" style={window.location.pathname === '/settings' ? { fontVariationSettings: "'FILL' 1" } : {}}>settings</span>
+          </NavLink>
         </div>
         <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-slate-200 overflow-hidden">
+          <NavLink to="/profile" className="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-transparent hover:ring-blue-500/20 transition-all">
             <img
               className="h-full w-full object-cover"
               alt="User avatar"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp_ZeRpP-JXhtMeFoDEqKePr7N_DpijZwUpfY6FGf2FKSGM0wjV3RO61v6h7T-l5xte-S6hYKvaaWKd1q-A3pw83QJs_RWbXuDRx1Dlg7uLY_P3sAE-mTtScwEaeMVtrw5nBq3T_sxqtiIdoKZgeafkpyC_z0luYdV4zIrPYlrbko5q5DDTRjefSHaYUlFtnjVAqrDvjnUlaNq1s9HFyEN6gFpVFTHuuG8PY3F_6OttS6AIzFwZW7eSSWQptL5sV8YaQs4Ajni8sU"
             />
-          </div>
+          </NavLink>
           <button
             onClick={handleLogout}
             className="font-['Inter'] text-sm text-slate-500 hover:text-slate-900 transition-colors"
