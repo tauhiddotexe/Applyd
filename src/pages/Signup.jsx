@@ -35,222 +35,144 @@ export default function Signup() {
   };
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen flex">
-      {/* Branding Side — Restored Logo position while keeping high-density layout */}
-      <div className="hidden lg:flex lg:w-[48%] relative overflow-hidden flex-col justify-between p-12"
-        style={{
-          background: 'linear-gradient(135deg, rgba(0,74,198,0.08) 0%, rgba(70,72,212,0.12) 40%, rgba(0,74,198,0.06) 70%, rgba(70,72,212,0.04) 100%)',
-        }}
-      >
-        {/* Decorative blurs */}
-        <div className="absolute top-[-10%] left-[-5%] w-[450px] h-[450px] bg-primary opacity-[0.10] rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-secondary opacity-[0.10] rounded-full blur-[100px]"></div>
-
-        {/* Brand Anchor — Restored to top */}
+    <div className="min-h-screen flex bg-white dark:bg-slate-950">
+      {/* Visual Side */}
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-slate-900 flex-col justify-between p-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10 pointer-events-none" />
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+        
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary text-2xl">rocket_launch</span>
+          <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/10">
+            <span className="material-symbols-outlined text-white text-2xl">rocket_launch</span>
           </div>
-          <span className="font-h2 text-[20px] tracking-tight text-on-surface">Applyd</span>
+          <span className="text-2xl font-black text-white tracking-tight">Applyd</span>
         </div>
 
-        {/* Main Content — Centered vertically using flex-grow */}
-        <div className="relative z-10 max-w-md w-full flex-grow flex flex-col justify-center">
-          <h2 className="font-h1 text-[36px] text-on-surface leading-tight mb-5">
-            Your career journey<br />starts here.
+        <div className="relative z-10">
+          <h2 className="text-5xl font-black text-white leading-tight tracking-tight">
+            Start your <br />
+            <span className="text-primary">next chapter</span> <br />
+            today.
           </h2>
-          <p className="text-[15px] text-on-surface-variant leading-relaxed mb-10">
-            Create your free account and get instant access to AI-powered resume tools, analytics, and a streamlined application tracker.
+          <p className="text-lg text-slate-400 mt-6 leading-relaxed font-medium">
+            Create your account in seconds and unlock the full potential of AI-driven job hunting.
           </p>
-
-          <div className="space-y-5 mb-10">
+          
+          <div className="mt-12 space-y-6">
             {[
-              { icon: 'token', title: '3 free AI credits', desc: 'Analyze & tailor resumes instantly' },
-              { icon: 'security', title: 'Encrypted storage', desc: 'Your data stays private & secure' },
-              { icon: 'speed', title: 'Ready in 60 seconds', desc: 'Quick setup, no credit card needed' },
-            ].map((feature) => (
-              <div key={feature.title} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/8 border border-primary/10 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-primary text-[20px]">{feature.icon}</span>
+              { icon: 'verified_user', title: 'Secure & Private', desc: 'Your data is encrypted and never shared.' },
+              { icon: 'speed', title: 'Lightning Fast', desc: 'Setup your profile and start tracking in minutes.' },
+              { icon: 'auto_awesome', title: 'AI-Powered', desc: 'Get smart suggestions and scoring out of the box.' },
+            ].map((f) => (
+              <div key={f.title} className="flex gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/5">
+                  <span className="material-symbols-outlined text-primary text-[20px]">{f.icon}</span>
                 </div>
                 <div>
-                  <p className="text-[14px] text-on-surface font-semibold leading-tight">{feature.title}</p>
-                  <p className="text-[12px] text-on-surface-variant mt-0.5">{feature.desc}</p>
+                  <p className="text-white font-bold text-sm">{f.title}</p>
+                  <p className="text-slate-500 text-xs font-medium mt-0.5">{f.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-
-          <div className="flex items-center gap-3 p-4 bg-surface-container-lowest/60 border border-outline-variant/20 rounded-xl max-w-sm">
-            <div className="flex -space-x-2">
-              {['bg-primary/20', 'bg-secondary/20', 'bg-emerald-100'].map((bg, i) => (
-                <div key={i} className={`w-8 h-8 rounded-full ${bg} border-2 border-surface flex items-center justify-center`}>
-                  <span className="material-symbols-outlined text-[14px] text-on-surface-variant">person</span>
-                </div>
-              ))}
-            </div>
-            <div>
-              <p className="text-[12px] text-on-surface font-medium">Trusted by job seekers</p>
-              <p className="text-[10px] text-on-surface-variant">Join professionals tracking their career growth</p>
-            </div>
-          </div>
         </div>
 
-        {/* Footer */}
-        <p className="relative z-10 text-[11px] text-on-surface-variant">
-          © 2026 Applyd · Professional Career Tools
+        <p className="relative z-10 text-xs text-slate-500 font-bold uppercase tracking-widest">
+          © 2026 Applyd · Future of Hiring
         </p>
       </div>
 
       {/* Form Side */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-grow flex items-center justify-center px-6 py-12 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none lg:hidden">
-            <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-secondary opacity-[0.03] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary opacity-[0.03] rounded-full blur-3xl"></div>
+      <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-16">
+        <div className="w-full max-w-md space-y-10">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Create account</h1>
+            <p className="text-slate-500 font-medium">Join professionals tracking their career growth.</p>
           </div>
 
-          <div className="w-full max-w-[400px]">
-            {/* Brand - Mobile only */}
-            <div className="flex flex-col items-center mb-8 lg:hidden">
-              <div className="mb-3 flex items-center justify-center w-12 h-12 rounded-xl bg-primary-container text-on-primary-container">
-                <span className="material-symbols-outlined text-3xl">rocket_launch</span>
-              </div>
-              <h1 className="font-h1 text-h1 tracking-tighter text-on-surface">Applyd</h1>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">Start your career journey</p>
+          {error && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <span className="material-symbols-outlined text-[20px]">error</span>
+              <p className="text-sm font-bold">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Full Name</label>
+              <input 
+                name="name"
+                type="text" 
+                required 
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-[0px_4px_16px_rgba(0,0,0,0.04)] p-8">
-              <div className="mb-6">
-                <h2 className="font-h2 text-[22px] text-on-surface mb-1">Create your account</h2>
-                <p className="text-[13px] text-on-surface-variant">Join professionals tracking their career growth.</p>
-              </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Email Address</label>
+              <input 
+                name="email"
+                type="email" 
+                required 
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                placeholder="name@email.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
 
-              {error && (
-                <div className="mb-5 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-[13px] font-medium flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">error</span>
-                  {error}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Password</label>
+                <input 
+                  name="password"
+                  type="password" 
+                  required 
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Confirm</label>
+                <input 
+                  name="confirmPassword"
+                  type="password" 
+                  required 
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-5 mt-4 bg-primary text-white rounded-2xl font-black text-lg shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 transition-all flex items-center justify-center gap-3"
+            >
+              {loading ? (
+                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+              ) : (
+                <>
+                  Create Account
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </>
               )}
+            </button>
+          </form>
 
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div className="space-y-1.5">
-                  <label className="text-[11px] text-on-surface-variant uppercase tracking-wider font-bold" htmlFor="name">Full Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
-                      <span className="material-symbols-outlined text-[18px]">person</span>
-                    </div>
-                    <input
-                      className="w-full bg-surface border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                      id="name" name="name" type="text" placeholder="John Doe"
-                      value={formData.name} onChange={handleChange} required
-                      autoComplete="name"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] text-on-surface-variant uppercase tracking-wider font-bold" htmlFor="signup-email">Email Address</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
-                      <span className="material-symbols-outlined text-[18px]">mail</span>
-                    </div>
-                    <input
-                      className="w-full bg-surface border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                      id="signup-email" name="email" type="email" placeholder="name@company.com"
-                      value={formData.email} onChange={handleChange} required
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] text-on-surface-variant uppercase tracking-wider font-bold" htmlFor="signup-password">Password</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
-                      <span className="material-symbols-outlined text-[18px]">lock</span>
-                    </div>
-                    <input
-                      className="w-full bg-surface border border-outline-variant/50 rounded-lg py-3 pl-10 pr-10 text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                      id="signup-password" name="password" type={showPassword ? 'text' : 'password'}
-                      placeholder="Minimum 6 characters"
-                      value={formData.password} onChange={handleChange} required
-                      autoComplete="new-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-outline hover:text-on-surface transition-colors cursor-pointer"
-                      tabIndex={-1}
-                    >
-                      <span className="material-symbols-outlined text-[18px]">{showPassword ? 'visibility_off' : 'visibility'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] text-on-surface-variant uppercase tracking-wider font-bold" htmlFor="confirm-password">Confirm Password</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
-                      <span className="material-symbols-outlined text-[18px]">lock</span>
-                    </div>
-                    <input
-                      className="w-full bg-surface border border-outline-variant/50 rounded-lg py-3 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                      id="confirm-password" name="confirmPassword" type={showPassword ? 'text' : 'password'}
-                      placeholder="Re-enter password"
-                      value={formData.confirmPassword} onChange={handleChange} required
-                      autoComplete="new-password"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  className="w-full bg-primary text-on-primary py-3 px-6 rounded-lg font-semibold text-[14px] hover:opacity-90 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
-                  type="submit" disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                      Creating account...
-                    </>
-                  ) : (
-                    <>
-                      Create Account
-                      <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                    </>
-                  )}
-                </button>
-              </form>
-
-              <div className="relative my-5">
-                <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-outline-variant/30"></span></div>
-                <div className="relative flex justify-center"><span className="bg-surface-container-lowest px-3 text-[10px] text-outline uppercase tracking-wider">Or continue with</span></div>
-              </div>
-
-              <button className="w-full bg-surface border border-outline-variant/40 text-on-surface py-3 px-6 rounded-lg text-[14px] flex items-center justify-center gap-3 hover:bg-surface-container-low transition-colors cursor-pointer" type="button">
-                <img alt="Google Logo" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRIfAk060UN_l_mmncB1IT1yTxpYtKdgJSDKwC_FpGbs5tGia41zK4K_8he1NaeUM5udB7X5HuuIUWgT0OMPS8tRwqS_WUaFykoahtAqXC7ybjzyHCJOKCQGvrbZncTpl4DLO9v4Xa7xSWZjPgLxaXtmtbHZfRoMHJ0bEN6x4mWSyaB-UecR8hWUsDwK6Z0SkRy2owh6PjHvUUMO5kUqgqpOP8Tj1QXWAGGFMNd1h18u8fj4hh8Whar5VvCKziQS46D3ftMvMAmbc" />
-                Continue with Google
-              </button>
-            </div>
-
-            <p className="mt-6 text-center text-[13px] text-on-surface-variant">
-              Already have an account? <Link className="text-primary font-semibold hover:underline" to="/login">Sign in</Link>
-            </p>
-          </div>
-        </main>
-
-        <footer className="py-4 px-6 flex flex-col md:flex-row items-center justify-between border-t border-outline-variant/20 gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[14px] text-outline">verified</span>
-            <span className="text-[10px] text-outline uppercase tracking-wider font-medium">Secure &amp; Encrypted</span>
-          </div>
-          <nav className="flex gap-6">
-            <a className="text-[10px] text-outline uppercase tracking-wider hover:text-on-surface transition-colors" href="#">Privacy</a>
-            <a className="text-[10px] text-outline uppercase tracking-wider hover:text-on-surface transition-colors" href="#">Terms</a>
-            <a className="text-[10px] text-outline uppercase tracking-wider hover:text-on-surface transition-colors" href="#">Support</a>
-          </nav>
-        </footer>
+          <p className="text-center text-slate-500 font-medium">
+            Already have an account? <Link to="/login" className="text-primary font-black hover:underline">Sign in</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
 }
+

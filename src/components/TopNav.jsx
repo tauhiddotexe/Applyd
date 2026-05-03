@@ -12,8 +12,7 @@ const navItems = [
 ];
 
 export default function TopNav() {
-  const { user, loading, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [profile, setProfile] = useState(null);
   const [showPricing, setShowPricing] = useState(false);
 
@@ -32,102 +31,63 @@ export default function TopNav() {
     }
   };
 
-  const handleLogout = async () => {
-    if (logout) {
-      await logout();
-      navigate('/login');
-    }
-  };
-
   if (loading || !user) {
     return (
-      <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 shadow-sm dark:shadow-none flex items-center justify-between w-full h-16 px-10">
-        <div className="flex items-center gap-6">
-          <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">Applyd</span>
-        </div>
-        <div className="flex items-center">
-          <span className="material-symbols-outlined text-primary animate-spin">progress_activity</span>
-        </div>
+      <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 h-16 px-6 flex items-center justify-between">
+        <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">Applyd</span>
+        <span className="material-symbols-outlined text-primary animate-spin">progress_activity</span>
       </nav>
     );
   }
 
   return (
-    <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 shadow-sm dark:shadow-none flex items-center justify-between w-full h-16 px-10">
-      <div className="flex items-center gap-6">
-        <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">Applyd</span>
-        <div className="hidden md:flex gap-6 items-center">
-          {navItems.map(({ path, label }) => (
-            <NavLink
-              key={path}
-              to={path}
-              className={({ isActive }) =>
-                `font-['Inter'] text-sm tracking-tight transition-colors duration-200 ${
-                  isActive
-                    ? 'text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-600 py-5'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-                }`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
+    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-40 fixed top-0 left-0 right-0 h-16 px-6 flex items-center justify-between">
+      <div className="flex items-center gap-8 flex-1">
+        <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter hidden lg:block w-56">Applyd</span>
+        
+        {/* Search - Minimal and clean */}
+        <div className="relative max-w-md w-full hidden md:block">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
+          <input
+            className="w-full pl-10 pr-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-400"
+            placeholder="Search anything..."
+            type="text"
+          />
         </div>
       </div>
-      <div className="flex items-center gap-6">
-        {/* Credit Display & Upgrade Button */}
-        {user && profile && (
-          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full">
-              <span className="material-symbols-outlined text-primary text-[18px]">token</span>
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{profile.credits} Credits</span>
-            </div>
-            <button 
-              onClick={() => setShowPricing(true)}
-              className="text-xs font-bold text-primary hover:bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 transition-all uppercase tracking-wider"
-            >
-              Upgrade
-            </button>
+
+      <div className="flex items-center gap-4">
+        {/* Credits */}
+        {profile && (
+          <div 
+            onClick={() => setShowPricing(true)}
+            className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-full cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all group"
+          >
+            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-[18px] group-hover:rotate-12 transition-transform">token</span>
+            <span className="text-xs font-bold text-blue-700 dark:text-blue-300">{profile.credits} Credits</span>
           </div>
         )}
 
-        <div className="flex items-center gap-3">
-          <div className="relative hidden lg:block">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-sm">search</span>
-            <input
-              className="pl-10 pr-4 py-1.5 border border-slate-200 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all w-64 bg-slate-50"
-              placeholder="Search applications..."
-              type="text"
-            />
-          </div>
+        <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 ml-2 pl-4">
           <NavLink 
             to="/notifications"
-            className={({ isActive }) => `p-2 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+            className={({ isActive }) => `p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900'}`}
           >
-            <span className="material-symbols-outlined" style={window.location.pathname === '/notifications' ? { fontVariationSettings: "'FILL' 1" } : {}}>notifications</span>
+            <span className="material-symbols-outlined text-[22px]">notifications</span>
           </NavLink>
+          
           <NavLink 
-            to="/settings"
-            className={({ isActive }) => `p-2 rounded-full transition-colors duration-200 ${isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+            to="/profile"
+            className="ml-2 flex items-center gap-3 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group"
           >
-            <span className="material-symbols-outlined" style={window.location.pathname === '/settings' ? { fontVariationSettings: "'FILL' 1" } : {}}>settings</span>
+            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-700 group-hover:border-primary/30 transition-all">
+              <img
+                className="h-full w-full object-cover"
+                alt="Avatar"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp_ZeRpP-JXhtMeFoDEqKePr7N_DpijZwUpfY6FGf2FKSGM0wjV3RO61v6h7T-l5xte-S6hYKvaaWKd1q-A3pw83QJs_RWbXuDRx1Dlg7uLY_P3sAE-mTtScwEaeMVtrw5nBq3T_sxqtiIdoKZgeafkpyC_z0luYdV4zIrPYlrbko5q5DDTRjefSHaYUlFtnjVAqrDvjnUlaNq1s9HFyEN6gFpVFTHuuG8PY3F_6OttS6AIzFwZW7eSSWQptL5sV8YaQs4Ajni8sU"
+              />
+            </div>
           </NavLink>
-        </div>
-        <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
-        <div className="flex items-center gap-3">
-          <NavLink to="/profile" className="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-transparent hover:ring-blue-500/20 transition-all">
-            <img
-              className="h-full w-full object-cover"
-              alt="User avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp_ZeRpP-JXhtMeFoDEqKePr7N_DpijZwUpfY6FGf2FKSGM0wjV3RO61v6h7T-l5xte-S6hYKvaaWKd1q-A3pw83QJs_RWbXuDRx1Dlg7uLY_P3sAE-mTtScwEaeMVtrw5nBq3T_sxqtiIdoKZgeafkpyC_z0luYdV4zIrPYlrbko5q5DDTRjefSHaYUlFtnjVAqrDvjnUlaNq1s9HFyEN6gFpVFTHuuG8PY3F_6OttS6AIzFwZW7eSSWQptL5sV8YaQs4Ajni8sU"
-            />
-          </NavLink>
-          <button
-            onClick={handleLogout}
-            className="font-['Inter'] text-sm text-slate-500 hover:text-slate-900 transition-colors"
-          >
-            Logout
-          </button>
         </div>
       </div>
 
@@ -138,3 +98,4 @@ export default function TopNav() {
     </nav>
   );
 }
+

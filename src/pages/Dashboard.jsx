@@ -62,9 +62,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [remindersLoading, setRemindersLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [remindersError, setRemindersError] = useState(null);
-  const [credits, setCredits] = useState(null);
-  const [creditsLoading, setCreditsLoading] = useState(true);
 
   const userId = user?.id;
 
@@ -73,53 +70,23 @@ export default function Dashboard() {
     let cancelled = false;
 
     const loadData = async () => {
-      await new Promise(r => setTimeout(r, 300)); // allow auth settle
-
-      // Dashboard first
       setLoading(true);
-      setError(null);
       try {
-        const data = await analyticsAPI.dashboard();
-        if (!cancelled) setDashboard(data || EMPTY_DASHBOARD);
-      } catch (err) {
-        if (!cancelled) { setDashboard(EMPTY_DASHBOARD); setError(err.message || 'Failed to load dashboard'); }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-
-      if (cancelled) return;
-
-      // Then reminders
-      setRemindersLoading(true);
-      setRemindersError(null);
-      try {
-        const data = await analyticsAPI.reminders();
-        if (cancelled) return;
-        const list = Array.isArray(data) ? data : [];
-        setReminders(list);
-        if (typeof window !== 'undefined' && 'Notification' in window && list.some((item) => reminderTone(item.followUp) === 'overdue')) {
-          if (Notification.permission === 'default') Notification.requestPermission();
-          else if (Notification.permission === 'granted') {
-            new Notification('Applyd follow-ups due', {
-              body: `${list.filter((item) => reminderTone(item.followUp) === 'overdue').length} overdue follow-up(s)`,
-            });
-          }
+        const [dashData, remData] = await Promise.all([
+          analyticsAPI.dashboard(),
+          analyticsAPI.reminders()
+        ]);
+        if (!cancelled) {
+          setDashboard(dashData || EMPTY_DASHBOARD);
+          setReminders(Array.isArray(remData) ? remData : []);
         }
       } catch (err) {
-        if (!cancelled) { setReminders([]); setRemindersError(err.message || 'Failed to load reminders'); }
+        if (!cancelled) setError('Failed to load dashboard data');
       } finally {
-        if (!cancelled) setRemindersLoading(false);
-      }
-
-      // Credits
-      setCreditsLoading(true);
-      try {
-        const profile = await userAPI.getProfile();
-        if (!cancelled) setCredits(profile?.credits ?? null);
-      } catch {
-        if (!cancelled) setCredits(null);
-      } finally {
-        if (!cancelled) setCreditsLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setRemindersLoading(false);
+        }
       }
     };
 
@@ -127,254 +94,168 @@ export default function Dashboard() {
     return () => { cancelled = true; };
   }, [authLoading, userId]);
 
-  // KPI calculations
   const total = dashboard.total_applications;
-  const interviews = dashboard.status_counts.interviewing || 0;
+  const interviewing = dashboard.status_counts.interviewing || 0;
   const offers = dashboard.status_counts.offer || 0;
-  const conversionPct = total > 0 ? Math.round(((interviews + offers) / total) * 100) : 0;
+  const rejected = dashboard.status_counts.rejected || 0;
 
-  const statCards = [
-    { label: 'Total Applications', value: total, icon: 'work', color: 'text-primary', bg: 'bg-primary/10', sub: null },
-    { label: 'Interviews', value: interviews, icon: 'record_voice_over', color: 'text-secondary', bg: 'bg-secondary/10', sub: null },
-    { label: 'Offers', value: offers, icon: 'emoji_events', color: 'text-emerald-600', bg: 'bg-emerald-50', sub: null },
-    { label: 'Conversion', value: `${conversionPct}%`, icon: 'trending_up', color: conversionPct >= 20 ? 'text-emerald-600' : 'text-amber-600', bg: conversionPct >= 20 ? 'bg-emerald-50' : 'bg-amber-50', sub: 'Interview + Offer rate' },
+  const stats = [
+    { label: 'Applications', value: total, icon: 'layers', color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Interviews', value: interviewing, icon: 'forum', color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Offers', value: offers, icon: 'verified', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Rejections', value: rejected, icon: 'cancel', color: 'text-slate-600', bg: 'bg-slate-50' },
   ];
 
-  const reminderCards = useMemo(() => reminders.map((item) => ({ ...item, tone: reminderTone(item.followUp) })), [reminders]);
-  const overdueCount = reminderCards.filter(r => r.tone === 'overdue').length;
-  const upcomingCount = reminderCards.filter(r => r.tone === 'upcoming').length;
-
-  const handleUpgrade = async (planType) => {
-    try {
-      const { url } = await paymentsAPI.createCheckoutSession(planType);
-      window.location.href = url;
-    } catch (err) {
-      console.error('Checkout error:', err);
-    }
-  };
-
   return (
-    <div className="p-4 md:p-8 max-w-max_width mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 gap-3">
+    <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
+      {/* Welcome Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="font-h1 text-h1 text-on-surface mb-1">Dashboard</h2>
-          <p className="font-body-sm text-on-surface-variant">Track your application pipeline and stay ahead.</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Welcome back, {user?.name?.split(' ')[0] || 'User'}
+          </h1>
+          <p className="text-slate-500 mt-1 font-medium">Here's what's happening with your job search today.</p>
         </div>
+        <button
+          onClick={() => nav('/applications/new')}
+          className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+        >
+          <span className="material-symbols-outlined">add_circle</span>
+          Add Application
+        </button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        {statCards.map(({ label, value, icon, color, bg, sub }) => (
-          <div key={label} className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">{label}</span>
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
-                <span className={`material-symbols-outlined text-[18px] ${color}`}>{icon}</span>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat) => (
+          <div key={stat.label} className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110`}>
+                <span className={`material-symbols-outlined ${stat.color} text-[24px]`}>{stat.icon}</span>
               </div>
+              <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">{stat.label}</span>
             </div>
-            <p className="font-h1 text-[26px] text-on-surface leading-none">{value}</p>
-            {sub && <p className="text-[10px] text-on-surface-variant mt-1">{sub}</p>}
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-3xl font-black text-slate-900 dark:text-white">{stat.value}</h3>
+              {stat.label === 'Applications' && <span className="text-slate-400 text-xs font-bold">Total</span>}
+            </div>
           </div>
         ))}
       </div>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 flex items-center gap-3">
-          <span className="material-symbols-outlined text-red-500">error</span>
-          <span className="text-red-700 text-body-sm">{error}</span>
-        </div>
-      )}
-
-      <div className="grid grid-cols-12 gap-4">
-        {/* Left Column: Quick Actions + Activity */}
-        <div className="col-span-12 lg:col-span-8 space-y-4">
-          {/* Quick Actions Card */}
-          <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-secondary text-[20px]">bolt</span>
-              <span className="font-h3 text-on-surface text-[14px]">Quick Actions</span>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {[
-                { label: 'Add Application', icon: 'add_circle', to: '/applications/new', accent: 'bg-primary text-on-primary' },
-                { label: 'Resume Analyzer', icon: 'analytics', to: '/resume-analyzer', accent: 'bg-secondary/10 text-secondary' },
-                { label: 'Resume Tailor', icon: 'auto_awesome', to: '/resume-tailor', accent: 'bg-tertiary-fixed text-on-tertiary-fixed-variant' },
-                { label: 'View All Apps', icon: 'list_alt', to: '/applications', accent: 'bg-surface-container text-on-surface' },
-              ].map((action) => (
-                <button
-                  key={action.label}
-                  onClick={() => nav(action.to)}
-                  className={`flex items-center gap-2.5 p-3 rounded-lg border border-outline-variant/20 hover:shadow-md transition-all cursor-pointer group ${action.label === 'Add Application' ? action.accent : 'bg-surface-container-lowest'}`}
-                >
-                  <span className={`material-symbols-outlined text-[20px] ${action.label === 'Add Application' ? '' : action.accent.split(' ').slice(1).join(' ')}`}>{action.icon}</span>
-                  <span className={`font-h3 text-[12px] ${action.label === 'Add Application' ? 'text-on-primary' : 'text-on-surface'}`}>{action.label}</span>
-                </button>
-              ))}
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Recent Activity</h2>
+            <button onClick={() => nav('/applications')} className="text-sm font-bold text-primary hover:underline">View All</button>
           </div>
-
-          {/* Recent Activity */}
-          <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[20px]">history</span>
-                <span className="font-h3 text-on-surface text-[14px]">Recent Activity</span>
+          
+          <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+            {loading ? (
+              <div className="p-20 flex justify-center">
+                <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
               </div>
-              <button onClick={() => nav('/applications')} className="text-primary text-[12px] font-bold hover:underline cursor-pointer">View All</button>
-            </div>
-            <div className="space-y-1">
-              {loading && (
-                <div className="flex items-center justify-center py-10">
-                  <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
+            ) : dashboard.recent_applications.length === 0 ? (
+              <div className="p-20 text-center space-y-4">
+                <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto">
+                  <span className="material-symbols-outlined text-slate-300 text-3xl">inbox</span>
                 </div>
-              )}
-              {!loading && dashboard.recent_applications.length === 0 && (
-                <div className="text-center py-10">
-                  <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-3">
-                    <span className="material-symbols-outlined text-outline text-2xl">inbox</span>
-                  </div>
-                  <p className="font-h3 text-on-surface mb-1">No applications yet</p>
-                  <p className="text-body-sm text-on-surface-variant mb-3">Start tracking your job search journey.</p>
-                  <button
-                    onClick={() => nav('/applications/new')}
-                    className="px-4 py-2 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    Add your first application
-                  </button>
-                </div>
-              )}
-              {!loading && dashboard.recent_applications.map((app) => (
-                <div key={app.id} onClick={() => nav(`/applications/${app.id}`)} className="flex items-center justify-between p-3 rounded-lg hover:bg-surface transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20 group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 bg-surface-container flex items-center justify-center rounded-lg group-hover:bg-primary/10 transition-colors">
-                      <span className="material-symbols-outlined text-outline text-[18px]">apartment</span>
-                    </div>
-                    <div>
-                      <h4 className="font-h3 text-[13px] text-on-surface leading-tight">{app.company}</h4>
-                      <p className="text-[11px] text-outline">{app.role}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[11px] text-on-surface-variant hidden md:block">{relativeTime(app.created_at)}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${STATUS_META[app.status]?.sc || 'bg-slate-100 text-slate-700'}`}>{STATUS_META[app.status]?.label || app.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Sidebar: Credits + Follow-ups */}
-        <div className="col-span-12 lg:col-span-4 space-y-4">
-          {/* Credits Widget — Moved to top for visibility */}
-          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/15 rounded-xl p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-primary text-[20px]">token</span>
-              <span className="font-h3 text-on-surface text-[14px]">AI Credits</span>
-            </div>
-            {creditsLoading ? (
-              <div className="h-8 w-20 bg-surface-container animate-pulse rounded-lg"></div>
-            ) : credits !== null ? (
-              <>
-                <div className="flex items-baseline gap-2 mb-3">
-                  <span className="font-h1 text-[32px] text-primary leading-none">{credits}</span>
-                  <span className="text-[11px] text-on-surface-variant">remaining</span>
-                </div>
-                <div className="w-full bg-surface-container rounded-full h-1.5 mb-3">
-                  <div
-                    className="bg-primary rounded-full h-1.5 transition-all"
-                    style={{ width: `${Math.min((credits / 10) * 100, 100)}%` }}
-                  ></div>
-                </div>
-                {credits <= 2 && (
-                  <button
-                    onClick={() => handleUpgrade('pro')}
-                    className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-[12px] font-bold hover:opacity-90 transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">rocket_launch</span>
-                    Upgrade Plan
-                  </button>
-                )}
-              </>
+                <p className="text-slate-500 font-medium">No applications yet. Time to apply!</p>
+              </div>
             ) : (
-              <p className="text-[12px] text-on-surface-variant">Unable to load credits.</p>
+              <div className="divide-y divide-slate-50 dark:divide-slate-800">
+                {dashboard.recent_applications.map((app) => (
+                  <div 
+                    key={app.id} 
+                    onClick={() => nav(`/applications/${app.id}`)}
+                    className="p-5 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors uppercase">
+                        {app.company.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-900 dark:text-white leading-tight">{app.company}</h4>
+                        <p className="text-sm text-slate-500 font-medium">{app.role}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <div className="hidden md:block text-right">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{relativeTime(app.created_at)}</p>
+                      </div>
+                      <span className={`px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider ${STATUS_META[app.status]?.sc || 'bg-slate-100 text-slate-700'}`}>
+                        {STATUS_META[app.status]?.label || app.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
+        </div>
 
+        {/* Sidebar content: Follow-ups & Quick Links */}
+        <div className="space-y-10">
           {/* Follow-ups */}
-          <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-amber-600">notifications_active</span>
-                <span className="font-h3 text-on-surface text-[14px]">Follow-ups</span>
-              </div>
-              {(overdueCount > 0 || upcomingCount > 0) && (
-                <div className="flex gap-1.5">
-                  {overdueCount > 0 && (
-                    <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-[10px] font-bold">{overdueCount} overdue</span>
-                  )}
-                  {upcomingCount > 0 && (
-                    <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">{upcomingCount} soon</span>
-                  )}
+          <div className="space-y-6">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight px-2">Follow-ups</h2>
+            <div className="space-y-3">
+              {remindersLoading ? (
+                <div className="p-10 flex justify-center bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800">
+                  <span className="material-symbols-outlined text-primary animate-spin text-2xl">progress_activity</span>
                 </div>
+              ) : reminders.length === 0 ? (
+                <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800">
+                  <span className="material-symbols-outlined text-slate-300 text-3xl mb-2">event_available</span>
+                  <p className="text-slate-400 text-sm font-medium">All caught up!</p>
+                </div>
+              ) : (
+                reminders.map((item) => (
+                  <div 
+                    key={item.id}
+                    onClick={() => nav(`/applications/${item.id}`)}
+                    className="p-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer transition-all group"
+                  >
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${reminderTone(item.followUp) === 'overdue' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
+                      <span className="material-symbols-outlined text-[20px]">{reminderTone(item.followUp) === 'overdue' ? 'priority_high' : 'event'}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-slate-900 dark:text-white truncate text-sm">{item.company}</p>
+                      <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">{formatDate(item.followUp)}</p>
+                    </div>
+                    <span className="material-symbols-outlined ml-auto text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+                  </div>
+                ))
               )}
             </div>
+          </div>
 
-            {remindersError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-2 mb-3 text-red-700 text-body-sm">{remindersError}</div>
-            )}
-            <div className="space-y-2">
-              {remindersLoading && (
-                <div className="flex items-center justify-center py-8">
-                  <span className="material-symbols-outlined text-primary animate-spin text-3xl">progress_activity</span>
-                </div>
-              )}
-              {!remindersLoading && reminderCards.length === 0 && (
-                <div className="text-center py-5">
-                  <span className="material-symbols-outlined text-outline text-2xl mb-2 block">event_available</span>
-                  <p className="text-on-surface-variant text-[12px]">No follow-ups scheduled. You're all caught up!</p>
-                </div>
-              )}
-              {!remindersLoading && reminderCards.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => nav(`/applications/${item.id}`)}
-                  className={`flex gap-3 p-3 rounded-lg border cursor-pointer transition-all hover:shadow-sm ${
-                    item.tone === 'overdue'
-                      ? 'bg-red-50 border-red-200 hover:border-red-300'
-                      : item.tone === 'upcoming'
-                        ? 'bg-amber-50 border-amber-200 hover:border-amber-300'
-                        : 'bg-surface/50 border-outline-variant/20 hover:border-outline-variant/40'
-                  }`}
+          {/* Tools / Quick Links */}
+          <div className="bg-slate-900 dark:bg-slate-950 p-8 rounded-[40px] text-white shadow-2xl shadow-slate-900/20 space-y-6">
+            <div>
+              <h3 className="text-lg font-black tracking-tight">AI Power Tools</h3>
+              <p className="text-slate-400 text-sm font-medium mt-1">Supercharge your applications.</p>
+            </div>
+            
+            <div className="space-y-3">
+              {[
+                { label: 'Resume Matcher', icon: 'psychology', to: '/resume', desc: 'Check ATS score' },
+                { label: 'Resume Tailor', icon: 'auto_awesome', to: '/resume-tailor', desc: 'AI-powered editing' },
+              ].map((tool) => (
+                <button
+                  key={tool.label}
+                  onClick={() => nav(tool.to)}
+                  className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-2xl flex items-center gap-4 transition-all group text-left"
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                    item.tone === 'overdue'
-                      ? 'bg-red-100'
-                      : item.tone === 'upcoming'
-                        ? 'bg-amber-100'
-                        : 'bg-primary/10'
-                  }`}>
-                    <span className={`material-symbols-outlined text-[18px] ${
-                      item.tone === 'overdue'
-                        ? 'text-red-600'
-                        : item.tone === 'upcoming'
-                          ? 'text-amber-700'
-                          : 'text-primary'
-                    }`}>{item.tone === 'overdue' ? 'warning' : 'event'}</span>
+                  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <span className="material-symbols-outlined text-primary text-[20px]">{tool.icon}</span>
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-h3 text-[13px] leading-tight text-on-surface truncate">{item.company}</p>
-                    <p className="text-[11px] text-on-surface-variant truncate">{item.role}</p>
-                    <p className={`text-[11px] mt-0.5 font-medium ${
-                      item.tone === 'overdue'
-                        ? 'text-red-700'
-                        : item.tone === 'upcoming'
-                          ? 'text-amber-700'
-                          : 'text-on-surface-variant'
-                    }`}>{formatDate(item.followUp)}</p>
+                  <div>
+                    <p className="font-bold text-sm">{tool.label}</p>
+                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">{tool.desc}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -383,3 +264,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
