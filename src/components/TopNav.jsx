@@ -2,7 +2,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import PricingModal from './PricingModal';
-import { notificationsAPI } from '../services/api';
+import { notificationsAPI, applicationsAPI } from '../services/api';
 
 const formatRelativeTime = (date) => {
   const diff = Math.floor((new Date() - new Date(date)) / 1000);
@@ -17,6 +17,8 @@ const navItems = [
   { path: '/applications', label: 'Applications' },
   { path: '/analytics', label: 'Analytics' },
   { path: '/resume', label: 'Resume Match' },
+  { path: '/profile', label: 'Profile' },
+  { path: '/settings', label: 'Settings' },
 ];
 
 export default function TopNav() {
@@ -25,7 +27,20 @@ export default function TopNav() {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
+  const searchInputRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState({ apps: [], pages: [] });
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [appsCache, setAppsCache] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const flatResults = [...searchResults.pages, ...searchResults.apps];
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
@@ -40,10 +55,97 @@ export default function TopNav() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowNotifications(false);
       }
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+      }
     };
+    
+    const handleGlobalKeys = (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      if (e.key === 'Escape') {
+        setShowSearchResults(false);
+        searchInputRef.current?.blur();
+      }
+      
+      if (showSearchResults) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setSelectedIndex(prev => (prev < flatResults.length - 1 ? prev + 1 : prev));
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setSelectedIndex(prev => (prev > 0 ? prev - 1 : prev));
+        }
+        if (e.key === 'Enter' && selectedIndex >= 0) {
+          e.preventDefault();
+          const item = flatResults[selectedIndex];
+          if (item) {
+            navigate(item.type === 'page' ? item.path : `/applications/${item.id}`);
+            setShowSearchResults(false);
+            setSearchQuery('');
+          }
+        }
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleGlobalKeys);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleGlobalKeys);
+    };
+  }, [showSearchResults, selectedIndex, flatResults]);
+
+  // Debounced Search Logic
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults({ apps: [], pages: [] });
+      setShowSearchResults(false);
+      setSelectedIndex(-1);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const query = searchQuery.toLowerCase();
+      
+      // Filter Pages
+      const filteredPages = navItems.filter(p => 
+        p.label.toLowerCase().includes(query)
+      ).map(p => ({ ...p, type: 'page' }));
+
+      // Filter Apps
+      const filteredApps = appsCache.filter(a => 
+        a.company.toLowerCase().includes(query) || 
+        a.role.toLowerCase().includes(query)
+      ).slice(0, 5).map(a => ({ ...a, type: 'app' }));
+
+      setSearchResults({
+        apps: filteredApps,
+        pages: filteredPages
+      });
+      setShowSearchResults(true);
+      setSelectedIndex(0);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, appsCache]);
+
+  const handleSearchFocus = async () => {
+    if (appsCache.length === 0) {
+      setIsSearching(true);
+      try {
+        const data = await applicationsAPI.list();
+        setAppsCache(data);
+      } catch (err) {
+        console.error('Failed to fetch apps for search:', err);
+      } finally {
+        setIsSearching(false);
+      }
+    }
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -84,16 +186,99 @@ export default function TopNav() {
   return (
     <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10 z-40 fixed top-0 left-0 right-0 h-16 px-6 flex items-center justify-between">
       <div className="flex items-center gap-8 flex-1">
-        <span className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tighter hidden lg:block w-56">Applyd</span>
+        <NavLink to="/dashboard" className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tighter hidden lg:block w-56 hover:text-primary transition-colors">Applyd</NavLink>
         
-        {/* Search - Minimal and clean */}
-        <div className="relative max-w-md w-full hidden md:block">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
-          <input
-            className="w-full pl-10 pr-4 py-2 bg-slate-100/50 dark:bg-white/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-400 dark:text-slate-200"
-            placeholder="Search anything..."
-            type="text"
-          />
+        {/* Search - Command Palette Style */}
+        <div className="relative max-w-md w-full hidden md:block" ref={searchContainerRef}>
+          <div className="relative group">
+            <span className={`absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[20px] transition-colors ${showSearchResults ? 'text-primary' : 'text-slate-400 group-focus-within:text-primary'}`}>
+              {isSearching ? 'progress_activity' : 'search'}
+            </span>
+            <input
+              ref={searchInputRef}
+              className="w-full pl-10 pr-12 py-2 bg-slate-100/50 dark:bg-white/5 border border-transparent focus:border-primary/20 rounded-xl text-sm focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400 dark:text-slate-200 font-medium"
+              placeholder="Quick search... (Press '/')"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleSearchFocus}
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-1.5 font-mono text-[10px] font-medium text-slate-400 opacity-100">
+                /
+              </kbd>
+            </div>
+          </div>
+
+          {/* Search Dropdown */}
+          {showSearchResults && (searchQuery.trim().length > 0) && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-2 max-h-[480px] overflow-y-auto no-scrollbar">
+                {/* Pages Group */}
+                {searchResults.pages.length > 0 && (
+                  <div className="mb-2">
+                    <div className="px-3 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Navigation</div>
+                    {searchResults.pages.map((page, idx) => {
+                      const isSelected = idx === selectedIndex;
+                      return (
+                        <button
+                          key={page.path}
+                          onClick={() => {
+                            navigate(page.path);
+                            setShowSearchResults(false);
+                            setSearchQuery('');
+                          }}
+                          onMouseEnter={() => setSelectedIndex(idx)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left group transition-all ${isSelected ? 'bg-primary/10 dark:bg-primary/20' : 'hover:bg-slate-50 dark:hover:bg-white/5'}`}
+                        >
+                          <span className={`material-symbols-outlined text-[20px] transition-colors ${isSelected ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>explore</span>
+                          <span className={`text-sm font-bold transition-colors ${isSelected ? 'text-primary' : 'text-slate-700 dark:text-slate-200'}`}>{page.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Applications Group */}
+                {searchResults.apps.length > 0 && (
+                  <div>
+                    <div className="px-3 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Applications</div>
+                    {searchResults.apps.map((app, idx) => {
+                      const globalIdx = idx + searchResults.pages.length;
+                      const isSelected = globalIdx === selectedIndex;
+                      return (
+                        <button
+                          key={app.id}
+                          onClick={() => {
+                            navigate(`/applications/${app.id}`);
+                            setShowSearchResults(false);
+                            setSearchQuery('');
+                          }}
+                          onMouseEnter={() => setSelectedIndex(globalIdx)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left group transition-all ${isSelected ? 'bg-primary/10 dark:bg-primary/20' : 'hover:bg-slate-50 dark:hover:bg-white/5'}`}
+                        >
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs shrink-0 transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>
+                            {app.company[0]}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className={`text-sm font-bold truncate transition-colors ${isSelected ? 'text-primary' : 'text-slate-900 dark:text-slate-50'}`}>{app.role}</div>
+                            <div className={`text-[11px] font-medium truncate transition-colors ${isSelected ? 'text-primary/70' : 'text-slate-500 dark:text-slate-400'}`}>{app.company}</div>
+                          </div>
+                          <span className={`material-symbols-outlined text-[18px] transition-all ${isSelected ? 'text-primary translate-x-0.5 opacity-100' : 'text-slate-300 opacity-0 group-hover:opacity-100'}`}>arrow_forward</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {searchResults.pages.length === 0 && searchResults.apps.length === 0 && (
+                  <div className="p-8 text-center">
+                    <p className="text-sm font-medium text-slate-400">No results for "{searchQuery}"</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
