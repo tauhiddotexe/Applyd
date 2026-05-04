@@ -4,6 +4,33 @@
   "graph": {},
   "nodes": [
     {
+      "label": "postcss.config.js",
+      "file_type": "code",
+      "source_file": "postcss.config.js",
+      "source_location": "L1",
+      "id": "postcss_config_js",
+      "community": 32,
+      "norm_label": "postcss.config.js"
+    },
+    {
+      "label": "tailwind.config.js",
+      "file_type": "code",
+      "source_file": "tailwind.config.js",
+      "source_location": "L1",
+      "id": "tailwind_config_js",
+      "community": 33,
+      "norm_label": "tailwind.config.js"
+    },
+    {
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "vite.config.js",
+      "source_location": "L1",
+      "id": "vite_config_js",
+      "community": 34,
+      "norm_label": "vite.config.js"
+    },
+    {
       "label": "cleanup.py",
       "file_type": "code",
       "source_file": "backend\\cleanup.py",
@@ -54,7 +81,7 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L1",
       "id": "backend_alembic_env_py",
-      "community": 12,
+      "community": 13,
       "norm_label": "env.py"
     },
     {
@@ -63,7 +90,7 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L27",
       "id": "alembic_env_run_migrations_offline",
-      "community": 12,
+      "community": 13,
       "norm_label": "run_migrations_offline()"
     },
     {
@@ -72,7 +99,7 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L34",
       "id": "alembic_env_do_run_migrations",
-      "community": 12,
+      "community": 13,
       "norm_label": "do_run_migrations()"
     },
     {
@@ -81,7 +108,7 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L40",
       "id": "alembic_env_run_migrations_online",
-      "community": 12,
+      "community": 13,
       "norm_label": "run_migrations_online()"
     },
     {
@@ -90,35 +117,53 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L1",
       "id": "backend_app_main_py",
-      "community": 13,
+      "community": 11,
       "norm_label": "main.py"
+    },
+    {
+      "label": "run_migrations()",
+      "file_type": "code",
+      "source_file": "backend\\app\\main.py",
+      "source_location": "L17",
+      "id": "app_main_run_migrations",
+      "community": 11,
+      "norm_label": "run_migrations()"
     },
     {
       "label": "lifespan()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L18",
+      "source_location": "L89",
       "id": "app_main_lifespan",
-      "community": 13,
+      "community": 11,
       "norm_label": "lifespan()"
     },
     {
       "label": "global_exception_handler()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L94",
+      "source_location": "L119",
       "id": "app_main_global_exception_handler",
-      "community": 13,
+      "community": 11,
       "norm_label": "global_exception_handler()"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L115",
+      "source_location": "L140",
       "id": "app_main_health",
-      "community": 13,
+      "community": 11,
       "norm_label": "health()"
+    },
+    {
+      "label": "Run ad-hoc migrations. Failure here should not crash the app.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\main.py",
+      "source_location": "L18",
+      "id": "app_main_rationale_18",
+      "community": 11,
+      "norm_label": "run ad-hoc migrations. failure here should not crash the app."
     },
     {
       "label": "__init__.py",
@@ -126,7 +171,7 @@
       "source_file": "backend\\app\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_init_py",
-      "community": 33,
+      "community": 35,
       "norm_label": "__init__.py"
     },
     {
@@ -135,7 +180,7 @@
       "source_file": "backend\\app\\api\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_api_init_py",
-      "community": 34,
+      "community": 36,
       "norm_label": "__init__.py"
     },
     {
@@ -144,7 +189,7 @@
       "source_file": "backend\\app\\api\\v1\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_init_py",
-      "community": 35,
+      "community": 37,
       "norm_label": "__init__.py"
     },
     {
@@ -153,107 +198,197 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_ai_py",
-      "community": 4,
+      "community": 1,
       "norm_label": "ai.py"
+    },
+    {
+      "label": "extract_resume_summary()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L40",
+      "id": "routes_ai_extract_resume_summary",
+      "community": 1,
+      "norm_label": "extract_resume_summary()"
+    },
+    {
+      "label": "extract_top_keywords_for_prompt()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L54",
+      "id": "routes_ai_extract_top_keywords_for_prompt",
+      "community": 1,
+      "norm_label": "extract_top_keywords_for_prompt()"
+    },
+    {
+      "label": "calculate_local_score()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L62",
+      "id": "routes_ai_calculate_local_score",
+      "community": 1,
+      "norm_label": "calculate_local_score()"
+    },
+    {
+      "label": "call_gemini_unified()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L71",
+      "id": "routes_ai_call_gemini_unified",
+      "community": 1,
+      "norm_label": "call_gemini_unified()"
     },
     {
       "label": "analyze_resume_with_gemini()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L34",
+      "source_location": "L211",
       "id": "routes_ai_analyze_resume_with_gemini",
-      "community": 4,
+      "community": 1,
       "norm_label": "analyze_resume_with_gemini()"
     },
     {
       "label": "tailor_resume_with_gemini()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L81",
+      "source_location": "L215",
       "id": "routes_ai_tailor_resume_with_gemini",
-      "community": 4,
+      "community": 1,
       "norm_label": "tailor_resume_with_gemini()"
     },
     {
       "label": "extract_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L172",
+      "source_location": "L221",
       "id": "routes_ai_extract_resume",
-      "community": 4,
+      "community": 1,
       "norm_label": "extract_resume()"
     },
     {
       "label": "analyze_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L193",
+      "source_location": "L242",
       "id": "routes_ai_analyze_resume",
-      "community": 4,
+      "community": 1,
       "norm_label": "analyze_resume()"
     },
     {
       "label": "tailor_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L223",
+      "source_location": "L272",
       "id": "routes_ai_tailor_resume",
-      "community": 4,
+      "community": 1,
       "norm_label": "tailor_resume()"
+    },
+    {
+      "label": "optimize_resume()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L318",
+      "id": "routes_ai_optimize_resume",
+      "community": 1,
+      "norm_label": "optimize_resume()"
     },
     {
       "label": "get_embedding_model()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L278",
+      "source_location": "L351",
       "id": "routes_ai_get_embedding_model",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_embedding_model()"
     },
     {
       "label": "cosine_sim()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L290",
+      "source_location": "L363",
       "id": "routes_ai_cosine_sim",
-      "community": 4,
+      "community": 1,
       "norm_label": "cosine_sim()"
     },
     {
       "label": "normalize_and_tokenize()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L328",
+      "source_location": "L401",
       "id": "routes_ai_normalize_and_tokenize",
-      "community": 4,
+      "community": 1,
       "norm_label": "normalize_and_tokenize()"
     },
     {
       "label": "parse_jd()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L335",
+      "source_location": "L408",
       "id": "routes_ai_parse_jd",
-      "community": 4,
+      "community": 1,
       "norm_label": "parse_jd()"
     },
     {
       "label": "extract_text_sync()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L348",
+      "source_location": "L421",
       "id": "routes_ai_extract_text_sync",
-      "community": 4,
+      "community": 1,
       "norm_label": "extract_text_sync()"
     },
     {
       "label": "score_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L365",
+      "source_location": "L438",
       "id": "routes_ai_score_resume",
-      "community": 4,
+      "community": 1,
       "norm_label": "score_resume()"
+    },
+    {
+      "label": "Extracts key experience points and skills to reduce token noise.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L41",
+      "id": "routes_ai_rationale_41",
+      "community": 1,
+      "norm_label": "extracts key experience points and skills to reduce token noise."
+    },
+    {
+      "label": "Extracts top 10-12 keywords for the prompt.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L55",
+      "id": "routes_ai_rationale_55",
+      "community": 1,
+      "norm_label": "extracts top 10-12 keywords for the prompt."
+    },
+    {
+      "label": "Deterministic keyword-based scoring (fast, no AI).",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L63",
+      "id": "routes_ai_rationale_63",
+      "community": 1,
+      "norm_label": "deterministic keyword-based scoring (fast, no ai)."
+    },
+    {
+      "label": "Unified Gemini caller optimized for token efficiency and deterministic scoring.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L72",
+      "id": "routes_ai_rationale_72",
+      "community": 1,
+      "norm_label": "unified gemini caller optimized for token efficiency and deterministic scoring."
+    },
+    {
+      "label": "Combined analysis and tailoring in one AI call.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L324",
+      "id": "routes_ai_rationale_324",
+      "community": 1,
+      "norm_label": "combined analysis and tailoring in one ai call."
     },
     {
       "label": "analytics.py",
@@ -486,7 +621,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_init_py",
-      "community": 36,
+      "community": 38,
       "norm_label": "__init__.py"
     },
     {
@@ -495,7 +630,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L1",
       "id": "backend_app_core_auth_py",
-      "community": 10,
+      "community": 12,
       "norm_label": "auth.py"
     },
     {
@@ -504,7 +639,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L14",
       "id": "core_auth_get_jwks_client",
-      "community": 10,
+      "community": 12,
       "norm_label": "get_jwks_client()"
     },
     {
@@ -513,7 +648,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L18",
       "id": "core_auth_decode_claims",
-      "community": 10,
+      "community": 12,
       "norm_label": "decode_claims()"
     },
     {
@@ -585,7 +720,7 @@
       "source_file": "backend\\app\\core\\deps.py",
       "source_location": "L1",
       "id": "backend_app_core_deps_py",
-      "community": 10,
+      "community": 12,
       "norm_label": "deps.py"
     },
     {
@@ -594,7 +729,7 @@
       "source_file": "backend\\app\\core\\deps.py",
       "source_location": "L17",
       "id": "core_deps_get_current_user",
-      "community": 10,
+      "community": 12,
       "norm_label": "get_current_user()"
     },
     {
@@ -621,7 +756,7 @@
       "source_file": "backend\\app\\core\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_core_init_py",
-      "community": 37,
+      "community": 39,
       "norm_label": "__init__.py"
     },
     {
@@ -630,16 +765,16 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L1",
       "id": "backend_app_db_session_py",
-      "community": 2,
+      "community": 3,
       "norm_label": "session.py"
     },
     {
       "label": "Base",
       "file_type": "code",
       "source_file": "backend\\app\\db\\session.py",
-      "source_location": "L10",
+      "source_location": "L16",
       "id": "db_session_base",
-      "community": 2,
+      "community": 3,
       "norm_label": "base"
     },
     {
@@ -648,16 +783,16 @@
       "source_file": "",
       "source_location": "",
       "id": "declarativebase",
-      "community": 2,
+      "community": 3,
       "norm_label": "declarativebase"
     },
     {
       "label": "get_db()",
       "file_type": "code",
       "source_file": "backend\\app\\db\\session.py",
-      "source_location": "L14",
+      "source_location": "L20",
       "id": "db_session_get_db",
-      "community": 2,
+      "community": 3,
       "norm_label": "get_db()"
     },
     {
@@ -666,7 +801,7 @@
       "source_file": "backend\\app\\db\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_db_init_py",
-      "community": 38,
+      "community": 40,
       "norm_label": "__init__.py"
     },
     {
@@ -675,7 +810,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L1",
       "id": "backend_app_models_models_py",
-      "community": 2,
+      "community": 3,
       "norm_label": "models.py"
     },
     {
@@ -684,7 +819,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L9",
       "id": "models_models_applicationstatus",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationstatus"
     },
     {
@@ -693,7 +828,7 @@
       "source_file": "",
       "source_location": "",
       "id": "str",
-      "community": 2,
+      "community": 3,
       "norm_label": "str"
     },
     {
@@ -702,7 +837,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L17",
       "id": "models_models_user",
-      "community": 2,
+      "community": 3,
       "norm_label": "user"
     },
     {
@@ -711,7 +846,7 @@
       "source_file": "",
       "source_location": "",
       "id": "base",
-      "community": 2,
+      "community": 3,
       "norm_label": "base"
     },
     {
@@ -720,7 +855,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L32",
       "id": "models_models_processedpayment",
-      "community": 2,
+      "community": 3,
       "norm_label": "processedpayment"
     },
     {
@@ -729,7 +864,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L44",
       "id": "models_models_application",
-      "community": 2,
+      "community": 3,
       "norm_label": "application"
     },
     {
@@ -738,7 +873,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L80",
       "id": "models_models_applicationevent",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationevent"
     },
     {
@@ -747,7 +882,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L92",
       "id": "models_models_applicationdocument",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationdocument"
     },
     {
@@ -756,7 +891,7 @@
       "source_file": "backend\\app\\models\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_models_init_py",
-      "community": 39,
+      "community": 41,
       "norm_label": "__init__.py"
     },
     {
@@ -765,7 +900,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L1",
       "id": "backend_app_schemas_application_py",
-      "community": 1,
+      "community": 2,
       "norm_label": "application.py"
     },
     {
@@ -774,7 +909,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L7",
       "id": "schemas_application_statusenum",
-      "community": 2,
+      "community": 3,
       "norm_label": "statusenum"
     },
     {
@@ -783,7 +918,7 @@
       "source_file": "",
       "source_location": "",
       "id": "enum",
-      "community": 2,
+      "community": 3,
       "norm_label": "enum"
     },
     {
@@ -792,7 +927,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L15",
       "id": "schemas_application_applicationcreate",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationcreate"
     },
     {
@@ -801,7 +936,7 @@
       "source_file": "",
       "source_location": "",
       "id": "basemodel",
-      "community": 1,
+      "community": 2,
       "norm_label": "basemodel"
     },
     {
@@ -810,7 +945,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L31",
       "id": "schemas_application_applicationupdate",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationupdate"
     },
     {
@@ -819,7 +954,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L47",
       "id": "schemas_application_applicationresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationresponse"
     },
     {
@@ -828,7 +963,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L67",
       "id": "schemas_application_applicationeventresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationeventresponse"
     },
     {
@@ -837,7 +972,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L77",
       "id": "schemas_application_applicationeventcreate",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationeventcreate"
     },
     {
@@ -846,7 +981,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L83",
       "id": "schemas_application_applicationdocumentresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationdocumentresponse"
     },
     {
@@ -855,7 +990,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L93",
       "id": "schemas_application_applicationdetailresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "applicationdetailresponse"
     },
     {
@@ -864,7 +999,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L98",
       "id": "schemas_application_dashboardrecentapplication",
-      "community": 1,
+      "community": 2,
       "norm_label": "dashboardrecentapplication"
     },
     {
@@ -873,7 +1008,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L108",
       "id": "schemas_application_dashboardresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "dashboardresponse"
     },
     {
@@ -882,7 +1017,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L114",
       "id": "schemas_application_analyticsmonthcount",
-      "community": 1,
+      "community": 2,
       "norm_label": "analyticsmonthcount"
     },
     {
@@ -891,7 +1026,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L119",
       "id": "schemas_application_analyticsresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "analyticsresponse"
     },
     {
@@ -900,7 +1035,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L126",
       "id": "schemas_application_reminderresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "reminderresponse"
     },
     {
@@ -909,7 +1044,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L136",
       "id": "schemas_application_resumeextractionresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "resumeextractionresponse"
     },
     {
@@ -918,7 +1053,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L139",
       "id": "schemas_application_aianalyzeresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "aianalyzeresponse"
     },
     {
@@ -927,7 +1062,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L149",
       "id": "schemas_application_resumetailorresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "resumetailorresponse"
     },
     {
@@ -936,7 +1071,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L1",
       "id": "backend_app_schemas_user_py",
-      "community": 1,
+      "community": 2,
       "norm_label": "user.py"
     },
     {
@@ -945,7 +1080,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L5",
       "id": "schemas_user_userbase",
-      "community": 1,
+      "community": 2,
       "norm_label": "userbase"
     },
     {
@@ -954,7 +1089,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L10",
       "id": "schemas_user_userupdate",
-      "community": 1,
+      "community": 2,
       "norm_label": "userupdate"
     },
     {
@@ -963,7 +1098,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L16",
       "id": "schemas_user_userresponse",
-      "community": 1,
+      "community": 2,
       "norm_label": "userresponse"
     },
     {
@@ -972,7 +1107,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L22",
       "id": "schemas_user_config",
-      "community": 1,
+      "community": 2,
       "norm_label": "config"
     },
     {
@@ -981,8 +1116,71 @@
       "source_file": "backend\\app\\schemas\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_schemas_init_py",
-      "community": 40,
+      "community": 42,
       "norm_label": "__init__.py"
+    },
+    {
+      "label": "ai_limiter.py",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L1",
+      "id": "backend_app_services_ai_limiter_py",
+      "community": 8,
+      "norm_label": "ai_limiter.py"
+    },
+    {
+      "label": "AILimiter",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L6",
+      "id": "services_ai_limiter_ailimiter",
+      "community": 8,
+      "norm_label": "ailimiter"
+    },
+    {
+      "label": ".__new__()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L16",
+      "id": "services_ai_limiter_ailimiter_new",
+      "community": 8,
+      "norm_label": ".__new__()"
+    },
+    {
+      "label": ".acquire()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L21",
+      "id": "services_ai_limiter_ailimiter_acquire",
+      "community": 8,
+      "norm_label": ".acquire()"
+    },
+    {
+      "label": ".release()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L35",
+      "id": "services_ai_limiter_ailimiter_release",
+      "community": 8,
+      "norm_label": ".release()"
+    },
+    {
+      "label": "Singleton to manage AI request concurrency and cooldowns.     Ensures only one r",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L7",
+      "id": "services_ai_limiter_rationale_7",
+      "community": 8,
+      "norm_label": "singleton to manage ai request concurrency and cooldowns.     ensures only one r"
+    },
+    {
+      "label": "Acquires the lock and waits for the cooldown if necessary.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L22",
+      "id": "services_ai_limiter_rationale_22",
+      "community": 8,
+      "norm_label": "acquires the lock and waits for the cooldown if necessary."
     },
     {
       "label": "application_service.py",
@@ -990,7 +1188,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L1",
       "id": "backend_app_services_application_service_py",
-      "community": 3,
+      "community": 4,
       "norm_label": "application_service.py"
     },
     {
@@ -999,7 +1197,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L16",
       "id": "services_application_service_create_application",
-      "community": 3,
+      "community": 4,
       "norm_label": "create_application()"
     },
     {
@@ -1008,7 +1206,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L38",
       "id": "services_application_service_get_applications",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_applications()"
     },
     {
@@ -1017,7 +1215,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L68",
       "id": "services_application_service_get_application",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_application()"
     },
     {
@@ -1026,7 +1224,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L81",
       "id": "services_application_service_update_application",
-      "community": 3,
+      "community": 4,
       "norm_label": "update_application()"
     },
     {
@@ -1035,7 +1233,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L92",
       "id": "services_application_service_get_application_detail",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_application_detail()"
     },
     {
@@ -1044,7 +1242,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L115",
       "id": "services_application_service_list_application_events",
-      "community": 3,
+      "community": 4,
       "norm_label": "list_application_events()"
     },
     {
@@ -1053,7 +1251,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L120",
       "id": "services_application_service_create_application_event",
-      "community": 3,
+      "community": 4,
       "norm_label": "create_application_event()"
     },
     {
@@ -1062,7 +1260,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L134",
       "id": "services_application_service_delete_application_event",
-      "community": 3,
+      "community": 4,
       "norm_label": "delete_application_event()"
     },
     {
@@ -1071,7 +1269,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L147",
       "id": "services_application_service_create_application_document",
-      "community": 3,
+      "community": 4,
       "norm_label": "create_application_document()"
     },
     {
@@ -1080,7 +1278,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L171",
       "id": "services_application_service_delete_application",
-      "community": 3,
+      "community": 4,
       "norm_label": "delete_application()"
     },
     {
@@ -1089,7 +1287,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L178",
       "id": "services_application_service_get_dashboard_data",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_dashboard_data()"
     },
     {
@@ -1098,7 +1296,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L221",
       "id": "services_application_service_get_analytics_data",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_analytics_data()"
     },
     {
@@ -1107,7 +1305,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L277",
       "id": "services_application_service_get_reminders",
-      "community": 3,
+      "community": 4,
       "norm_label": "get_reminders()"
     },
     {
@@ -1116,7 +1314,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L1",
       "id": "backend_app_services_user_service_py",
-      "community": 8,
+      "community": 9,
       "norm_label": "user_service.py"
     },
     {
@@ -1125,7 +1323,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L7",
       "id": "services_user_service_get_user_by_id",
-      "community": 8,
+      "community": 9,
       "norm_label": "get_user_by_id()"
     },
     {
@@ -1134,7 +1332,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L10",
       "id": "services_user_service_check_credits",
-      "community": 8,
+      "community": 9,
       "norm_label": "check_credits()"
     },
     {
@@ -1143,7 +1341,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L16",
       "id": "services_user_service_deduct_credit",
-      "community": 8,
+      "community": 9,
       "norm_label": "deduct_credit()"
     },
     {
@@ -1152,7 +1350,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L27",
       "id": "services_user_service_add_credits",
-      "community": 8,
+      "community": 9,
       "norm_label": "add_credits()"
     },
     {
@@ -1161,7 +1359,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L54",
       "id": "services_user_service_update_user",
-      "community": 8,
+      "community": 9,
       "norm_label": "update_user()"
     },
     {
@@ -1170,7 +1368,7 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L68",
       "id": "services_user_service_delete_user",
-      "community": 8,
+      "community": 9,
       "norm_label": "delete_user()"
     },
     {
@@ -1179,8 +1377,26 @@
       "source_file": "backend\\app\\services\\__init__.py",
       "source_location": "L1",
       "id": "backend_app_services_init_py",
-      "community": 41,
+      "community": 43,
       "norm_label": "__init__.py"
+    },
+    {
+      "label": "test_db.py",
+      "file_type": "code",
+      "source_file": "scratch\\test_db.py",
+      "source_location": "L1",
+      "id": "scratch_test_db_py",
+      "community": 44,
+      "norm_label": "test_db.py"
+    },
+    {
+      "label": "test_db_direct.py",
+      "file_type": "code",
+      "source_file": "scratch\\test_db_direct.py",
+      "source_location": "L1",
+      "id": "scratch_test_db_direct_py",
+      "community": 45,
+      "norm_label": "test_db_direct.py"
     },
     {
       "label": "App.jsx",
@@ -1224,7 +1440,7 @@
       "source_file": "src\\main.jsx",
       "source_location": "L1",
       "id": "src_main_jsx",
-      "community": 42,
+      "community": 46,
       "norm_label": "main.jsx"
     },
     {
@@ -1294,7 +1510,7 @@
       "label": "PricingModal()",
       "file_type": "code",
       "source_file": "src\\components\\PricingModal.jsx",
-      "source_location": "L3",
+      "source_location": "L5",
       "id": "components_pricingmodal_pricingmodal",
       "community": 27,
       "norm_label": "pricingmodal()"
@@ -1305,16 +1521,16 @@
       "source_file": "src\\components\\Sidebar.jsx",
       "source_location": "L1",
       "id": "src_components_sidebar_jsx",
-      "community": 28,
+      "community": 0,
       "norm_label": "sidebar.jsx"
     },
     {
       "label": "Sidebar()",
       "file_type": "code",
       "source_file": "src\\components\\Sidebar.jsx",
-      "source_location": "L11",
+      "source_location": "L13",
       "id": "components_sidebar_sidebar",
-      "community": 28,
+      "community": 0,
       "norm_label": "sidebar()"
     },
     {
@@ -1334,6 +1550,15 @@
       "id": "components_topnav_topnav",
       "community": 0,
       "norm_label": "topnav()"
+    },
+    {
+      "label": "status.js",
+      "file_type": "code",
+      "source_file": "src\\constants\\status.js",
+      "source_location": "L1",
+      "id": "src_constants_status_js",
+      "community": 47,
+      "norm_label": "status.js"
     },
     {
       "label": "AuthContext.jsx",
@@ -1456,7 +1681,7 @@
       "label": "fmtDate()",
       "file_type": "code",
       "source_file": "src\\pages\\Applications.jsx",
-      "source_location": "L23",
+      "source_location": "L12",
       "id": "pages_applications_fmtdate",
       "community": 0,
       "norm_label": "fmtdate()"
@@ -1465,7 +1690,7 @@
       "label": "Applications()",
       "file_type": "code",
       "source_file": "src\\pages\\Applications.jsx",
-      "source_location": "L28",
+      "source_location": "L17",
       "id": "pages_applications_applications",
       "community": 0,
       "norm_label": "applications()"
@@ -1476,7 +1701,7 @@
       "source_file": "src\\pages\\Autofill.jsx",
       "source_location": "L1",
       "id": "src_pages_autofill_jsx",
-      "community": 29,
+      "community": 28,
       "norm_label": "autofill.jsx"
     },
     {
@@ -1485,7 +1710,7 @@
       "source_file": "src\\pages\\Autofill.jsx",
       "source_location": "L5",
       "id": "pages_autofill_autofill",
-      "community": 29,
+      "community": 28,
       "norm_label": "autofill()"
     },
     {
@@ -1494,43 +1719,43 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L1",
       "id": "src_pages_dashboard_jsx",
-      "community": 11,
+      "community": 0,
       "norm_label": "dashboard.jsx"
     },
     {
       "label": "formatDate()",
       "file_type": "code",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L26",
+      "source_location": "L19",
       "id": "pages_dashboard_formatdate",
-      "community": 11,
+      "community": 0,
       "norm_label": "formatdate()"
     },
     {
       "label": "relativeTime()",
       "file_type": "code",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L31",
+      "source_location": "L24",
       "id": "pages_dashboard_relativetime",
-      "community": 11,
+      "community": 0,
       "norm_label": "relativetime()"
     },
     {
       "label": "reminderTone()",
       "file_type": "code",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L46",
+      "source_location": "L39",
       "id": "pages_dashboard_remindertone",
-      "community": 11,
+      "community": 0,
       "norm_label": "remindertone()"
     },
     {
       "label": "Dashboard()",
       "file_type": "code",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L57",
+      "source_location": "L50",
       "id": "pages_dashboard_dashboard",
-      "community": 11,
+      "community": 0,
       "norm_label": "dashboard()"
     },
     {
@@ -1539,52 +1764,61 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L1",
       "id": "src_pages_details_jsx",
-      "community": 9,
+      "community": 10,
       "norm_label": "details.jsx"
+    },
+    {
+      "label": "getEventStyle()",
+      "file_type": "code",
+      "source_file": "src\\pages\\Details.jsx",
+      "source_location": "L7",
+      "id": "pages_details_geteventstyle",
+      "community": 10,
+      "norm_label": "geteventstyle()"
     },
     {
       "label": "formatSalary()",
       "file_type": "code",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L8",
+      "source_location": "L17",
       "id": "pages_details_formatsalary",
-      "community": 9,
+      "community": 10,
       "norm_label": "formatsalary()"
     },
     {
       "label": "formatEventDate()",
       "file_type": "code",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L21",
+      "source_location": "L30",
       "id": "pages_details_formateventdate",
-      "community": 9,
+      "community": 10,
       "norm_label": "formateventdate()"
     },
     {
       "label": "formatEventType()",
       "file_type": "code",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L32",
+      "source_location": "L41",
       "id": "pages_details_formateventtype",
-      "community": 9,
+      "community": 10,
       "norm_label": "formateventtype()"
     },
     {
       "label": "fileUrl()",
       "file_type": "code",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L37",
+      "source_location": "L46",
       "id": "pages_details_fileurl",
-      "community": 9,
+      "community": 10,
       "norm_label": "fileurl()"
     },
     {
       "label": "Details()",
       "file_type": "code",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L43",
+      "source_location": "L52",
       "id": "pages_details_details",
-      "community": 9,
+      "community": 10,
       "norm_label": "details()"
     },
     {
@@ -1611,7 +1845,7 @@
       "source_file": "src\\pages\\Notifications.jsx",
       "source_location": "L1",
       "id": "src_pages_notifications_jsx",
-      "community": 30,
+      "community": 29,
       "norm_label": "notifications.jsx"
     },
     {
@@ -1620,7 +1854,7 @@
       "source_file": "src\\pages\\Notifications.jsx",
       "source_location": "L4",
       "id": "pages_notifications_notifications",
-      "community": 30,
+      "community": 29,
       "norm_label": "notifications()"
     },
     {
@@ -1629,7 +1863,7 @@
       "source_file": "src\\pages\\PaymentCancelled.jsx",
       "source_location": "L1",
       "id": "src_pages_paymentcancelled_jsx",
-      "community": 31,
+      "community": 30,
       "norm_label": "paymentcancelled.jsx"
     },
     {
@@ -1638,7 +1872,7 @@
       "source_file": "src\\pages\\PaymentCancelled.jsx",
       "source_location": "L3",
       "id": "pages_paymentcancelled_paymentcancelled",
-      "community": 31,
+      "community": 30,
       "norm_label": "paymentcancelled()"
     },
     {
@@ -1647,7 +1881,7 @@
       "source_file": "src\\pages\\PaymentSuccess.jsx",
       "source_location": "L1",
       "id": "src_pages_paymentsuccess_jsx",
-      "community": 32,
+      "community": 31,
       "norm_label": "paymentsuccess.jsx"
     },
     {
@@ -1656,7 +1890,7 @@
       "source_file": "src\\pages\\PaymentSuccess.jsx",
       "source_location": "L5",
       "id": "pages_paymentsuccess_paymentsuccess",
-      "community": 32,
+      "community": 31,
       "norm_label": "paymentsuccess()"
     },
     {
@@ -1708,7 +1942,7 @@
       "label": "ResumeTailor()",
       "file_type": "code",
       "source_file": "src\\pages\\ResumeTailor.jsx",
-      "source_location": "L7",
+      "source_location": "L5",
       "id": "pages_resumetailor_resumetailor",
       "community": 0,
       "norm_label": "resumetailor()"
@@ -1762,7 +1996,7 @@
       "label": "getSafeSession()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L8",
+      "source_location": "L10",
       "id": "services_api_getsafesession",
       "community": 6,
       "norm_label": "getsafesession()"
@@ -1771,7 +2005,7 @@
       "label": "decodeJwt()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L17",
+      "source_location": "L19",
       "id": "services_api_decodejwt",
       "community": 6,
       "norm_label": "decodejwt()"
@@ -1780,7 +2014,7 @@
       "label": "isExpired()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L22",
+      "source_location": "L24",
       "id": "services_api_isexpired",
       "community": 6,
       "norm_label": "isexpired()"
@@ -1789,7 +2023,7 @@
       "label": "doRefresh()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L28",
+      "source_location": "L30",
       "id": "services_api_dorefresh",
       "community": 6,
       "norm_label": "dorefresh()"
@@ -1798,7 +2032,7 @@
       "label": "getValidToken()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L38",
+      "source_location": "L40",
       "id": "services_api_getvalidtoken",
       "community": 6,
       "norm_label": "getvalidtoken()"
@@ -1807,7 +2041,7 @@
       "label": "buildHeaders()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L59",
+      "source_location": "L61",
       "id": "services_api_buildheaders",
       "community": 6,
       "norm_label": "buildheaders()"
@@ -1816,7 +2050,7 @@
       "label": "rawFetch()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L65",
+      "source_location": "L67",
       "id": "services_api_rawfetch",
       "community": 6,
       "norm_label": "rawfetch()"
@@ -1825,7 +2059,7 @@
       "label": "request()",
       "file_type": "code",
       "source_file": "src\\services\\api.js",
-      "source_location": "L75",
+      "source_location": "L79",
       "id": "services_api_request",
       "community": 6,
       "norm_label": "request()"
@@ -1836,35 +2070,8 @@
       "source_file": "src\\services\\supabase.js",
       "source_location": "L1",
       "id": "src_services_supabase_js",
-      "community": 43,
+      "community": 48,
       "norm_label": "supabase.js"
-    },
-    {
-      "label": "postcss.config.js",
-      "file_type": "code",
-      "source_file": "postcss.config.js",
-      "source_location": "L1",
-      "id": "postcss_config_js",
-      "community": 44,
-      "norm_label": "postcss.config.js"
-    },
-    {
-      "label": "tailwind.config.js",
-      "file_type": "code",
-      "source_file": "tailwind.config.js",
-      "source_location": "L1",
-      "id": "tailwind_config_js",
-      "community": 45,
-      "norm_label": "tailwind.config.js"
-    },
-    {
-      "label": "vite.config.js",
-      "file_type": "code",
-      "source_file": "vite.config.js",
-      "source_location": "L1",
-      "id": "vite_config_js",
-      "community": 46,
-      "norm_label": "vite.config.js"
     }
   ],
   "links": [
@@ -1943,7 +2150,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L18",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "backend_app_main_py",
+      "target": "app_main_run_migrations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\main.py",
+      "source_location": "L89",
       "weight": 1.0,
       "source": "backend_app_main_py",
       "target": "app_main_lifespan",
@@ -1953,7 +2170,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L94",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "backend_app_main_py",
       "target": "app_main_global_exception_handler",
@@ -1963,17 +2180,78 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L115",
+      "source_location": "L140",
       "weight": 1.0,
       "source": "backend_app_main_py",
       "target": "app_main_health",
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\main.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "app_main_lifespan",
+      "target": "app_main_run_migrations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\main.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "app_main_rationale_18",
+      "target": "app_main_run_migrations",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L34",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_ai_py",
+      "target": "routes_ai_extract_resume_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_ai_py",
+      "target": "routes_ai_extract_top_keywords_for_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_ai_py",
+      "target": "routes_ai_calculate_local_score",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_ai_py",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L211",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_analyze_resume_with_gemini",
@@ -1983,7 +2261,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L81",
+      "source_location": "L215",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_tailor_resume_with_gemini",
@@ -1993,7 +2271,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L172",
+      "source_location": "L221",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_extract_resume",
@@ -2003,7 +2281,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L193",
+      "source_location": "L242",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_analyze_resume",
@@ -2013,7 +2291,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L223",
+      "source_location": "L272",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_tailor_resume",
@@ -2023,7 +2301,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L278",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_ai_py",
+      "target": "routes_ai_optimize_resume",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L351",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_get_embedding_model",
@@ -2033,7 +2321,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L290",
+      "source_location": "L363",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_cosine_sim",
@@ -2043,7 +2331,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L328",
+      "source_location": "L401",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_normalize_and_tokenize",
@@ -2053,7 +2341,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L335",
+      "source_location": "L408",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_parse_jd",
@@ -2063,7 +2351,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L348",
+      "source_location": "L421",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_extract_text_sync",
@@ -2073,7 +2361,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L365",
+      "source_location": "L438",
       "weight": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
       "target": "routes_ai_score_resume",
@@ -2084,10 +2372,20 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L219",
+      "source_location": "L82",
       "weight": 1.0,
-      "source": "routes_ai_analyze_resume",
-      "target": "routes_ai_analyze_resume_with_gemini",
+      "source": "routes_ai_call_gemini_unified",
+      "target": "routes_ai_extract_resume_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_41",
+      "target": "routes_ai_extract_resume_summary",
       "confidence_score": 1.0
     },
     {
@@ -2095,9 +2393,51 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L94",
+      "source_location": "L56",
       "weight": 1.0,
-      "source": "routes_ai_tailor_resume_with_gemini",
+      "source": "routes_ai_extract_top_keywords_for_prompt",
+      "target": "routes_ai_normalize_and_tokenize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_55",
+      "target": "routes_ai_extract_top_keywords_for_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "routes_ai_call_gemini_unified",
+      "target": "routes_ai_calculate_local_score",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_63",
+      "target": "routes_ai_calculate_local_score",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "routes_ai_call_gemini_unified",
       "target": "routes_ai_normalize_and_tokenize",
       "confidence_score": 1.0
     },
@@ -2106,10 +2446,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L260",
+      "source_location": "L212",
       "weight": 1.0,
-      "source": "routes_ai_tailor_resume",
-      "target": "routes_ai_tailor_resume_with_gemini",
+      "source": "routes_ai_analyze_resume_with_gemini",
+      "target": "routes_ai_call_gemini_unified",
       "confidence_score": 1.0
     },
     {
@@ -2117,7 +2457,71 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L439",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "routes_ai_tailor_resume_with_gemini",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L268",
+      "weight": 1.0,
+      "source": "routes_ai_analyze_resume",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L309",
+      "weight": 1.0,
+      "source": "routes_ai_tailor_resume",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L336",
+      "weight": 1.0,
+      "source": "routes_ai_optimize_resume",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_72",
+      "target": "routes_ai_call_gemini_unified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L324",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_324",
+      "target": "routes_ai_optimize_resume",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L512",
       "weight": 1.0,
       "source": "routes_ai_score_resume",
       "target": "routes_ai_cosine_sim",
@@ -2128,7 +2532,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L408",
+      "source_location": "L481",
       "weight": 1.0,
       "source": "routes_ai_score_resume",
       "target": "routes_ai_normalize_and_tokenize",
@@ -2139,7 +2543,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L407",
+      "source_location": "L480",
       "weight": 1.0,
       "source": "routes_ai_score_resume",
       "target": "routes_ai_parse_jd",
@@ -2462,7 +2866,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\db\\session.py",
-      "source_location": "L10",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "backend_app_db_session_py",
       "target": "db_session_base",
@@ -2472,7 +2876,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\db\\session.py",
-      "source_location": "L14",
+      "source_location": "L20",
       "weight": 1.0,
       "source": "backend_app_db_session_py",
       "target": "db_session_get_db",
@@ -2482,7 +2886,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\db\\session.py",
-      "source_location": "L10",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "db_session_base",
       "target": "declarativebase",
@@ -3137,6 +3541,66 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_app_services_ai_limiter_py",
+      "target": "services_ai_limiter_ailimiter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "services_ai_limiter_ailimiter",
+      "target": "services_ai_limiter_ailimiter_new",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "services_ai_limiter_ailimiter",
+      "target": "services_ai_limiter_ailimiter_acquire",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "services_ai_limiter_ailimiter",
+      "target": "services_ai_limiter_ailimiter_release",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "services_ai_limiter_rationale_7",
+      "target": "services_ai_limiter_ailimiter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\ai_limiter.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "services_ai_limiter_rationale_22",
+      "target": "services_ai_limiter_ailimiter_acquire",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L16",
       "weight": 1.0,
@@ -3553,21 +4017,43 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\PricingModal.jsx",
-      "source_location": "L3",
+      "source_location": "L5",
       "weight": 1.0,
       "source": "src_components_pricingmodal_jsx",
       "target": "components_pricingmodal_pricingmodal",
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\Sidebar.jsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_components_sidebar_jsx",
+      "target": "contexts_authcontext_useauth",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\components\\Sidebar.jsx",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "source": "src_components_sidebar_jsx",
       "target": "components_sidebar_sidebar",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src\\components\\Sidebar.jsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "components_sidebar_sidebar",
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -3781,7 +4267,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src\\pages\\Applications.jsx",
-      "source_location": "L30",
+      "source_location": "L19",
       "weight": 1.0,
       "source": "pages_applications_applications",
       "target": "contexts_authcontext_useauth"
@@ -3792,7 +4278,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L59",
+      "source_location": "L52",
       "weight": 1.0,
       "source": "pages_dashboard_dashboard",
       "target": "contexts_authcontext_useauth"
@@ -3803,7 +4289,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L46",
+      "source_location": "L55",
       "weight": 1.0,
       "source": "pages_details_details",
       "target": "contexts_authcontext_useauth"
@@ -3847,7 +4333,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src\\pages\\ResumeTailor.jsx",
-      "source_location": "L8",
+      "source_location": "L6",
       "weight": 1.0,
       "source": "pages_resumetailor_resumetailor",
       "target": "contexts_authcontext_useauth"
@@ -3960,7 +4446,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Applications.jsx",
-      "source_location": "L23",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_pages_applications_jsx",
       "target": "pages_applications_fmtdate",
@@ -3970,7 +4456,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Applications.jsx",
-      "source_location": "L28",
+      "source_location": "L17",
       "weight": 1.0,
       "source": "src_pages_applications_jsx",
       "target": "pages_applications_applications",
@@ -3990,7 +4476,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L26",
+      "source_location": "L19",
       "weight": 1.0,
       "source": "src_pages_dashboard_jsx",
       "target": "pages_dashboard_formatdate",
@@ -4000,7 +4486,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L31",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_dashboard_jsx",
       "target": "pages_dashboard_relativetime",
@@ -4010,7 +4496,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L46",
+      "source_location": "L39",
       "weight": 1.0,
       "source": "src_pages_dashboard_jsx",
       "target": "pages_dashboard_remindertone",
@@ -4020,7 +4506,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L57",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "src_pages_dashboard_jsx",
       "target": "pages_dashboard_dashboard",
@@ -4031,7 +4517,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Dashboard.jsx",
-      "source_location": "L43",
+      "source_location": "L36",
       "weight": 1.0,
       "source": "pages_dashboard_relativetime",
       "target": "pages_dashboard_formatdate",
@@ -4041,7 +4527,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L8",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_pages_details_jsx",
+      "target": "pages_details_geteventstyle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\pages\\Details.jsx",
+      "source_location": "L17",
       "weight": 1.0,
       "source": "src_pages_details_jsx",
       "target": "pages_details_formatsalary",
@@ -4051,7 +4547,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L21",
+      "source_location": "L30",
       "weight": 1.0,
       "source": "src_pages_details_jsx",
       "target": "pages_details_formateventdate",
@@ -4061,7 +4557,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L32",
+      "source_location": "L41",
       "weight": 1.0,
       "source": "src_pages_details_jsx",
       "target": "pages_details_formateventtype",
@@ -4071,7 +4567,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L37",
+      "source_location": "L46",
       "weight": 1.0,
       "source": "src_pages_details_jsx",
       "target": "pages_details_fileurl",
@@ -4081,7 +4577,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0,
       "source": "src_pages_details_jsx",
       "target": "pages_details_details",
@@ -4092,7 +4588,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\Details.jsx",
-      "source_location": "L223",
+      "source_location": "L303",
       "weight": 1.0,
       "source": "pages_details_details",
       "target": "pages_details_formatsalary",
@@ -4162,7 +4658,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\pages\\ResumeTailor.jsx",
-      "source_location": "L7",
+      "source_location": "L5",
       "weight": 1.0,
       "source": "src_pages_resumetailor_jsx",
       "target": "pages_resumetailor_resumetailor",
@@ -4192,7 +4688,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L8",
+      "source_location": "L10",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_getsafesession",
@@ -4202,7 +4698,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_decodejwt",
@@ -4212,7 +4708,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_isexpired",
@@ -4222,7 +4718,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L28",
+      "source_location": "L30",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_dorefresh",
@@ -4232,7 +4728,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L38",
+      "source_location": "L40",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_getvalidtoken",
@@ -4242,7 +4738,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L59",
+      "source_location": "L61",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_buildheaders",
@@ -4252,7 +4748,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L65",
+      "source_location": "L67",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_rawfetch",
@@ -4262,7 +4758,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L75",
+      "source_location": "L79",
       "weight": 1.0,
       "source": "src_services_api_js",
       "target": "services_api_request",
@@ -4273,7 +4769,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L43",
+      "source_location": "L45",
       "weight": 1.0,
       "source": "services_api_getvalidtoken",
       "target": "services_api_getsafesession",
@@ -4284,7 +4780,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "source": "services_api_isexpired",
       "target": "services_api_decodejwt",
@@ -4295,7 +4791,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L48",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "services_api_getvalidtoken",
       "target": "services_api_isexpired",
@@ -4306,7 +4802,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L49",
+      "source_location": "L51",
       "weight": 1.0,
       "source": "services_api_getvalidtoken",
       "target": "services_api_dorefresh",
@@ -4317,7 +4813,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L91",
+      "source_location": "L97",
       "weight": 1.0,
       "source": "services_api_request",
       "target": "services_api_dorefresh",
@@ -4328,7 +4824,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L76",
+      "source_location": "L80",
       "weight": 1.0,
       "source": "services_api_request",
       "target": "services_api_getvalidtoken",
@@ -4339,7 +4835,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "source": "services_api_rawfetch",
       "target": "services_api_buildheaders",
@@ -4350,7 +4846,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src\\services\\api.js",
-      "source_location": "L84",
+      "source_location": "L88",
       "weight": 1.0,
       "source": "services_api_request",
       "target": "services_api_rawfetch",
