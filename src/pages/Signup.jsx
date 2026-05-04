@@ -7,7 +7,7 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,6 +31,15 @@ export default function Signup() {
       setError(err.message || 'Signup failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setError(err.message || 'Google login failed');
     }
   };
 
@@ -86,8 +95,8 @@ export default function Signup() {
       <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-16">
         <div className="w-full max-w-md space-y-10">
           <div className="space-y-2">
-            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Create account</h1>
-            <p className="text-slate-500 font-medium">Join professionals tracking their career growth.</p>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-50 tracking-tight">Create account</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Join professionals tracking their career growth.</p>
           </div>
 
           {error && (
@@ -99,12 +108,12 @@ export default function Signup() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Full Name</label>
+              <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Full Name</label>
               <input 
                 name="name"
                 type="text" 
                 required 
-                className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                 placeholder="John Doe"
                 value={formData.name}
                 onChange={handleChange}
@@ -112,12 +121,12 @@ export default function Signup() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Email Address</label>
+              <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Email Address</label>
               <input 
                 name="email"
                 type="email" 
                 required 
-                className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                 placeholder="name@email.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -126,24 +135,24 @@ export default function Signup() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Password</label>
+                <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Password</label>
                 <input 
                   name="password"
                   type="password" 
                   required 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Confirm</label>
+                <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Confirm</label>
                 <input 
                   name="confirmPassword"
                   type="password" 
                   required 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
@@ -166,6 +175,20 @@ export default function Signup() {
               )}
             </button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100 dark:border-slate-800" /></div>
+            <div className="relative flex justify-center text-xs font-black text-slate-400 uppercase tracking-widest"><span className="bg-white dark:bg-slate-950 px-4">Or continue with</span></div>
+          </div>
+
+          <button 
+            onClick={handleGoogleLogin}
+            type="button"
+            className="w-full py-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-3 shadow-sm"
+          >
+            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+            Google Account
+          </button>
 
           <p className="text-center text-slate-500 font-medium">
             Already have an account? <Link to="/login" className="text-primary font-black hover:underline">Sign in</Link>

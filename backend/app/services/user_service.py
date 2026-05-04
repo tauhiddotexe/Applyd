@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.models.models import User, ProcessedPayment
 from app.core.logging import logger
+from app.services import notification_service
 
 def get_user_by_id(db: Session, user_id: uuid.UUID) -> User | None:
     return db.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
@@ -21,6 +22,13 @@ def deduct_credit(db: Session, user_id: uuid.UUID) -> bool:
     user.credits -= 1
     db.add(user)
     db.commit()
+    
+    if user.credits <= 1:
+        notification_service.create_notification(
+            db, user_id, "low_credits",
+            f"You have {user.credits} credits remaining. Upgrade now to continue using AI features!"
+        )
+
     logger.info(f"Credit deducted for user {user_id}. Remaining: {user.credits}")
     return True
 

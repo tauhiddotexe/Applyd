@@ -8,7 +8,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,6 +22,15 @@ export default function Login() {
       setError(err.message || 'Invalid credentials');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setError(err.message || 'Google login failed');
     }
   };
 
@@ -78,8 +87,8 @@ export default function Login() {
       <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-16">
         <div className="w-full max-w-md space-y-10">
           <div className="space-y-2">
-            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Welcome back</h1>
-            <p className="text-slate-500 font-medium">Enter your details to access your dashboard.</p>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-50 tracking-tight">Welcome back</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Enter your details to access your dashboard.</p>
           </div>
 
           {error && (
@@ -91,11 +100,11 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Email Address</label>
+              <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Email Address</label>
               <input 
                 type="email" 
                 required 
-                className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                 placeholder="name@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +120,7 @@ export default function Login() {
                 <input 
                   type={showPassword ? 'text' : 'password'} 
                   required 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all font-bold placeholder:text-slate-400 dark:text-slate-100"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -147,7 +156,11 @@ export default function Login() {
             <div className="relative flex justify-center text-xs font-black text-slate-400 uppercase tracking-widest"><span className="bg-white dark:bg-slate-950 px-4">Or continue with</span></div>
           </div>
 
-          <button className="w-full py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-sm">
+          <button 
+            onClick={handleGoogleLogin}
+            type="button"
+            className="w-full py-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-3 shadow-sm"
+          >
             <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
             Google Account
           </button>

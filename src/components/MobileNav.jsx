@@ -10,14 +10,14 @@ const navItems = [
 
 export default function MobileNav() {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center h-16">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-white/10 z-50 flex justify-around items-center h-16">
       {navItems.map(({ path, icon, label, fillWhenActive }) => (
         <NavLink
           key={path}
           to={path}
           className={({ isActive }) =>
             `flex flex-col items-center justify-center gap-1 ${
-              isActive ? 'text-blue-600' : 'text-slate-500'
+              isActive ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
             }`
           }
         >

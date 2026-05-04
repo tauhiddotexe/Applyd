@@ -1,4 +1,5 @@
 import json
+import asyncio
 import string
 import pdfplumber
 import docx

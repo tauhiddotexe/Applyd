@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
 from app.db.session import engine, Base
-from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders, payments, users
+from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders, payments, users, notifications
 
 UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
@@ -24,6 +24,7 @@ def run_migrations():
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(32) DEFAULT 'free'"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(255)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(255)"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(2048)"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS settings JSONB DEFAULT '{\"notifications\": true}'::jsonb"))
             
             # Application table updates
@@ -79,6 +80,22 @@ def run_migrations():
                 )
             )
             conn.execute(text("CREATE INDEX IF NOT EXISTS ix_processed_payments_stripe_session_id ON processed_payments (stripe_session_id)"))
+            
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS notifications (
+                        id UUID PRIMARY KEY,
+                        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        type VARCHAR(50) NOT NULL,
+                        message TEXT NOT NULL,
+                        is_read BOOLEAN DEFAULT FALSE,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
+                )
+            )
+            conn.execute(text("CREATE INDEX IF NOT EXISTS ix_notifications_user_id ON notifications (user_id)"))
         logger.info("Database migrations completed successfully")
     except Exception as e:
         logger.error(f"Database migration failed: {e}")
@@ -133,6 +150,7 @@ app.include_router(reminders.router, prefix="/api/v1")
 app.include_router(ai.router, prefix="/api/v1")
 app.include_router(payments.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
+app.include_router(notifications.router, prefix="/api/v1")
 app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 

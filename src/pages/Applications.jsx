@@ -77,8 +77,8 @@ export default function Applications() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Applications</h1>
-          <p className="text-slate-500 mt-1 font-medium">Keep track of your journey and manage your pipeline.</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">Applications</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">Keep track of your journey and manage your pipeline.</p>
         </div>
         <button 
           onClick={() => nav('/applications/new')} 
@@ -94,7 +94,7 @@ export default function Applications() {
         <div className="relative flex-1 group">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px] group-focus-within:text-primary transition-colors">search</span>
           <input 
-            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all placeholder:text-slate-400 font-medium" 
+            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-sm focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600 font-medium dark:text-slate-100" 
             placeholder="Search by company, role, or location..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
@@ -104,7 +104,7 @@ export default function Applications() {
           <select 
             value={statusFilter} 
             onChange={(e) => setStatusFilter(e.target.value)} 
-            className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-4 focus:ring-primary/5 transition-all min-w-[160px]"
+            className="px-4 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-4 focus:ring-primary/5 transition-all min-w-[160px]"
           >
             {STATUS_OPTIONS.map((option) => (
               <option key={option.label} value={option.value}>{option.label}</option>
@@ -113,7 +113,7 @@ export default function Applications() {
           <select 
             value={sort} 
             onChange={(e) => setSort(e.target.value)} 
-            className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-4 focus:ring-primary/5 transition-all min-w-[140px]"
+            className="px-4 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-4 focus:ring-primary/5 transition-all min-w-[140px]"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -122,7 +122,7 @@ export default function Applications() {
       </div>
 
       {/* List UI */}
-      <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-white/5 rounded-[32px] border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm">
         {loading ? (
           <div className="p-32 flex justify-center">
             <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
@@ -136,17 +136,17 @@ export default function Applications() {
             <button onClick={fetchApps} className="text-primary font-bold hover:underline">Try Again</button>
           </div>
         ) : apps.length === 0 ? (
-          <div className="p-32 text-center space-y-6">
-            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto">
-              <span className="material-symbols-outlined text-slate-300 text-4xl">inventory_2</span>
+          <div className="p-32 text-center space-y-6 bg-slate-50/30 dark:bg-white/2">
+            <div className="w-24 h-24 bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-[32px] flex items-center justify-center mx-auto shadow-xl shadow-slate-200/50 dark:shadow-none">
+              <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-5xl">inventory_2</span>
             </div>
             <div>
-              <p className="text-slate-900 dark:text-white font-black text-xl">No applications found</p>
-              <p className="text-slate-500 font-medium mt-1">Try adjusting your filters or add a new application.</p>
+              <p className="text-slate-900 dark:text-slate-50 font-black text-2xl tracking-tight">No applications found</p>
+              <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Try adjusting your filters or add a new application.</p>
             </div>
           </div>
         ) : (
-          <div className="divide-y divide-slate-50 dark:divide-slate-800">
+          <div className="divide-y divide-slate-200 dark:divide-white/5">
             {apps.map(app => {
               const domain = app.company.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
               const initials = app.company.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
@@ -155,10 +155,10 @@ export default function Applications() {
                 <div 
                   key={app.id} 
                   onClick={() => nav(`/applications/${app.id}`)} 
-                  className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all group"
+                  className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-slate-50/50 dark:hover:bg-white/[0.02] cursor-pointer transition-all group"
                 >
                   <div className="flex items-center gap-5 flex-1 min-w-0">
-                    <div className="relative h-14 w-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700 shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="relative h-14 w-14 rounded-2xl bg-white dark:bg-white/5 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-white/10 shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                       <img 
                         src={`https://logo.clearbit.com/${domain}`} 
                         alt={app.company}
@@ -173,19 +173,19 @@ export default function Applications() {
                       </div>
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors truncate">{app.company}</h3>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-slate-50 leading-tight group-hover:text-primary transition-colors truncate tracking-tight">{app.company}</h3>
                       <div className="flex items-center gap-3 mt-1">
-                        <p className="text-slate-600 dark:text-slate-400 font-bold text-sm truncate">{app.role}</p>
+                        <p className="text-slate-500 dark:text-slate-300 font-bold text-sm truncate">{app.role}</p>
                         <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700 hidden sm:block" />
-                        <p className="text-slate-400 font-medium text-sm hidden sm:block truncate">{app.location || 'Remote'}</p>
+                        <p className="text-slate-400 dark:text-slate-500 font-medium text-sm hidden sm:block truncate">{app.location || 'Remote'}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-6 mt-4 md:mt-0 ml-16 md:ml-0">
                     <div className="hidden lg:block text-right">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-tighter">Applied on</p>
-                      <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{fmtDate(app.created_at)}</p>
+                      <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">Applied on</p>
+                      <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{fmtDate(app.created_at)}</p>
                     </div>
                     
                     <span className={`px-5 py-2 rounded-2xl text-[11px] font-black uppercase tracking-widest text-center min-w-[120px] ${STATUS_COLORS[app.status] || 'bg-slate-100 text-slate-700'}`}>

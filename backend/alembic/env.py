@@ -1,16 +1,18 @@
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
+import sys
+import os
 from alembic import context
 
 # Alembic Config object
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Import models so metadata is populated
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+# Import models so metadata is populated
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -21,7 +23,7 @@ from app.models import User, Application  # noqa: F401
 target_metadata = Base.metadata
 
 # Override sqlalchemy.url from env var
-config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
+config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"].replace("%", "%%"))
 
 
 def run_migrations_offline() -> None:

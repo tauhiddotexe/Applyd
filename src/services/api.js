@@ -208,3 +208,9 @@ export const userAPI = {
 export const paymentsAPI = {
   createCheckoutSession: (planType) => request(`/payments/create-checkout-session?plan_type=${planType}`, { method: 'POST' }),
 };
+
+export const notificationsAPI = {
+  list: () => request('/notifications'),
+  markRead: (id) => request(`/notifications/${id}/read`, { method: 'PUT' }),
+  markAllRead: () => request('/notifications/read-all', { method: 'PUT' }),
+};

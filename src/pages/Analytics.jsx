@@ -119,35 +119,35 @@ export default function Analytics() {
     <div className="p-4 md:p-8 max-w-max_width mx-auto">
       <div className="mb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
-          <h2 className="font-h1 text-h1 text-on-surface mb-1">Performance Analytics</h2>
-          <p className="font-body-sm text-on-surface-variant">Measure your job search velocity and application success rates.</p>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-1">Performance Analytics</h2>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">Measure your job search velocity and application success rates.</p>
         </div>
-        <div className="bg-surface-container-highest/50 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-outline-variant/30">
-          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">calendar_today</span>
-          <span className="text-[12px] font-medium text-on-surface-variant">Live Data</span>
+        <div className="bg-slate-100 dark:bg-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-slate-200 dark:border-white/5">
+          <span className="material-symbols-outlined text-slate-500 dark:text-slate-400 text-[18px]">calendar_today</span>
+          <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tight">Live Data</span>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 flex items-center gap-3">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-xl p-4 mb-6 flex items-center gap-3">
           <span className="material-symbols-outlined text-red-500">error</span>
-          <span className="text-red-700 text-body-sm">{error}</span>
+          <span className="text-red-700 dark:text-red-400 font-bold text-sm">{error}</span>
         </div>
       )}
 
       {/* 2x2 Grid: Funnel + Trend | Status + Insights */}
       <div className="grid grid-cols-12 gap-4">
         {/* Funnel View */}
-        <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm flex flex-col">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="col-span-12 lg:col-span-6 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col">
+          <div className="flex items-center gap-2 mb-6">
             <span className="material-symbols-outlined text-primary text-[20px]">filter_alt</span>
-            <span className="font-h3 text-on-surface text-[14px]">Application Funnel</span>
+            <span className="font-black text-slate-900 dark:text-slate-50 text-sm uppercase tracking-widest">Application Funnel</span>
           </div>
 
           {total === 0 && !loading ? (
             <div className="text-center py-8 flex-1 flex flex-col items-center justify-center">
-              <span className="material-symbols-outlined text-outline text-3xl mb-2 block">filter_alt</span>
-              <p className="text-on-surface-variant text-[12px]">No data yet. Add applications to see your funnel.</p>
+              <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-3xl mb-2 block">filter_alt</span>
+              <p className="text-slate-500 dark:text-slate-400 text-[12px] font-medium">No data yet. Add applications to see your funnel.</p>
             </div>
           ) : (
             <div className="space-y-4 flex-1">
@@ -155,23 +155,23 @@ export default function Analytics() {
                 <div key={step.label}>
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-on-surface-variant">{step.icon}</span>
-                      <span className="text-[13px] font-semibold text-on-surface">{step.label}</span>
+                      <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500">{step.icon}</span>
+                      <span className="text-[13px] font-black text-slate-900 dark:text-slate-100">{step.label}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-bold text-on-surface">{step.count}</span>
-                      {i > 0 && <span className="text-[10px] text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">{step.pct}%</span>}
+                      <span className="text-[13px] font-black text-slate-900 dark:text-slate-100">{step.count}</span>
+                      {i > 0 && <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/10 px-1.5 py-0.5 rounded">{step.pct}%</span>}
                     </div>
                   </div>
-                  <div className="w-full bg-surface-container rounded-full h-2.5">
+                  <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-2.5">
                     <div
-                      className={`${step.color} rounded-full h-2.5 transition-all duration-700`}
+                      className={`${step.color} rounded-full h-2.5 transition-all duration-700 shadow-sm`}
                       style={{ width: `${Math.max(step.pct, step.count > 0 ? 5 : 0)}%` }}
                     ></div>
                   </div>
                   {i < funnelSteps.length - 1 && (
                     <div className="flex justify-center py-1">
-                      <span className="material-symbols-outlined text-outline/30 text-[16px]">arrow_downward</span>
+                      <span className="material-symbols-outlined text-slate-200 dark:text-white/5 text-[16px]">arrow_downward</span>
                     </div>
                   )}
                 </div>
@@ -180,38 +180,38 @@ export default function Analytics() {
           )}
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 gap-3 pt-4 mt-4 border-t border-outline-variant/10">
-            <div className="text-center p-3 bg-surface-container-low/50 rounded-lg">
-              <p className="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Interview Rate</p>
-              <p className="font-h3 text-[20px] text-primary">{interviewRate}%</p>
+          <div className="grid grid-cols-2 gap-3 pt-6 mt-6 border-t border-slate-100 dark:border-white/5">
+            <div className="text-center p-4 bg-slate-50 dark:bg-white/[0.03] rounded-2xl border border-slate-200 dark:border-white/10">
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Interview Rate</p>
+              <p className="font-black text-2xl text-primary">{interviewRate}%</p>
             </div>
-            <div className="text-center p-3 bg-surface-container-low/50 rounded-lg">
-              <p className="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Offer Rate</p>
-              <p className="font-h3 text-[20px] text-emerald-600">{offerRate}%</p>
+            <div className="text-center p-4 bg-slate-50 dark:bg-white/[0.03] rounded-2xl border border-slate-200 dark:border-white/10">
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Offer Rate</p>
+              <p className="font-black text-2xl text-emerald-600 dark:text-emerald-500">{offerRate}%</p>
             </div>
           </div>
         </div>
 
         {/* Trend Chart */}
-        <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm flex flex-col">
-          <div className="flex items-center justify-between mb-4">
+        <div className="col-span-12 lg:col-span-6 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px] text-secondary">show_chart</span>
-              <span className="font-h3 text-on-surface text-[14px]">Applications Over Time</span>
+              <span className="font-black text-slate-900 dark:text-slate-50 text-sm uppercase tracking-widest">Growth Trend</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary"/>
-              <span className="text-[11px] text-on-surface-variant">Monthly Count</span>
+              <span className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase">Monthly</span>
             </div>
           </div>
           <div className="h-72 flex items-end justify-between gap-2 px-1 relative flex-1">
             <div className="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none">
-              {[0, 1, 2, 3].map((i) => <div key={i} className="border-b border-outline-variant/10 w-full"/>)}
+              {[0, 1, 2, 3].map((i) => <div key={i} className="border-b border-slate-100 dark:border-white/5 w-full"/>)}
             </div>
             {!loading && analytics.by_month.length === 0 && (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="material-symbols-outlined text-outline text-3xl mb-2">bar_chart</span>
-                <p className="text-on-surface-variant text-[12px]">No monthly data yet</p>
+                <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-3xl mb-2">bar_chart</span>
+                <p className="text-slate-500 dark:text-slate-400 text-[12px] font-medium">No monthly data yet</p>
               </div>
             )}
             {analytics.by_month.map((item) => (
@@ -220,29 +220,29 @@ export default function Analytics() {
                 <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-on-surface text-surface text-[11px] px-2 py-1 rounded pointer-events-none whitespace-nowrap z-10">
                   {item.count} apps
                 </div>
-                <div className="w-full bg-surface-container-low rounded-t-sm h-60 group-hover:bg-primary/10 transition-colors relative">
+                <div className="w-full bg-slate-50 dark:bg-white/5 rounded-t-sm h-60 group-hover:bg-primary/5 transition-colors relative">
                   <div
-                    className="absolute bottom-0 w-full bg-primary group-hover:bg-primary/90 rounded-t-sm transition-all duration-500"
+                    className="absolute bottom-0 w-full bg-primary/80 group-hover:bg-primary rounded-t-sm transition-all duration-500 shadow-lg shadow-primary/10"
                     style={{ height: `${Math.max((item.count / maxMonthCount) * 100, item.count > 0 ? 10 : 0)}%` }}
                   />
                 </div>
-                <span className="mt-2 text-[10px] font-semibold text-on-surface-variant uppercase">{formatMonth(item.month)}</span>
-                <span className="text-[11px] text-on-surface-variant">{item.count}</span>
+                <span className="mt-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{formatMonth(item.month)}</span>
+                <span className="text-[11px] font-bold text-slate-900 dark:text-slate-100">{item.count}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Status Distribution */}
-        <div className="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="col-span-12 lg:col-span-6 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-6">
             <span className="material-symbols-outlined text-[20px] text-primary">donut_large</span>
-            <span className="font-h3 text-on-surface text-[14px]">Status Distribution</span>
+            <span className="font-black text-slate-900 dark:text-slate-50 text-sm uppercase tracking-widest">Status Breakdown</span>
           </div>
           <div className="flex items-center gap-6">
             <div className="relative w-36 h-36 flex-shrink-0">
               <svg className="w-full h-full" viewBox="0 0 36 36">
-                <path className="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="100, 100" strokeWidth="3"/>
+                <path className="text-slate-100 dark:text-white/5" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="100, 100" strokeWidth="3"/>
                 {(() => {
                   let offset = 0;
                   return STATUS_META.map((item) => {
@@ -266,8 +266,8 @@ export default function Analytics() {
                 })()}
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-h2 text-[22px] text-on-surface">{total}</span>
-                <span className="text-[9px] text-on-surface-variant font-medium uppercase tracking-wider">Total</span>
+                <span className="font-black text-3xl text-slate-900 dark:text-slate-50">{total}</span>
+                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest">Total</span>
               </div>
             </div>
             <div className="flex-1 space-y-2.5">
@@ -277,12 +277,12 @@ export default function Analytics() {
                 return (
                   <div key={item.key} className="flex items-center justify-between group">
                     <div className="flex items-center gap-2.5">
-                      <div className={`w-2.5 h-2.5 rounded-full ${item.color}`}/>
-                      <span className="text-[12px] text-on-surface-variant group-hover:text-on-surface transition-colors">{item.label}</span>
+                      <div className={`w-2.5 h-2.5 rounded-full ${item.color} shadow-sm`}/>
+                      <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-50 transition-colors">{item.label}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-semibold text-on-surface">{value}</span>
-                      <span className="text-[10px] text-on-surface-variant w-8 text-right">{pct}%</span>
+                      <span className="text-[12px] font-black text-slate-900 dark:text-slate-100">{value}</span>
+                      <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 w-8 text-right">{pct}%</span>
                     </div>
                   </div>
                 );
@@ -293,13 +293,13 @@ export default function Analytics() {
 
         {/* Insights — More prominent */}
         <div className="col-span-12 lg:col-span-6 bg-gradient-to-br from-primary/8 via-secondary/5 to-primary/3 border border-primary/20 rounded-xl p-5 shadow-sm flex flex-col">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <span className="material-symbols-outlined text-[20px] text-primary">lightbulb</span>
             </div>
             <div>
-              <span className="font-h3 text-on-surface text-[14px] block leading-tight">AI Insights</span>
-              <span className="text-[10px] text-on-surface-variant">Based on your data</span>
+              <span className="font-black text-slate-900 dark:text-slate-50 text-sm uppercase tracking-widest block leading-tight">AI Insights</span>
+              <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">Smart Analysis</span>
             </div>
           </div>
           {loading ? (
@@ -307,11 +307,11 @@ export default function Analytics() {
               <span className="material-symbols-outlined text-primary animate-spin text-3xl">progress_activity</span>
             </div>
           ) : (
-            <div className="space-y-2.5 flex-1">
+            <div className="space-y-3 flex-1">
               {insights.map((insight, i) => (
-                <div key={i} className="flex gap-3 items-start p-3 bg-surface-container-lowest/80 rounded-lg border border-outline-variant/10 hover:border-primary/20 transition-colors">
+                <div key={i} className="flex gap-3 items-start p-4 bg-white/40 dark:bg-white/[0.02] rounded-2xl border border-slate-200/50 dark:border-white/5 hover:border-primary/20 transition-colors">
                   <span className="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">auto_awesome</span>
-                  <p className="text-[13px] text-on-surface leading-relaxed">{insight}</p>
+                  <p className="text-[13px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed">{insight}</p>
                 </div>
               ))}
             </div>
@@ -319,10 +319,10 @@ export default function Analytics() {
         </div>
 
         {/* Recent Applications — Compact row */}
-        <div className="col-span-12 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">history</span>
-            <span className="font-h3 text-on-surface text-[14px]">Recent Applications</span>
+        <div className="col-span-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-6">
+            <span className="material-symbols-outlined text-[20px] text-slate-400 dark:text-slate-500">history</span>
+            <span className="font-black text-slate-900 dark:text-slate-50 text-sm uppercase tracking-widest">Recent Activity</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2.5">
             {loading && (
@@ -331,25 +331,25 @@ export default function Analytics() {
               </div>
             )}
             {!loading && analytics.recent.length === 0 && (
-              <div className="col-span-12 text-center py-8">
-                <span className="material-symbols-outlined text-outline text-2xl mb-2 block">inbox</span>
-                <p className="text-on-surface-variant text-[12px]">No applications to show</p>
+              <div className="col-span-12 text-center py-12">
+                <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-3xl mb-2 block">inbox</span>
+                <p className="text-slate-500 dark:text-slate-400 text-[12px] font-medium">No applications to show</p>
               </div>
             )}
             {!loading && analytics.recent.map((item) => (
-              <div key={item.id} className="bg-surface rounded-lg p-3.5 border border-outline-variant/10 hover:border-outline-variant/30 hover:shadow-sm transition-all cursor-pointer">
-                <div className="flex items-center gap-2.5 mb-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center">
-                    <span className="material-symbols-outlined text-outline text-[14px]">apartment</span>
+              <div key={item.id} className="bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/5 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <span className="material-symbols-outlined text-slate-400 dark:text-slate-500 text-[16px]">apartment</span>
                   </div>
                   <div className="min-w-0">
-                    <p className="font-h3 text-[12px] truncate leading-tight">{item.company}</p>
-                    <p className="text-[10px] text-on-surface-variant truncate">{item.role}</p>
+                    <p className="font-black text-[13px] text-slate-900 dark:text-slate-100 truncate leading-tight">{item.company}</p>
+                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 truncate mt-0.5">{item.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${RECENT_STATUS[item.status] || 'bg-slate-100 text-slate-700'}`}>{item.status}</span>
-                  <span className="text-[10px] text-on-surface-variant">{formatDate(item.created_at)}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${RECENT_STATUS[item.status] || 'bg-slate-100 text-slate-700'}`}>{item.status}</span>
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">{formatDate(item.created_at)}</span>
                 </div>
               </div>
             ))}

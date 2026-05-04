@@ -93,10 +93,10 @@ export default function Dashboard() {
   const rejected = dashboard.status_counts.rejected || 0;
 
   const stats = [
-    { label: 'Applications', value: total, icon: 'layers', color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Interviews', value: interviewing, icon: 'forum', color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: 'Offers', value: offers, icon: 'verified', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Rejections', value: rejected, icon: 'cancel', color: 'text-slate-600', bg: 'bg-slate-50' },
+    { label: 'Applications', value: total, icon: 'layers', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+    { label: 'Interviews', value: interviewing, icon: 'forum', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-500/10' },
+    { label: 'Offers', value: offers, icon: 'verified', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+    { label: 'Rejections', value: rejected, icon: 'cancel', color: 'text-slate-600', bg: 'bg-slate-50 dark:bg-slate-500/10' },
   ];
 
   return (
@@ -104,24 +104,17 @@ export default function Dashboard() {
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">
             Welcome back, {user?.name?.split(' ')[0] || 'User'}
           </h1>
-          <p className="text-slate-500 mt-1 font-medium">Here's what's happening with your job search today.</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">Here's what's happening with your job search today.</p>
         </div>
-        <button
-          onClick={() => nav('/applications/new')}
-          className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-        >
-          <span className="material-symbols-outlined">add_circle</span>
-          Add Application
-        </button>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
+          <div key={stat.label} className="bg-white dark:bg-white/5 p-6 rounded-3xl border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-center justify-between mb-4">
               <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110`}>
                 <span className={`material-symbols-outlined ${stat.color} text-[24px]`}>{stat.icon}</span>
@@ -129,8 +122,8 @@ export default function Dashboard() {
               <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">{stat.label}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-slate-900 dark:text-white">{stat.value}</h3>
-              {stat.label === 'Applications' && <span className="text-slate-400 text-xs font-bold">Total</span>}
+              <h3 className="text-3xl font-black text-slate-900 dark:text-slate-50">{stat.value}</h3>
+              {stat.label === 'Applications' && <span className="text-slate-400 dark:text-slate-500 text-xs font-bold">Total</span>}
             </div>
           </div>
         ))}
@@ -140,11 +133,11 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Recent Activity</h2>
-            <button onClick={() => nav('/applications')} className="text-sm font-bold text-primary hover:underline">View All</button>
+            <h2 className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tight">Recent Activity</h2>
+            <button onClick={() => nav('/applications')} className="text-sm font-bold text-primary hover:underline dark:text-primary-container">View All</button>
           </div>
           
-          <div className="bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-white/5 rounded-[32px] border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm">
             {loading ? (
               <div className="p-20 flex justify-center">
                 <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
@@ -165,12 +158,12 @@ export default function Dashboard() {
                     className="p-5 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors uppercase">
+                      <div className="w-12 h-12 bg-slate-100 dark:bg-white/10 rounded-2xl flex items-center justify-center font-black text-slate-400 dark:text-slate-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors uppercase">
                         {app.company.charAt(0)}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 dark:text-white leading-tight">{app.company}</h4>
-                        <p className="text-sm text-slate-500 font-medium">{app.role}</p>
+                        <h4 className="font-bold text-slate-900 dark:text-slate-50 leading-tight">{app.company}</h4>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{app.role}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
@@ -192,32 +185,32 @@ export default function Dashboard() {
         <div className="space-y-10">
           {/* Follow-ups */}
           <div className="space-y-6">
-            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight px-2">Follow-ups</h2>
+            <h2 className="text-xl font-black text-slate-900 dark:text-slate-50 tracking-tight px-2">Follow-ups</h2>
             <div className="space-y-3">
               {remindersLoading ? (
-                <div className="p-10 flex justify-center bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800">
+                <div className="p-10 flex justify-center bg-white dark:bg-white/5 rounded-[32px] border border-slate-200 dark:border-white/10">
                   <span className="material-symbols-outlined text-primary animate-spin text-2xl">progress_activity</span>
                 </div>
               ) : reminders.length === 0 ? (
-                <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800">
-                  <span className="material-symbols-outlined text-slate-300 text-3xl mb-2">event_available</span>
-                  <p className="text-slate-400 text-sm font-medium">All caught up!</p>
+                <div className="p-8 text-center bg-white dark:bg-white/5 rounded-[32px] border border-slate-200 dark:border-white/10">
+                  <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-3xl mb-2">event_available</span>
+                  <p className="text-slate-400 dark:text-slate-500 text-sm font-medium">All caught up!</p>
                 </div>
               ) : (
                 reminders.map((item) => (
                   <div 
                     key={item.id}
                     onClick={() => nav(`/applications/${item.id}`)}
-                    className="p-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 flex items-center gap-4 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer transition-all group"
+                    className="p-4 bg-white dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-white/10 flex items-center gap-4 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer transition-all group"
                   >
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${reminderTone(item.followUp) === 'overdue' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${reminderTone(item.followUp) === 'overdue' ? 'bg-red-50 dark:bg-red-500/10 text-red-600' : 'bg-amber-50 dark:bg-amber-500/10 text-amber-600'}`}>
                       <span className="material-symbols-outlined text-[20px]">{reminderTone(item.followUp) === 'overdue' ? 'priority_high' : 'event'}</span>
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-slate-900 dark:text-white truncate text-sm">{item.company}</p>
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">{formatDate(item.followUp)}</p>
+                      <p className="font-bold text-slate-900 dark:text-slate-50 truncate text-sm">{item.company}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tighter">{formatDate(item.followUp)}</p>
                     </div>
-                    <span className="material-symbols-outlined ml-auto text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+                    <span className="material-symbols-outlined ml-auto text-slate-300 dark:text-slate-600 group-hover:text-primary transition-colors">chevron_right</span>
                   </div>
                 ))
               )}

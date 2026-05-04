@@ -8,7 +8,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: str
-    CORS_ORIGINS: str = "http://localhost:5173"
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
     LOG_LEVEL: str = "INFO"
     OPENAI_API_KEY: str | None = None
     OPENAI_MODEL: str = "gpt-5.5"

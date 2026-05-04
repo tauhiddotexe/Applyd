@@ -6,7 +6,7 @@ from app.db.session import get_db
 from app.core.deps import get_current_user
 from app.core.config import settings
 from app.core.logging import logger
-from app.services import user_service
+from app.services import user_service, notification_service
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
@@ -91,12 +91,16 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         if user_id_str and plan_type:
             try:
                 user_id = uuid.UUID(user_id_str)
-                credits_to_add = 3 if plan_type == "basic" else 10
+                credits_to_add = 15 if plan_type == "basic" else 40
                 
                 success = user_service.add_credits(db, user_id, credits_to_add, plan_type, session_id)
                 
                 if success:
                     logger.info(f"Successfully fulfilled {plan_type} plan for user {user_id}")
+                    notification_service.create_notification(
+                        db, user_id, "plan_upgrade",
+                        f"Plan upgraded to {plan_type.upper()}! {credits_to_add} credits added."
+                    )
                 else:
                     logger.warning(f"Fulfillment skipped or failed for user {user_id}")
             except Exception as e:

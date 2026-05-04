@@ -115,10 +115,10 @@ export default function AddEdit() {
       <div className="flex flex-col lg:flex-row gap-10">
         <div className="lg:w-1/3">
           <header className="mb-8">
-            <h1 className="font-h1 text-h1 text-on-surface mb-2">{isEdit ? 'Edit Application' : 'Track New Opportunity'}</h1>
-            <p className="font-body-main text-body-main text-on-surface-variant">Keep your job search organized. Every detail counts toward your next career milestone.</p>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-2">{isEdit ? 'Edit Application' : 'Track Opportunity'}</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Keep your job search organized. Every detail counts toward your next career milestone.</p>
           </header>
-          <div className="hidden lg:block relative rounded-xl overflow-hidden shadow-sm border border-outline-variant">
+          <div className="hidden lg:block relative rounded-[32px] overflow-hidden shadow-xl border border-slate-200 dark:border-white/10 group">
             <img className="w-full h-64 object-cover" alt="Office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB-Vrf_Xfvh1AbKwdqt0YAeVzoEzABff4rkBq9FK5TBu_gjyn7wcNe5aTkCBKnLawMnEgbxx_NsCQwJc9LUtIFEKyFgWW1-n870IBIyHhMwFAF-bJTBxl-goweNMuDgT4JQgf61rX9hLeALVSCa-TjmLcS7yDwkGldNxi-SwL8YMDnauYIQwlu1tmb9VcF4jCISUkn7JUlScBB42qsNde3dxDGmxVOFHK-mvwztl0ZezMI9MFdu-uxvlKd4jHmBb889FkQWA8TPF4"/>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6">
               <span className="text-white font-medium text-body-sm opacity-80">Pro Tip</span>
@@ -126,11 +126,11 @@ export default function AddEdit() {
             </div>
           </div>
         </div>
-        <div className="lg:w-2/3 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-8 lg:p-10">
+        <div className="lg:w-2/3 bg-white dark:bg-white/5 rounded-[32px] border border-slate-200 dark:border-white/10 shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 lg:p-12 transition-all">
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-md mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-red-500 text-[18px]">error</span>
-              <span className="text-red-700 text-body-sm">{error}</span>
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-2xl p-4 mb-8 flex items-center gap-3">
+              <span className="material-symbols-outlined text-red-500">error</span>
+              <span className="text-red-700 dark:text-red-400 font-bold text-sm">{error}</span>
             </div>
           )}
           {fetching ? (
@@ -139,81 +139,84 @@ export default function AddEdit() {
             </div>
           ) : (
             <form className="space-y-8" onSubmit={submit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Company Name</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" value={form.company} onChange={(e) => set('company', e.target.value)}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Company Name</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="e.g. Google" value={form.company} onChange={(e) => set('company', e.target.value)}/>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Job Role</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" value={form.role} onChange={(e) => set('role', e.target.value)}/>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Job Link</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" type="url" value={form.link} onChange={(e) => set('link', e.target.value)}/>
-                </div>
-                <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Status</label>
-                  <select className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface appearance-none" value={form.status} onChange={(e) => set('status', e.target.value)}>
-                    <option value="wishlist">Wishlist</option>
-                    <option value="applied">Applied</option>
-                    <option value="interviewing">Interviewing</option>
-                    <option value="offer">Offer</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Job Role</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="e.g. Senior Frontend" value={form.role} onChange={(e) => set('role', e.target.value)}/>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Salary Min</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" type="number" value={form.salaryMin} onChange={(e) => set('salaryMin', e.target.value)}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Job Link</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" type="url" placeholder="https://..." value={form.link} onChange={(e) => set('link', e.target.value)}/>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Salary Max</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" type="number" value={form.salaryMax} onChange={(e) => set('salaryMax', e.target.value)}/>
-                </div>
-                <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Currency</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" placeholder="USD" value={form.currency} onChange={(e) => set('currency', e.target.value.toUpperCase())}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Status</label>
+                  <div className="relative">
+                    <select className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 appearance-none cursor-pointer" value={form.status} onChange={(e) => set('status', e.target.value)}>
+                      <option value="wishlist">Wishlist</option>
+                      <option value="applied">Applied</option>
+                      <option value="interviewing">Interviewing</option>
+                      <option value="offer">Offer</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                    <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Location</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" value={form.location} onChange={(e) => set('location', e.target.value)}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Salary Min</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" type="number" placeholder="0" value={form.salaryMin} onChange={(e) => set('salaryMin', e.target.value)}/>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Recruiter</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" value={form.recruiter} onChange={(e) => set('recruiter', e.target.value)}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Salary Max</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" type="number" placeholder="0" value={form.salaryMax} onChange={(e) => set('salaryMax', e.target.value)}/>
                 </div>
                 <div className="space-y-2">
-                  <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Follow-up Date</label>
-                  <input className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" type="date" value={form.followUp} onChange={(e) => set('followUp', e.target.value)}/>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Currency</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="USD" value={form.currency} onChange={(e) => set('currency', e.target.value.toUpperCase())}/>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Location</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Remote / City" value={form.location} onChange={(e) => set('location', e.target.value)}/>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Recruiter</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Contact Name" value={form.recruiter} onChange={(e) => set('recruiter', e.target.value)}/>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Follow-up Date</label>
+                  <input className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 appearance-none" type="date" value={form.followUp} onChange={(e) => set('followUp', e.target.value)}/>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Notes</label>
-                <textarea className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface resize-none" rows="4" value={form.notes} onChange={(e) => set('notes', e.target.value)}/>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 block">Notes</label>
+                <textarea className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400 resize-none" rows="4" placeholder="Additional details..." value={form.notes} onChange={(e) => set('notes', e.target.value)}/>
               </div>
 
-              <div className="space-y-2 relative">
-                <label className="font-label-caps text-label-caps text-outline uppercase tracking-wider block">Skills (Tags)</label>
-                <div className="flex flex-wrap gap-2 mb-2">
+              <div className="space-y-4 relative">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 block">Skills (Tags)</label>
+                <div className="flex flex-wrap gap-2">
                   {form.skills.map(s => (
-                    <span key={s.id} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                    <span key={s.id} className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 border border-primary/10">
                       {s.name}
-                      <button type="button" onClick={() => removeSkill(s.id)} className="hover:text-red-500 font-bold ml-1">&times;</button>
+                      <button type="button" onClick={() => removeSkill(s.id)} className="hover:text-red-500 transition-colors font-bold">&times;</button>
                     </span>
                   ))}
                 </div>
                 <input 
-                  className="w-full px-4 py-3 bg-surface-bright border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-main text-on-surface" 
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-slate-900 dark:text-slate-100 placeholder:text-slate-400" 
                   placeholder="Type to search skills..." 
                   value={skillInput} 
                   onChange={handleSkillInputChange}
@@ -225,20 +228,20 @@ export default function AddEdit() {
                   }}
                 />
                 {skillSuggestions.length > 0 && (
-                  <ul className="absolute z-10 w-full bg-white border border-outline-variant rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
+                  <ul className="absolute z-50 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl mt-2 shadow-2xl overflow-hidden max-h-64 overflow-y-auto">
                     {skillSuggestions.map(s => (
-                      <li key={s.id} className="px-4 py-2 hover:bg-surface-container cursor-pointer border-b border-outline-variant/50 last:border-0" onClick={() => addSkill(s)}>
-                        <div className="font-bold text-on-surface">{s.name}</div>
-                        <div className="text-xs text-on-surface-variant truncate">{s.description}</div>
+                      <li key={s.id} className="px-6 py-4 hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer border-b border-slate-100 dark:border-white/5 last:border-0 transition-colors" onClick={() => addSkill(s)}>
+                        <div className="font-bold text-slate-900 dark:text-slate-50">{s.name}</div>
+                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">{s.description}</div>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
 
-              <div className="pt-6 border-t border-outline-variant flex items-center justify-end gap-4">
-                <button type="button" onClick={() => nav(-1)} className="px-6 py-2.5 rounded-lg font-h3 text-body-main text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200">Cancel</button>
-                <button type="submit" disabled={loading} className="px-8 py-2.5 rounded-lg bg-primary text-on-primary font-h3 text-body-main shadow-sm hover:opacity-90 active:scale-[0.99] transition-all">{loading ? 'Saving...' : 'Save Application'}</button>
+              <div className="pt-10 border-t border-slate-100 dark:border-white/5 flex items-center justify-end gap-4">
+                <button type="button" onClick={() => nav(-1)} className="px-8 py-3 rounded-2xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">Cancel</button>
+                <button type="submit" disabled={loading} className="px-10 py-3 rounded-2xl bg-primary text-white font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60">{loading ? 'Saving...' : 'Save Application'}</button>
               </div>
             </form>
           )}

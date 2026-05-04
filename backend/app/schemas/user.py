@@ -6,11 +6,13 @@ class UserBase(BaseModel):
     email: EmailStr
     full_name: Optional[str] = None
     role: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     email: Optional[EmailStr] = None
     role: Optional[str] = None
+    avatar_url: Optional[str] = None
     settings: Optional[Dict[str, Any]] = None
 
 class UserResponse(UserBase):
@@ -19,5 +21,4 @@ class UserResponse(UserBase):
     plan: str
     settings: Optional[Dict[str, Any]] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

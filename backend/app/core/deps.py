@@ -70,16 +70,43 @@ async def get_current_user(
     try:
         result = db.execute(select(User).where(User.id == user_id))
         existing = result.scalar_one_or_none()
-        print(f"DEBUG: DB query result for {user_id}: {existing}")
+        
+        metadata = payload.get("user_metadata", {})
+        email = payload.get("email") or metadata.get("email") or f"{user_id}@supabase.user"
+        full_name = metadata.get("full_name") or metadata.get("name")
+        avatar_url = metadata.get("avatar_url") or metadata.get("picture")
+
         if not existing:
-            email = payload.get("email", f"{user_id}@supabase.user")
-            new_user = User(id=user_id, email=email)
+            new_user = User(
+                id=user_id, 
+                email=email, 
+                full_name=full_name,
+                avatar_url=avatar_url,
+                credits=3, # Default credits for new users
+                plan="free"
+            )
             db.add(new_user)
             db.commit()
             logger.info(f"Auto-provisioned local user row: {user_id} ({email})")
+        else:
+            # Sync metadata if it's missing or changed
+            changed = False
+            if full_name and existing.full_name != full_name:
+                existing.full_name = full_name
+                changed = True
+            if avatar_url and existing.avatar_url != avatar_url:
+                existing.avatar_url = avatar_url
+                changed = True
+            
+            if changed:
+                db.add(existing)
+                db.commit()
+                logger.debug(f"Synced metadata for existing user: {user_id}")
+                
     except Exception as exc:
         db.rollback()
-        logger.error(f"DB query error during user provisioning for {user_id}: {exc}")
+        logger.error(f"Error during user provisioning/sync for {user_id}: {exc}")
+        # Final safety check
         result = db.execute(select(User).where(User.id == user_id))
         if not result.scalar_one_or_none():
             logger.error(f"Failed to provision user {user_id} and user does not exist")
