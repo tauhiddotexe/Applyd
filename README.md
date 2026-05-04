@@ -58,7 +58,7 @@ Ensure you have the following installed on your local machine:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/applyd.git
+git clone https://github.com/tauhiddotexe/applyd.git
 cd applyd
 ```
 
