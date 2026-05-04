@@ -46,3 +46,7 @@ graphify-out/cost.json
 # Ignore Antigravity local config
 .agents/
 scratch/
+
+# Local Reports
+walkthrough.md
+applyd_project_report.md
