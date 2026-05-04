@@ -36,7 +36,7 @@
       "source_file": "backend\\cleanup.py",
       "source_location": "L1",
       "id": "backend_cleanup_py",
-      "community": 16,
+      "community": 17,
       "norm_label": "cleanup.py"
     },
     {
@@ -45,7 +45,7 @@
       "source_file": "backend\\cleanup.py",
       "source_location": "L8",
       "id": "backend_cleanup_cleanup",
-      "community": 16,
+      "community": 17,
       "norm_label": "cleanup()"
     },
     {
@@ -54,7 +54,7 @@
       "source_file": "backend\\cleanup.py",
       "source_location": "L1",
       "id": "backend_cleanup_rationale_1",
-      "community": 16,
+      "community": 17,
       "norm_label": "remove legacy demo records."
     },
     {
@@ -63,7 +63,7 @@
       "source_file": "backend\\seed.py",
       "source_location": "L1",
       "id": "backend_seed_py",
-      "community": 18,
+      "community": 19,
       "norm_label": "seed.py"
     },
     {
@@ -72,7 +72,7 @@
       "source_file": "backend\\seed.py",
       "source_location": "L4",
       "id": "backend_seed_seed",
-      "community": 18,
+      "community": 19,
       "norm_label": "seed()"
     },
     {
@@ -81,35 +81,71 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L1",
       "id": "backend_alembic_env_py",
-      "community": 13,
+      "community": 12,
       "norm_label": "env.py"
     },
     {
       "label": "run_migrations_offline()",
       "file_type": "code",
       "source_file": "backend\\alembic\\env.py",
-      "source_location": "L27",
+      "source_location": "L29",
       "id": "alembic_env_run_migrations_offline",
-      "community": 13,
+      "community": 12,
       "norm_label": "run_migrations_offline()"
     },
     {
       "label": "do_run_migrations()",
       "file_type": "code",
       "source_file": "backend\\alembic\\env.py",
-      "source_location": "L34",
+      "source_location": "L36",
       "id": "alembic_env_do_run_migrations",
-      "community": 13,
+      "community": 12,
       "norm_label": "do_run_migrations()"
     },
     {
       "label": "run_migrations_online()",
       "file_type": "code",
       "source_file": "backend\\alembic\\env.py",
-      "source_location": "L40",
+      "source_location": "L42",
       "id": "alembic_env_run_migrations_online",
-      "community": 13,
+      "community": 12,
       "norm_label": "run_migrations_online()"
+    },
+    {
+      "label": "bd18a523ba16_add_avatar_url_to_users.py",
+      "file_type": "code",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L1",
+      "id": "backend_alembic_versions_bd18a523ba16_add_avatar_url_to_users_py",
+      "community": 13,
+      "norm_label": "bd18a523ba16_add_avatar_url_to_users.py"
+    },
+    {
+      "label": "upgrade()",
+      "file_type": "code",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L21",
+      "id": "versions_bd18a523ba16_add_avatar_url_to_users_upgrade",
+      "community": 13,
+      "norm_label": "upgrade()"
+    },
+    {
+      "label": "downgrade()",
+      "file_type": "code",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L44",
+      "id": "versions_bd18a523ba16_add_avatar_url_to_users_downgrade",
+      "community": 13,
+      "norm_label": "downgrade()"
+    },
+    {
+      "label": "add avatar_url to users  Revision ID: bd18a523ba16 Revises:  Create Date: 20",
+      "file_type": "rationale",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L1",
+      "id": "versions_bd18a523ba16_add_avatar_url_to_users_rationale_1",
+      "community": 13,
+      "norm_label": "add avatar_url to users  revision id: bd18a523ba16 revises:  create date: 20"
     },
     {
       "label": "main.py",
@@ -117,7 +153,7 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L1",
       "id": "backend_app_main_py",
-      "community": 11,
+      "community": 10,
       "norm_label": "main.py"
     },
     {
@@ -126,34 +162,34 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L17",
       "id": "app_main_run_migrations",
-      "community": 11,
+      "community": 10,
       "norm_label": "run_migrations()"
     },
     {
       "label": "lifespan()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L89",
+      "source_location": "L106",
       "id": "app_main_lifespan",
-      "community": 11,
+      "community": 10,
       "norm_label": "lifespan()"
     },
     {
       "label": "global_exception_handler()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L119",
+      "source_location": "L136",
       "id": "app_main_global_exception_handler",
-      "community": 11,
+      "community": 10,
       "norm_label": "global_exception_handler()"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "backend\\app\\main.py",
-      "source_location": "L140",
+      "source_location": "L158",
       "id": "app_main_health",
-      "community": 11,
+      "community": 10,
       "norm_label": "health()"
     },
     {
@@ -162,7 +198,7 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L18",
       "id": "app_main_rationale_18",
-      "community": 11,
+      "community": 10,
       "norm_label": "run ad-hoc migrations. failure here should not crash the app."
     },
     {
@@ -198,196 +234,196 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_ai_py",
-      "community": 1,
+      "community": 2,
       "norm_label": "ai.py"
     },
     {
       "label": "extract_resume_summary()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L40",
+      "source_location": "L41",
       "id": "routes_ai_extract_resume_summary",
-      "community": 1,
+      "community": 2,
       "norm_label": "extract_resume_summary()"
     },
     {
       "label": "extract_top_keywords_for_prompt()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L54",
+      "source_location": "L55",
       "id": "routes_ai_extract_top_keywords_for_prompt",
-      "community": 1,
+      "community": 2,
       "norm_label": "extract_top_keywords_for_prompt()"
     },
     {
       "label": "calculate_local_score()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L62",
+      "source_location": "L63",
       "id": "routes_ai_calculate_local_score",
-      "community": 1,
+      "community": 2,
       "norm_label": "calculate_local_score()"
     },
     {
       "label": "call_gemini_unified()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L71",
+      "source_location": "L72",
       "id": "routes_ai_call_gemini_unified",
-      "community": 1,
+      "community": 2,
       "norm_label": "call_gemini_unified()"
     },
     {
       "label": "analyze_resume_with_gemini()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L211",
+      "source_location": "L212",
       "id": "routes_ai_analyze_resume_with_gemini",
-      "community": 1,
+      "community": 2,
       "norm_label": "analyze_resume_with_gemini()"
     },
     {
       "label": "tailor_resume_with_gemini()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L215",
+      "source_location": "L216",
       "id": "routes_ai_tailor_resume_with_gemini",
-      "community": 1,
+      "community": 2,
       "norm_label": "tailor_resume_with_gemini()"
     },
     {
       "label": "extract_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L221",
+      "source_location": "L222",
       "id": "routes_ai_extract_resume",
-      "community": 1,
+      "community": 2,
       "norm_label": "extract_resume()"
     },
     {
       "label": "analyze_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L242",
+      "source_location": "L243",
       "id": "routes_ai_analyze_resume",
-      "community": 1,
+      "community": 2,
       "norm_label": "analyze_resume()"
     },
     {
       "label": "tailor_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L272",
+      "source_location": "L273",
       "id": "routes_ai_tailor_resume",
-      "community": 1,
+      "community": 2,
       "norm_label": "tailor_resume()"
     },
     {
       "label": "optimize_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L318",
+      "source_location": "L319",
       "id": "routes_ai_optimize_resume",
-      "community": 1,
+      "community": 2,
       "norm_label": "optimize_resume()"
     },
     {
       "label": "get_embedding_model()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L351",
+      "source_location": "L352",
       "id": "routes_ai_get_embedding_model",
-      "community": 1,
+      "community": 2,
       "norm_label": "get_embedding_model()"
     },
     {
       "label": "cosine_sim()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L363",
+      "source_location": "L364",
       "id": "routes_ai_cosine_sim",
-      "community": 1,
+      "community": 2,
       "norm_label": "cosine_sim()"
     },
     {
       "label": "normalize_and_tokenize()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L401",
+      "source_location": "L402",
       "id": "routes_ai_normalize_and_tokenize",
-      "community": 1,
+      "community": 2,
       "norm_label": "normalize_and_tokenize()"
     },
     {
       "label": "parse_jd()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L408",
+      "source_location": "L409",
       "id": "routes_ai_parse_jd",
-      "community": 1,
+      "community": 2,
       "norm_label": "parse_jd()"
     },
     {
       "label": "extract_text_sync()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L421",
+      "source_location": "L422",
       "id": "routes_ai_extract_text_sync",
-      "community": 1,
+      "community": 2,
       "norm_label": "extract_text_sync()"
     },
     {
       "label": "score_resume()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L438",
+      "source_location": "L439",
       "id": "routes_ai_score_resume",
-      "community": 1,
+      "community": 2,
       "norm_label": "score_resume()"
     },
     {
       "label": "Extracts key experience points and skills to reduce token noise.",
       "file_type": "rationale",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L41",
-      "id": "routes_ai_rationale_41",
-      "community": 1,
+      "source_location": "L42",
+      "id": "routes_ai_rationale_42",
+      "community": 2,
       "norm_label": "extracts key experience points and skills to reduce token noise."
     },
     {
       "label": "Extracts top 10-12 keywords for the prompt.",
       "file_type": "rationale",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L55",
-      "id": "routes_ai_rationale_55",
-      "community": 1,
+      "source_location": "L56",
+      "id": "routes_ai_rationale_56",
+      "community": 2,
       "norm_label": "extracts top 10-12 keywords for the prompt."
     },
     {
       "label": "Deterministic keyword-based scoring (fast, no AI).",
       "file_type": "rationale",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L63",
-      "id": "routes_ai_rationale_63",
-      "community": 1,
+      "source_location": "L64",
+      "id": "routes_ai_rationale_64",
+      "community": 2,
       "norm_label": "deterministic keyword-based scoring (fast, no ai)."
     },
     {
       "label": "Unified Gemini caller optimized for token efficiency and deterministic scoring.",
       "file_type": "rationale",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L72",
-      "id": "routes_ai_rationale_72",
-      "community": 1,
+      "source_location": "L73",
+      "id": "routes_ai_rationale_73",
+      "community": 2,
       "norm_label": "unified gemini caller optimized for token efficiency and deterministic scoring."
     },
     {
       "label": "Combined analysis and tailoring in one AI call.",
       "file_type": "rationale",
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
-      "source_location": "L324",
-      "id": "routes_ai_rationale_324",
-      "community": 1,
+      "source_location": "L325",
+      "id": "routes_ai_rationale_325",
+      "community": 2,
       "norm_label": "combined analysis and tailoring in one ai call."
     },
     {
@@ -396,7 +432,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\analytics.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_analytics_py",
-      "community": 19,
+      "community": 20,
       "norm_label": "analytics.py"
     },
     {
@@ -405,7 +441,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\analytics.py",
       "source_location": "L15",
       "id": "routes_analytics_get_analytics",
-      "community": 19,
+      "community": 20,
       "norm_label": "get_analytics()"
     },
     {
@@ -414,7 +450,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_applications_py",
-      "community": 5,
+      "community": 4,
       "norm_label": "applications.py"
     },
     {
@@ -423,70 +459,70 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L25",
       "id": "routes_applications_create",
-      "community": 5,
+      "community": 4,
       "norm_label": "create()"
     },
     {
       "label": "list_all()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L32",
+      "source_location": "L36",
       "id": "routes_applications_list_all",
-      "community": 5,
+      "community": 4,
       "norm_label": "list_all()"
     },
     {
       "label": "get_one()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L43",
+      "source_location": "L47",
       "id": "routes_applications_get_one",
-      "community": 5,
+      "community": 4,
       "norm_label": "get_one()"
     },
     {
       "label": "update()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L48",
+      "source_location": "L52",
       "id": "routes_applications_update",
-      "community": 5,
+      "community": 4,
       "norm_label": "update()"
     },
     {
       "label": "delete()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L54",
+      "source_location": "L64",
       "id": "routes_applications_delete",
-      "community": 5,
+      "community": 4,
       "norm_label": "delete()"
     },
     {
       "label": "list_events()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L59",
+      "source_location": "L69",
       "id": "routes_applications_list_events",
-      "community": 5,
+      "community": 4,
       "norm_label": "list_events()"
     },
     {
       "label": "create_event()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L64",
+      "source_location": "L74",
       "id": "routes_applications_create_event",
-      "community": 5,
+      "community": 4,
       "norm_label": "create_event()"
     },
     {
       "label": "upload_document()",
       "file_type": "code",
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
-      "source_location": "L74",
+      "source_location": "L84",
       "id": "routes_applications_upload_document",
-      "community": 5,
+      "community": 4,
       "norm_label": "upload_document()"
     },
     {
@@ -495,7 +531,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\dashboard.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_dashboard_py",
-      "community": 20,
+      "community": 21,
       "norm_label": "dashboard.py"
     },
     {
@@ -504,7 +540,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\dashboard.py",
       "source_location": "L15",
       "id": "routes_dashboard_get_dashboard",
-      "community": 20,
+      "community": 21,
       "norm_label": "get_dashboard()"
     },
     {
@@ -513,7 +549,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\events.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_events_py",
-      "community": 21,
+      "community": 22,
       "norm_label": "events.py"
     },
     {
@@ -522,8 +558,44 @@
       "source_file": "backend\\app\\api\\v1\\routes\\events.py",
       "source_location": "L14",
       "id": "routes_events_delete_event",
-      "community": 21,
+      "community": 22,
       "norm_label": "delete_event()"
+    },
+    {
+      "label": "notifications.py",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L1",
+      "id": "backend_app_api_v1_routes_notifications_py",
+      "community": 14,
+      "norm_label": "notifications.py"
+    },
+    {
+      "label": "get_notifications()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L13",
+      "id": "routes_notifications_get_notifications",
+      "community": 14,
+      "norm_label": "get_notifications()"
+    },
+    {
+      "label": "mark_notification_read()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L20",
+      "id": "routes_notifications_mark_notification_read",
+      "community": 14,
+      "norm_label": "mark_notification_read()"
+    },
+    {
+      "label": "mark_all_notifications_read()",
+      "file_type": "code",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L31",
+      "id": "routes_notifications_mark_all_notifications_read",
+      "community": 14,
+      "norm_label": "mark_all_notifications_read()"
     },
     {
       "label": "payments.py",
@@ -531,7 +603,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_payments_py",
-      "community": 14,
+      "community": 15,
       "norm_label": "payments.py"
     },
     {
@@ -540,7 +612,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L16",
       "id": "routes_payments_create_checkout_session",
-      "community": 14,
+      "community": 15,
       "norm_label": "create_checkout_session()"
     },
     {
@@ -549,7 +621,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L52",
       "id": "routes_payments_stripe_webhook",
-      "community": 14,
+      "community": 15,
       "norm_label": "stripe_webhook()"
     },
     {
@@ -558,7 +630,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L53",
       "id": "routes_payments_rationale_53",
-      "community": 14,
+      "community": 15,
       "norm_label": "webhook endpoint for stripe events.     does not require authentication (validat"
     },
     {
@@ -567,7 +639,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\reminders.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_reminders_py",
-      "community": 22,
+      "community": 23,
       "norm_label": "reminders.py"
     },
     {
@@ -576,7 +648,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\reminders.py",
       "source_location": "L15",
       "id": "routes_reminders_list_reminders",
-      "community": 22,
+      "community": 23,
       "norm_label": "list_reminders()"
     },
     {
@@ -585,7 +657,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L1",
       "id": "backend_app_api_v1_routes_users_py",
-      "community": 15,
+      "community": 16,
       "norm_label": "users.py"
     },
     {
@@ -594,7 +666,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L13",
       "id": "routes_users_get_profile",
-      "community": 15,
+      "community": 16,
       "norm_label": "get_profile()"
     },
     {
@@ -603,7 +675,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L18",
       "id": "routes_users_update_profile",
-      "community": 15,
+      "community": 16,
       "norm_label": "update_profile()"
     },
     {
@@ -612,7 +684,7 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L27",
       "id": "routes_users_delete_account",
-      "community": 15,
+      "community": 16,
       "norm_label": "delete_account()"
     },
     {
@@ -630,7 +702,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L1",
       "id": "backend_app_core_auth_py",
-      "community": 12,
+      "community": 1,
       "norm_label": "auth.py"
     },
     {
@@ -639,7 +711,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L14",
       "id": "core_auth_get_jwks_client",
-      "community": 12,
+      "community": 1,
       "norm_label": "get_jwks_client()"
     },
     {
@@ -648,7 +720,7 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L18",
       "id": "core_auth_decode_claims",
-      "community": 12,
+      "community": 1,
       "norm_label": "decode_claims()"
     },
     {
@@ -657,7 +729,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L1",
       "id": "backend_app_core_config_py",
-      "community": 7,
+      "community": 6,
       "norm_label": "config.py"
     },
     {
@@ -666,7 +738,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L9",
       "id": "core_config_settings",
-      "community": 7,
+      "community": 6,
       "norm_label": "settings"
     },
     {
@@ -675,7 +747,7 @@
       "source_file": "",
       "source_location": "",
       "id": "basesettings",
-      "community": 7,
+      "community": 6,
       "norm_label": "basesettings"
     },
     {
@@ -684,7 +756,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L25",
       "id": "core_config_cors_origins_list",
-      "community": 7,
+      "community": 6,
       "norm_label": "cors_origins_list()"
     },
     {
@@ -693,7 +765,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L29",
       "id": "core_config_supabase_project_ref",
-      "community": 7,
+      "community": 6,
       "norm_label": "supabase_project_ref()"
     },
     {
@@ -702,7 +774,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L46",
       "id": "core_config_supabase_jwks_url",
-      "community": 7,
+      "community": 6,
       "norm_label": "supabase_jwks_url()"
     },
     {
@@ -711,7 +783,7 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L49",
       "id": "core_config_config",
-      "community": 7,
+      "community": 6,
       "norm_label": "config"
     },
     {
@@ -720,7 +792,7 @@
       "source_file": "backend\\app\\core\\deps.py",
       "source_location": "L1",
       "id": "backend_app_core_deps_py",
-      "community": 12,
+      "community": 1,
       "norm_label": "deps.py"
     },
     {
@@ -729,7 +801,7 @@
       "source_file": "backend\\app\\core\\deps.py",
       "source_location": "L17",
       "id": "core_deps_get_current_user",
-      "community": 12,
+      "community": 1,
       "norm_label": "get_current_user()"
     },
     {
@@ -738,7 +810,7 @@
       "source_file": "backend\\app\\core\\logging.py",
       "source_location": "L1",
       "id": "backend_app_core_logging_py",
-      "community": 23,
+      "community": 24,
       "norm_label": "logging.py"
     },
     {
@@ -747,7 +819,7 @@
       "source_file": "backend\\app\\core\\logging.py",
       "source_location": "L6",
       "id": "core_logging_setup_logging",
-      "community": 23,
+      "community": 24,
       "norm_label": "setup_logging()"
     },
     {
@@ -765,7 +837,7 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L1",
       "id": "backend_app_db_session_py",
-      "community": 3,
+      "community": 1,
       "norm_label": "session.py"
     },
     {
@@ -774,7 +846,7 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L16",
       "id": "db_session_base",
-      "community": 3,
+      "community": 1,
       "norm_label": "base"
     },
     {
@@ -783,7 +855,7 @@
       "source_file": "",
       "source_location": "",
       "id": "declarativebase",
-      "community": 3,
+      "community": 1,
       "norm_label": "declarativebase"
     },
     {
@@ -792,7 +864,7 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L20",
       "id": "db_session_get_db",
-      "community": 3,
+      "community": 1,
       "norm_label": "get_db()"
     },
     {
@@ -810,7 +882,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L1",
       "id": "backend_app_models_models_py",
-      "community": 3,
+      "community": 1,
       "norm_label": "models.py"
     },
     {
@@ -819,7 +891,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L9",
       "id": "models_models_applicationstatus",
-      "community": 3,
+      "community": 1,
       "norm_label": "applicationstatus"
     },
     {
@@ -828,7 +900,7 @@
       "source_file": "",
       "source_location": "",
       "id": "str",
-      "community": 3,
+      "community": 1,
       "norm_label": "str"
     },
     {
@@ -837,7 +909,7 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L17",
       "id": "models_models_user",
-      "community": 3,
+      "community": 1,
       "norm_label": "user"
     },
     {
@@ -846,44 +918,53 @@
       "source_file": "",
       "source_location": "",
       "id": "base",
-      "community": 3,
+      "community": 1,
       "norm_label": "base"
     },
     {
       "label": "ProcessedPayment",
       "file_type": "code",
       "source_file": "backend\\app\\models\\models.py",
-      "source_location": "L32",
+      "source_location": "L33",
       "id": "models_models_processedpayment",
-      "community": 3,
+      "community": 1,
       "norm_label": "processedpayment"
     },
     {
       "label": "Application",
       "file_type": "code",
       "source_file": "backend\\app\\models\\models.py",
-      "source_location": "L44",
+      "source_location": "L45",
       "id": "models_models_application",
-      "community": 3,
+      "community": 1,
       "norm_label": "application"
     },
     {
       "label": "ApplicationEvent",
       "file_type": "code",
       "source_file": "backend\\app\\models\\models.py",
-      "source_location": "L80",
+      "source_location": "L81",
       "id": "models_models_applicationevent",
-      "community": 3,
+      "community": 1,
       "norm_label": "applicationevent"
     },
     {
       "label": "ApplicationDocument",
       "file_type": "code",
       "source_file": "backend\\app\\models\\models.py",
-      "source_location": "L92",
+      "source_location": "L93",
       "id": "models_models_applicationdocument",
-      "community": 3,
+      "community": 1,
       "norm_label": "applicationdocument"
+    },
+    {
+      "label": "Notification",
+      "file_type": "code",
+      "source_file": "backend\\app\\models\\models.py",
+      "source_location": "L105",
+      "id": "models_models_notification",
+      "community": 1,
+      "norm_label": "notification"
     },
     {
       "label": "__init__.py",
@@ -900,7 +981,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L1",
       "id": "backend_app_schemas_application_py",
-      "community": 2,
+      "community": 3,
       "norm_label": "application.py"
     },
     {
@@ -909,7 +990,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L7",
       "id": "schemas_application_statusenum",
-      "community": 3,
+      "community": 1,
       "norm_label": "statusenum"
     },
     {
@@ -918,7 +999,7 @@
       "source_file": "",
       "source_location": "",
       "id": "enum",
-      "community": 3,
+      "community": 1,
       "norm_label": "enum"
     },
     {
@@ -927,7 +1008,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L15",
       "id": "schemas_application_applicationcreate",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationcreate"
     },
     {
@@ -936,7 +1017,7 @@
       "source_file": "",
       "source_location": "",
       "id": "basemodel",
-      "community": 2,
+      "community": 3,
       "norm_label": "basemodel"
     },
     {
@@ -945,7 +1026,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L31",
       "id": "schemas_application_applicationupdate",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationupdate"
     },
     {
@@ -954,7 +1035,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L47",
       "id": "schemas_application_applicationresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationresponse"
     },
     {
@@ -963,7 +1044,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L67",
       "id": "schemas_application_applicationeventresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationeventresponse"
     },
     {
@@ -972,7 +1053,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L77",
       "id": "schemas_application_applicationeventcreate",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationeventcreate"
     },
     {
@@ -981,7 +1062,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L83",
       "id": "schemas_application_applicationdocumentresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationdocumentresponse"
     },
     {
@@ -990,7 +1071,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L93",
       "id": "schemas_application_applicationdetailresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "applicationdetailresponse"
     },
     {
@@ -999,7 +1080,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L98",
       "id": "schemas_application_dashboardrecentapplication",
-      "community": 2,
+      "community": 3,
       "norm_label": "dashboardrecentapplication"
     },
     {
@@ -1008,7 +1089,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L108",
       "id": "schemas_application_dashboardresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "dashboardresponse"
     },
     {
@@ -1017,7 +1098,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L114",
       "id": "schemas_application_analyticsmonthcount",
-      "community": 2,
+      "community": 3,
       "norm_label": "analyticsmonthcount"
     },
     {
@@ -1026,7 +1107,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L119",
       "id": "schemas_application_analyticsresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "analyticsresponse"
     },
     {
@@ -1035,7 +1116,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L126",
       "id": "schemas_application_reminderresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "reminderresponse"
     },
     {
@@ -1044,7 +1125,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L136",
       "id": "schemas_application_resumeextractionresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "resumeextractionresponse"
     },
     {
@@ -1053,7 +1134,7 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L139",
       "id": "schemas_application_aianalyzeresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "aianalyzeresponse"
     },
     {
@@ -1062,8 +1143,53 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L149",
       "id": "schemas_application_resumetailorresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "resumetailorresponse"
+    },
+    {
+      "label": "notification.py",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L1",
+      "id": "backend_app_schemas_notification_py",
+      "community": 3,
+      "norm_label": "notification.py"
+    },
+    {
+      "label": "NotificationBase",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L6",
+      "id": "schemas_notification_notificationbase",
+      "community": 3,
+      "norm_label": "notificationbase"
+    },
+    {
+      "label": "NotificationCreate",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L11",
+      "id": "schemas_notification_notificationcreate",
+      "community": 3,
+      "norm_label": "notificationcreate"
+    },
+    {
+      "label": "NotificationUpdate",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L14",
+      "id": "schemas_notification_notificationupdate",
+      "community": 3,
+      "norm_label": "notificationupdate"
+    },
+    {
+      "label": "NotificationResponse",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L17",
+      "id": "schemas_notification_notificationresponse",
+      "community": 3,
+      "norm_label": "notificationresponse"
     },
     {
       "label": "user.py",
@@ -1071,7 +1197,7 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L1",
       "id": "backend_app_schemas_user_py",
-      "community": 2,
+      "community": 3,
       "norm_label": "user.py"
     },
     {
@@ -1080,35 +1206,26 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L5",
       "id": "schemas_user_userbase",
-      "community": 2,
+      "community": 3,
       "norm_label": "userbase"
     },
     {
       "label": "UserUpdate",
       "file_type": "code",
       "source_file": "backend\\app\\schemas\\user.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "schemas_user_userupdate",
-      "community": 2,
+      "community": 3,
       "norm_label": "userupdate"
     },
     {
       "label": "UserResponse",
       "file_type": "code",
       "source_file": "backend\\app\\schemas\\user.py",
-      "source_location": "L16",
+      "source_location": "L18",
       "id": "schemas_user_userresponse",
-      "community": 2,
+      "community": 3,
       "norm_label": "userresponse"
-    },
-    {
-      "label": "Config",
-      "file_type": "code",
-      "source_file": "backend\\app\\schemas\\user.py",
-      "source_location": "L22",
-      "id": "schemas_user_config",
-      "community": 2,
-      "norm_label": "config"
     },
     {
       "label": "__init__.py",
@@ -1188,7 +1305,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L1",
       "id": "backend_app_services_application_service_py",
-      "community": 4,
+      "community": 1,
       "norm_label": "application_service.py"
     },
     {
@@ -1197,7 +1314,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L16",
       "id": "services_application_service_create_application",
-      "community": 4,
+      "community": 1,
       "norm_label": "create_application()"
     },
     {
@@ -1206,7 +1323,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L38",
       "id": "services_application_service_get_applications",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_applications()"
     },
     {
@@ -1215,7 +1332,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L68",
       "id": "services_application_service_get_application",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_application()"
     },
     {
@@ -1224,7 +1341,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L81",
       "id": "services_application_service_update_application",
-      "community": 4,
+      "community": 1,
       "norm_label": "update_application()"
     },
     {
@@ -1233,7 +1350,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L92",
       "id": "services_application_service_get_application_detail",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_application_detail()"
     },
     {
@@ -1242,7 +1359,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L115",
       "id": "services_application_service_list_application_events",
-      "community": 4,
+      "community": 1,
       "norm_label": "list_application_events()"
     },
     {
@@ -1251,7 +1368,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L120",
       "id": "services_application_service_create_application_event",
-      "community": 4,
+      "community": 1,
       "norm_label": "create_application_event()"
     },
     {
@@ -1260,7 +1377,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L134",
       "id": "services_application_service_delete_application_event",
-      "community": 4,
+      "community": 1,
       "norm_label": "delete_application_event()"
     },
     {
@@ -1269,7 +1386,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L147",
       "id": "services_application_service_create_application_document",
-      "community": 4,
+      "community": 1,
       "norm_label": "create_application_document()"
     },
     {
@@ -1278,7 +1395,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L171",
       "id": "services_application_service_delete_application",
-      "community": 4,
+      "community": 1,
       "norm_label": "delete_application()"
     },
     {
@@ -1287,7 +1404,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L178",
       "id": "services_application_service_get_dashboard_data",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_dashboard_data()"
     },
     {
@@ -1296,7 +1413,7 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L221",
       "id": "services_application_service_get_analytics_data",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_analytics_data()"
     },
     {
@@ -1305,8 +1422,53 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L277",
       "id": "services_application_service_get_reminders",
-      "community": 4,
+      "community": 1,
       "norm_label": "get_reminders()"
+    },
+    {
+      "label": "notification_service.py",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L1",
+      "id": "backend_app_services_notification_service_py",
+      "community": 4,
+      "norm_label": "notification_service.py"
+    },
+    {
+      "label": "create_notification()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L7",
+      "id": "services_notification_service_create_notification",
+      "community": 1,
+      "norm_label": "create_notification()"
+    },
+    {
+      "label": "get_user_notifications()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L22",
+      "id": "services_notification_service_get_user_notifications",
+      "community": 4,
+      "norm_label": "get_user_notifications()"
+    },
+    {
+      "label": "mark_as_read()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L30",
+      "id": "services_notification_service_mark_as_read",
+      "community": 4,
+      "norm_label": "mark_as_read()"
+    },
+    {
+      "label": "mark_all_as_read()",
+      "file_type": "code",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L40",
+      "id": "services_notification_service_mark_all_as_read",
+      "community": 4,
+      "norm_label": "mark_all_as_read()"
     },
     {
       "label": "user_service.py",
@@ -1314,61 +1476,61 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L1",
       "id": "backend_app_services_user_service_py",
-      "community": 9,
+      "community": 7,
       "norm_label": "user_service.py"
     },
     {
       "label": "get_user_by_id()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L7",
+      "source_location": "L8",
       "id": "services_user_service_get_user_by_id",
-      "community": 9,
+      "community": 7,
       "norm_label": "get_user_by_id()"
     },
     {
       "label": "check_credits()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "services_user_service_check_credits",
-      "community": 9,
+      "community": 7,
       "norm_label": "check_credits()"
     },
     {
       "label": "deduct_credit()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L16",
+      "source_location": "L17",
       "id": "services_user_service_deduct_credit",
-      "community": 9,
+      "community": 7,
       "norm_label": "deduct_credit()"
     },
     {
       "label": "add_credits()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L27",
+      "source_location": "L35",
       "id": "services_user_service_add_credits",
-      "community": 9,
+      "community": 7,
       "norm_label": "add_credits()"
     },
     {
       "label": "update_user()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L54",
+      "source_location": "L62",
       "id": "services_user_service_update_user",
-      "community": 9,
+      "community": 7,
       "norm_label": "update_user()"
     },
     {
       "label": "delete_user()",
       "file_type": "code",
       "source_file": "backend\\app\\services\\user_service.py",
-      "source_location": "L68",
+      "source_location": "L76",
       "id": "services_user_service_delete_user",
-      "community": 9,
+      "community": 7,
       "norm_label": "delete_user()"
     },
     {
@@ -1449,7 +1611,7 @@
       "source_file": "src\\components\\AppShell.jsx",
       "source_location": "L1",
       "id": "src_components_appshell_jsx",
-      "community": 24,
+      "community": 25,
       "norm_label": "appshell.jsx"
     },
     {
@@ -1458,7 +1620,7 @@
       "source_file": "src\\components\\AppShell.jsx",
       "source_location": "L6",
       "id": "components_appshell_appshell",
-      "community": 24,
+      "community": 25,
       "norm_label": "appshell()"
     },
     {
@@ -1467,7 +1629,7 @@
       "source_file": "src\\components\\CreditBadge.jsx",
       "source_location": "L1",
       "id": "src_components_creditbadge_jsx",
-      "community": 25,
+      "community": 26,
       "norm_label": "creditbadge.jsx"
     },
     {
@@ -1476,7 +1638,7 @@
       "source_file": "src\\components\\CreditBadge.jsx",
       "source_location": "L4",
       "id": "components_creditbadge_creditbadge",
-      "community": 25,
+      "community": 26,
       "norm_label": "creditbadge()"
     },
     {
@@ -1485,7 +1647,7 @@
       "source_file": "src\\components\\MobileNav.jsx",
       "source_location": "L1",
       "id": "src_components_mobilenav_jsx",
-      "community": 26,
+      "community": 27,
       "norm_label": "mobilenav.jsx"
     },
     {
@@ -1494,7 +1656,7 @@
       "source_file": "src\\components\\MobileNav.jsx",
       "source_location": "L11",
       "id": "components_mobilenav_mobilenav",
-      "community": 26,
+      "community": 27,
       "norm_label": "mobilenav()"
     },
     {
@@ -1503,7 +1665,7 @@
       "source_file": "src\\components\\PricingModal.jsx",
       "source_location": "L1",
       "id": "src_components_pricingmodal_jsx",
-      "community": 27,
+      "community": 28,
       "norm_label": "pricingmodal.jsx"
     },
     {
@@ -1512,7 +1674,7 @@
       "source_file": "src\\components\\PricingModal.jsx",
       "source_location": "L5",
       "id": "components_pricingmodal_pricingmodal",
-      "community": 27,
+      "community": 28,
       "norm_label": "pricingmodal()"
     },
     {
@@ -1543,10 +1705,19 @@
       "norm_label": "topnav.jsx"
     },
     {
+      "label": "formatRelativeTime()",
+      "file_type": "code",
+      "source_file": "src\\components\\TopNav.jsx",
+      "source_location": "L7",
+      "id": "components_topnav_formatrelativetime",
+      "community": 0,
+      "norm_label": "formatrelativetime()"
+    },
+    {
       "label": "TopNav()",
       "file_type": "code",
       "source_file": "src\\components\\TopNav.jsx",
-      "source_location": "L14",
+      "source_location": "L24",
       "id": "components_topnav_topnav",
       "community": 0,
       "norm_label": "topnav()"
@@ -1573,7 +1744,7 @@
       "label": "AuthProvider()",
       "file_type": "code",
       "source_file": "src\\contexts\\AuthContext.jsx",
-      "source_location": "L16",
+      "source_location": "L18",
       "id": "contexts_authcontext_authprovider",
       "community": 0,
       "norm_label": "authprovider()"
@@ -1582,7 +1753,7 @@
       "label": "useAuth()",
       "file_type": "code",
       "source_file": "src\\contexts\\AuthContext.jsx",
-      "source_location": "L101",
+      "source_location": "L145",
       "id": "contexts_authcontext_useauth",
       "community": 0,
       "norm_label": "useauth()"
@@ -1593,25 +1764,16 @@
       "source_file": "src\\data\\skills.js",
       "source_location": "L1",
       "id": "src_data_skills_js",
-      "community": 17,
+      "community": 18,
       "norm_label": "skills.js"
-    },
-    {
-      "label": "parseFrontmatter()",
-      "file_type": "code",
-      "source_file": "src\\data\\skills.js",
-      "source_location": "L5",
-      "id": "data_skills_parsefrontmatter",
-      "community": 17,
-      "norm_label": "parsefrontmatter()"
     },
     {
       "label": "getSkills()",
       "file_type": "code",
       "source_file": "src\\data\\skills.js",
-      "source_location": "L29",
+      "source_location": "L21",
       "id": "data_skills_getskills",
-      "community": 17,
+      "community": 18,
       "norm_label": "getskills()"
     },
     {
@@ -1701,7 +1863,7 @@
       "source_file": "src\\pages\\Autofill.jsx",
       "source_location": "L1",
       "id": "src_pages_autofill_jsx",
-      "community": 28,
+      "community": 29,
       "norm_label": "autofill.jsx"
     },
     {
@@ -1710,7 +1872,7 @@
       "source_file": "src\\pages\\Autofill.jsx",
       "source_location": "L5",
       "id": "pages_autofill_autofill",
-      "community": 28,
+      "community": 29,
       "norm_label": "autofill()"
     },
     {
@@ -1764,7 +1926,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L1",
       "id": "src_pages_details_jsx",
-      "community": 10,
+      "community": 9,
       "norm_label": "details.jsx"
     },
     {
@@ -1773,7 +1935,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L7",
       "id": "pages_details_geteventstyle",
-      "community": 10,
+      "community": 9,
       "norm_label": "geteventstyle()"
     },
     {
@@ -1782,7 +1944,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L17",
       "id": "pages_details_formatsalary",
-      "community": 10,
+      "community": 9,
       "norm_label": "formatsalary()"
     },
     {
@@ -1791,7 +1953,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L30",
       "id": "pages_details_formateventdate",
-      "community": 10,
+      "community": 9,
       "norm_label": "formateventdate()"
     },
     {
@@ -1800,7 +1962,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L41",
       "id": "pages_details_formateventtype",
-      "community": 10,
+      "community": 9,
       "norm_label": "formateventtype()"
     },
     {
@@ -1809,7 +1971,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L46",
       "id": "pages_details_fileurl",
-      "community": 10,
+      "community": 9,
       "norm_label": "fileurl()"
     },
     {
@@ -1818,7 +1980,7 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L52",
       "id": "pages_details_details",
-      "community": 10,
+      "community": 9,
       "norm_label": "details()"
     },
     {
@@ -1845,7 +2007,7 @@
       "source_file": "src\\pages\\Notifications.jsx",
       "source_location": "L1",
       "id": "src_pages_notifications_jsx",
-      "community": 29,
+      "community": 30,
       "norm_label": "notifications.jsx"
     },
     {
@@ -1854,7 +2016,7 @@
       "source_file": "src\\pages\\Notifications.jsx",
       "source_location": "L4",
       "id": "pages_notifications_notifications",
-      "community": 29,
+      "community": 30,
       "norm_label": "notifications()"
     },
     {
@@ -1863,7 +2025,7 @@
       "source_file": "src\\pages\\PaymentCancelled.jsx",
       "source_location": "L1",
       "id": "src_pages_paymentcancelled_jsx",
-      "community": 30,
+      "community": 31,
       "norm_label": "paymentcancelled.jsx"
     },
     {
@@ -1872,7 +2034,7 @@
       "source_file": "src\\pages\\PaymentCancelled.jsx",
       "source_location": "L3",
       "id": "pages_paymentcancelled_paymentcancelled",
-      "community": 30,
+      "community": 31,
       "norm_label": "paymentcancelled()"
     },
     {
@@ -1881,16 +2043,16 @@
       "source_file": "src\\pages\\PaymentSuccess.jsx",
       "source_location": "L1",
       "id": "src_pages_paymentsuccess_jsx",
-      "community": 31,
+      "community": 0,
       "norm_label": "paymentsuccess.jsx"
     },
     {
       "label": "PaymentSuccess()",
       "file_type": "code",
       "source_file": "src\\pages\\PaymentSuccess.jsx",
-      "source_location": "L5",
+      "source_location": "L6",
       "id": "pages_paymentsuccess_paymentsuccess",
-      "community": 31,
+      "community": 0,
       "norm_label": "paymentsuccess()"
     },
     {
@@ -1906,7 +2068,7 @@
       "label": "Profile()",
       "file_type": "code",
       "source_file": "src\\pages\\Profile.jsx",
-      "source_location": "L5",
+      "source_location": "L16",
       "id": "pages_profile_profile",
       "community": 0,
       "norm_label": "profile()"
@@ -1953,16 +2115,16 @@
       "source_file": "src\\pages\\Settings.jsx",
       "source_location": "L1",
       "id": "src_pages_settings_jsx",
-      "community": 0,
+      "community": 11,
       "norm_label": "settings.jsx"
     },
     {
       "label": "Settings()",
       "file_type": "code",
       "source_file": "src\\pages\\Settings.jsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "id": "pages_settings_settings",
-      "community": 0,
+      "community": 11,
       "norm_label": "settings()"
     },
     {
@@ -1989,7 +2151,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L1",
       "id": "src_services_api_js",
-      "community": 6,
+      "community": 5,
       "norm_label": "api.js"
     },
     {
@@ -1998,7 +2160,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L10",
       "id": "services_api_getsafesession",
-      "community": 6,
+      "community": 5,
       "norm_label": "getsafesession()"
     },
     {
@@ -2007,7 +2169,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L19",
       "id": "services_api_decodejwt",
-      "community": 6,
+      "community": 5,
       "norm_label": "decodejwt()"
     },
     {
@@ -2016,7 +2178,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L24",
       "id": "services_api_isexpired",
-      "community": 6,
+      "community": 5,
       "norm_label": "isexpired()"
     },
     {
@@ -2025,7 +2187,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L30",
       "id": "services_api_dorefresh",
-      "community": 6,
+      "community": 5,
       "norm_label": "dorefresh()"
     },
     {
@@ -2034,7 +2196,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L40",
       "id": "services_api_getvalidtoken",
-      "community": 6,
+      "community": 5,
       "norm_label": "getvalidtoken()"
     },
     {
@@ -2043,7 +2205,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L61",
       "id": "services_api_buildheaders",
-      "community": 6,
+      "community": 5,
       "norm_label": "buildheaders()"
     },
     {
@@ -2052,7 +2214,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L67",
       "id": "services_api_rawfetch",
-      "community": 6,
+      "community": 5,
       "norm_label": "rawfetch()"
     },
     {
@@ -2061,7 +2223,7 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L79",
       "id": "services_api_request",
-      "community": 6,
+      "community": 5,
       "norm_label": "request()"
     },
     {
@@ -2072,6 +2234,105 @@
       "id": "src_services_supabase_js",
       "community": 48,
       "norm_label": "supabase.js"
+    },
+    {
+      "label": "theme.js",
+      "file_type": "code",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L1",
+      "id": "src_utils_theme_js",
+      "community": 11,
+      "norm_label": "theme.js"
+    },
+    {
+      "label": "getTheme()",
+      "file_type": "code",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L1",
+      "id": "utils_theme_gettheme",
+      "community": 11,
+      "norm_label": "gettheme()"
+    },
+    {
+      "label": "setTheme()",
+      "file_type": "code",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L6",
+      "id": "utils_theme_settheme",
+      "community": 11,
+      "norm_label": "settheme()"
+    },
+    {
+      "label": "initializeTheme()",
+      "file_type": "code",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L15",
+      "id": "utils_theme_initializetheme",
+      "community": 11,
+      "norm_label": "initializetheme()"
+    },
+    {
+      "label": "Extracts key experience points and skills to reduce token noise.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L41",
+      "community": 2,
+      "norm_label": "extracts key experience points and skills to reduce token noise.",
+      "id": "routes_ai_rationale_41"
+    },
+    {
+      "label": "Extracts top 10-12 keywords for the prompt.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L55",
+      "community": 2,
+      "norm_label": "extracts top 10-12 keywords for the prompt.",
+      "id": "routes_ai_rationale_55"
+    },
+    {
+      "label": "Deterministic keyword-based scoring (fast, no AI).",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L63",
+      "community": 2,
+      "norm_label": "deterministic keyword-based scoring (fast, no ai).",
+      "id": "routes_ai_rationale_63"
+    },
+    {
+      "label": "Unified Gemini caller optimized for token efficiency and deterministic scoring.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L72",
+      "community": 2,
+      "norm_label": "unified gemini caller optimized for token efficiency and deterministic scoring.",
+      "id": "routes_ai_rationale_72"
+    },
+    {
+      "label": "Combined analysis and tailoring in one AI call.",
+      "file_type": "rationale",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L324",
+      "community": 2,
+      "norm_label": "combined analysis and tailoring in one ai call.",
+      "id": "routes_ai_rationale_324"
+    },
+    {
+      "label": "Config",
+      "file_type": "code",
+      "source_file": "backend\\app\\schemas\\user.py",
+      "source_location": "L22",
+      "community": 3,
+      "norm_label": "config",
+      "id": "schemas_user_config"
+    },
+    {
+      "label": "parseFrontmatter()",
+      "file_type": "code",
+      "source_file": "src\\data\\skills.js",
+      "source_location": "L5",
+      "community": 18,
+      "norm_label": "parsefrontmatter()",
+      "id": "data_skills_parsefrontmatter"
     }
   ],
   "links": [
@@ -2081,9 +2342,9 @@
       "source_file": "backend\\cleanup.py",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_cleanup_py",
-      "target": "backend_cleanup_cleanup",
-      "confidence_score": 1.0
+      "target": "backend_cleanup_cleanup"
     },
     {
       "relation": "rationale_for",
@@ -2091,9 +2352,9 @@
       "source_file": "backend\\cleanup.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_cleanup_rationale_1",
-      "target": "backend_cleanup_py",
-      "confidence_score": 1.0
+      "target": "backend_cleanup_py"
     },
     {
       "relation": "contains",
@@ -2101,9 +2362,9 @@
       "source_file": "backend\\seed.py",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_seed_py",
-      "target": "backend_seed_seed",
-      "confidence_score": 1.0
+      "target": "backend_seed_seed"
     },
     {
       "relation": "contains",
@@ -2111,9 +2372,9 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_alembic_env_py",
-      "target": "alembic_env_run_migrations_offline",
-      "confidence_score": 1.0
+      "target": "alembic_env_run_migrations_offline"
     },
     {
       "relation": "contains",
@@ -2121,9 +2382,9 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_alembic_env_py",
-      "target": "alembic_env_do_run_migrations",
-      "confidence_score": 1.0
+      "target": "alembic_env_do_run_migrations"
     },
     {
       "relation": "contains",
@@ -2131,9 +2392,9 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_alembic_env_py",
-      "target": "alembic_env_run_migrations_online",
-      "confidence_score": 1.0
+      "target": "alembic_env_run_migrations_online"
     },
     {
       "relation": "calls",
@@ -2142,8 +2403,38 @@
       "source_file": "backend\\alembic\\env.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alembic_env_run_migrations_online",
-      "target": "alembic_env_do_run_migrations",
+      "target": "alembic_env_do_run_migrations"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "backend_alembic_versions_bd18a523ba16_add_avatar_url_to_users_py",
+      "target": "versions_bd18a523ba16_add_avatar_url_to_users_upgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "backend_alembic_versions_bd18a523ba16_add_avatar_url_to_users_py",
+      "target": "versions_bd18a523ba16_add_avatar_url_to_users_downgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\alembic\\versions\\bd18a523ba16_add_avatar_url_to_users.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "versions_bd18a523ba16_add_avatar_url_to_users_rationale_1",
+      "target": "backend_alembic_versions_bd18a523ba16_add_avatar_url_to_users_py",
       "confidence_score": 1.0
     },
     {
@@ -2152,9 +2443,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_main_py",
-      "target": "app_main_run_migrations",
-      "confidence_score": 1.0
+      "target": "app_main_run_migrations"
     },
     {
       "relation": "contains",
@@ -2162,9 +2453,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_main_py",
-      "target": "app_main_lifespan",
-      "confidence_score": 1.0
+      "target": "app_main_lifespan"
     },
     {
       "relation": "contains",
@@ -2172,9 +2463,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_main_py",
-      "target": "app_main_global_exception_handler",
-      "confidence_score": 1.0
+      "target": "app_main_global_exception_handler"
     },
     {
       "relation": "contains",
@@ -2182,9 +2473,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_main_py",
-      "target": "app_main_health",
-      "confidence_score": 1.0
+      "target": "app_main_health"
     },
     {
       "relation": "calls",
@@ -2193,9 +2484,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_main_lifespan",
-      "target": "app_main_run_migrations",
-      "confidence_score": 1.0
+      "target": "app_main_run_migrations"
     },
     {
       "relation": "rationale_for",
@@ -2203,9 +2494,9 @@
       "source_file": "backend\\app\\main.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "app_main_rationale_18",
-      "target": "app_main_run_migrations",
-      "confidence_score": 1.0
+      "target": "app_main_run_migrations"
     },
     {
       "relation": "contains",
@@ -2213,9 +2504,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_extract_resume_summary",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_resume_summary"
     },
     {
       "relation": "contains",
@@ -2223,9 +2514,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_extract_top_keywords_for_prompt",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_top_keywords_for_prompt"
     },
     {
       "relation": "contains",
@@ -2233,9 +2524,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_calculate_local_score",
-      "confidence_score": 1.0
+      "target": "routes_ai_calculate_local_score"
     },
     {
       "relation": "contains",
@@ -2243,9 +2534,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_call_gemini_unified",
-      "confidence_score": 1.0
+      "target": "routes_ai_call_gemini_unified"
     },
     {
       "relation": "contains",
@@ -2253,9 +2544,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_analyze_resume_with_gemini",
-      "confidence_score": 1.0
+      "target": "routes_ai_analyze_resume_with_gemini"
     },
     {
       "relation": "contains",
@@ -2263,9 +2554,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L215",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_tailor_resume_with_gemini",
-      "confidence_score": 1.0
+      "target": "routes_ai_tailor_resume_with_gemini"
     },
     {
       "relation": "contains",
@@ -2273,9 +2564,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_extract_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_resume"
     },
     {
       "relation": "contains",
@@ -2283,9 +2574,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L242",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_analyze_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_analyze_resume"
     },
     {
       "relation": "contains",
@@ -2293,9 +2584,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_tailor_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_tailor_resume"
     },
     {
       "relation": "contains",
@@ -2303,9 +2594,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L318",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_optimize_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_optimize_resume"
     },
     {
       "relation": "contains",
@@ -2313,9 +2604,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L351",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_get_embedding_model",
-      "confidence_score": 1.0
+      "target": "routes_ai_get_embedding_model"
     },
     {
       "relation": "contains",
@@ -2323,9 +2614,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L363",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_cosine_sim",
-      "confidence_score": 1.0
+      "target": "routes_ai_cosine_sim"
     },
     {
       "relation": "contains",
@@ -2333,9 +2624,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L401",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_normalize_and_tokenize",
-      "confidence_score": 1.0
+      "target": "routes_ai_normalize_and_tokenize"
     },
     {
       "relation": "contains",
@@ -2343,9 +2634,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L408",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_parse_jd",
-      "confidence_score": 1.0
+      "target": "routes_ai_parse_jd"
     },
     {
       "relation": "contains",
@@ -2353,9 +2644,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L421",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_extract_text_sync",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_text_sync"
     },
     {
       "relation": "contains",
@@ -2363,9 +2654,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L438",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_ai_py",
-      "target": "routes_ai_score_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_score_resume"
     },
     {
       "relation": "calls",
@@ -2374,7 +2665,17 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_call_gemini_unified",
+      "target": "routes_ai_extract_resume_summary"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_42",
       "target": "routes_ai_extract_resume_summary",
       "confidence_score": 1.0
     },
@@ -2384,9 +2685,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_rationale_41",
-      "target": "routes_ai_extract_resume_summary",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_resume_summary"
     },
     {
       "relation": "calls",
@@ -2395,8 +2696,18 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_extract_top_keywords_for_prompt",
-      "target": "routes_ai_normalize_and_tokenize",
+      "target": "routes_ai_normalize_and_tokenize"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_56",
+      "target": "routes_ai_extract_top_keywords_for_prompt",
       "confidence_score": 1.0
     },
     {
@@ -2405,9 +2716,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_rationale_55",
-      "target": "routes_ai_extract_top_keywords_for_prompt",
-      "confidence_score": 1.0
+      "target": "routes_ai_extract_top_keywords_for_prompt"
     },
     {
       "relation": "calls",
@@ -2416,7 +2727,17 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_call_gemini_unified",
+      "target": "routes_ai_calculate_local_score"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_64",
       "target": "routes_ai_calculate_local_score",
       "confidence_score": 1.0
     },
@@ -2426,9 +2747,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_rationale_63",
-      "target": "routes_ai_calculate_local_score",
-      "confidence_score": 1.0
+      "target": "routes_ai_calculate_local_score"
     },
     {
       "relation": "calls",
@@ -2437,9 +2758,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_call_gemini_unified",
-      "target": "routes_ai_normalize_and_tokenize",
-      "confidence_score": 1.0
+      "target": "routes_ai_normalize_and_tokenize"
     },
     {
       "relation": "calls",
@@ -2448,9 +2769,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L212",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_analyze_resume_with_gemini",
-      "target": "routes_ai_call_gemini_unified",
-      "confidence_score": 1.0
+      "target": "routes_ai_call_gemini_unified"
     },
     {
       "relation": "calls",
@@ -2459,9 +2780,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L216",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_tailor_resume_with_gemini",
-      "target": "routes_ai_call_gemini_unified",
-      "confidence_score": 1.0
+      "target": "routes_ai_call_gemini_unified"
     },
     {
       "relation": "calls",
@@ -2470,9 +2791,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L268",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_analyze_resume",
-      "target": "routes_ai_call_gemini_unified",
-      "confidence_score": 1.0
+      "target": "routes_ai_call_gemini_unified"
     },
     {
       "relation": "calls",
@@ -2481,9 +2802,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L309",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_tailor_resume",
-      "target": "routes_ai_call_gemini_unified",
-      "confidence_score": 1.0
+      "target": "routes_ai_call_gemini_unified"
     },
     {
       "relation": "calls",
@@ -2492,7 +2813,17 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L336",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_optimize_resume",
+      "target": "routes_ai_call_gemini_unified"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_73",
       "target": "routes_ai_call_gemini_unified",
       "confidence_score": 1.0
     },
@@ -2502,8 +2833,18 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_rationale_72",
-      "target": "routes_ai_call_gemini_unified",
+      "target": "routes_ai_call_gemini_unified"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
+      "source_location": "L325",
+      "weight": 1.0,
+      "source": "routes_ai_rationale_325",
+      "target": "routes_ai_optimize_resume",
       "confidence_score": 1.0
     },
     {
@@ -2512,9 +2853,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L324",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_rationale_324",
-      "target": "routes_ai_optimize_resume",
-      "confidence_score": 1.0
+      "target": "routes_ai_optimize_resume"
     },
     {
       "relation": "calls",
@@ -2523,9 +2864,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L512",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_score_resume",
-      "target": "routes_ai_cosine_sim",
-      "confidence_score": 1.0
+      "target": "routes_ai_cosine_sim"
     },
     {
       "relation": "calls",
@@ -2534,9 +2875,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L481",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_score_resume",
-      "target": "routes_ai_normalize_and_tokenize",
-      "confidence_score": 1.0
+      "target": "routes_ai_normalize_and_tokenize"
     },
     {
       "relation": "calls",
@@ -2545,9 +2886,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\ai.py",
       "source_location": "L480",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_ai_score_resume",
-      "target": "routes_ai_parse_jd",
-      "confidence_score": 1.0
+      "target": "routes_ai_parse_jd"
     },
     {
       "relation": "contains",
@@ -2555,9 +2896,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\analytics.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_analytics_py",
-      "target": "routes_analytics_get_analytics",
-      "confidence_score": 1.0
+      "target": "routes_analytics_get_analytics"
     },
     {
       "relation": "contains",
@@ -2565,9 +2906,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_create",
-      "confidence_score": 1.0
+      "target": "routes_applications_create"
     },
     {
       "relation": "contains",
@@ -2575,9 +2916,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_list_all",
-      "confidence_score": 1.0
+      "target": "routes_applications_list_all"
     },
     {
       "relation": "contains",
@@ -2585,9 +2926,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_get_one",
-      "confidence_score": 1.0
+      "target": "routes_applications_get_one"
     },
     {
       "relation": "contains",
@@ -2595,9 +2936,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_update",
-      "confidence_score": 1.0
+      "target": "routes_applications_update"
     },
     {
       "relation": "contains",
@@ -2605,9 +2946,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_delete",
-      "confidence_score": 1.0
+      "target": "routes_applications_delete"
     },
     {
       "relation": "contains",
@@ -2615,9 +2956,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_list_events",
-      "confidence_score": 1.0
+      "target": "routes_applications_list_events"
     },
     {
       "relation": "contains",
@@ -2625,9 +2966,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_create_event",
-      "confidence_score": 1.0
+      "target": "routes_applications_create_event"
     },
     {
       "relation": "contains",
@@ -2635,9 +2976,31 @@
       "source_file": "backend\\app\\api\\v1\\routes\\applications.py",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_applications_py",
-      "target": "routes_applications_upload_document",
-      "confidence_score": 1.0
+      "target": "routes_applications_upload_document"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "services_notification_service_mark_as_read",
+      "target": "routes_applications_update"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "services_notification_service_mark_all_as_read",
+      "target": "routes_applications_update"
     },
     {
       "relation": "contains",
@@ -2645,9 +3008,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\dashboard.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_dashboard_py",
-      "target": "routes_dashboard_get_dashboard",
-      "confidence_score": 1.0
+      "target": "routes_dashboard_get_dashboard"
     },
     {
       "relation": "contains",
@@ -2655,8 +3018,38 @@
       "source_file": "backend\\app\\api\\v1\\routes\\events.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_events_py",
-      "target": "routes_events_delete_event",
+      "target": "routes_events_delete_event"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_notifications_py",
+      "target": "routes_notifications_get_notifications",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_notifications_py",
+      "target": "routes_notifications_mark_notification_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\api\\v1\\routes\\notifications.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "backend_app_api_v1_routes_notifications_py",
+      "target": "routes_notifications_mark_all_notifications_read",
       "confidence_score": 1.0
     },
     {
@@ -2665,9 +3058,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_payments_py",
-      "target": "routes_payments_create_checkout_session",
-      "confidence_score": 1.0
+      "target": "routes_payments_create_checkout_session"
     },
     {
       "relation": "contains",
@@ -2675,9 +3068,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_payments_py",
-      "target": "routes_payments_stripe_webhook",
-      "confidence_score": 1.0
+      "target": "routes_payments_stripe_webhook"
     },
     {
       "relation": "rationale_for",
@@ -2685,9 +3078,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\payments.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_payments_rationale_53",
-      "target": "routes_payments_stripe_webhook",
-      "confidence_score": 1.0
+      "target": "routes_payments_stripe_webhook"
     },
     {
       "relation": "contains",
@@ -2695,9 +3088,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\reminders.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_reminders_py",
-      "target": "routes_reminders_list_reminders",
-      "confidence_score": 1.0
+      "target": "routes_reminders_list_reminders"
     },
     {
       "relation": "contains",
@@ -2705,9 +3098,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_users_py",
-      "target": "routes_users_get_profile",
-      "confidence_score": 1.0
+      "target": "routes_users_get_profile"
     },
     {
       "relation": "contains",
@@ -2715,9 +3108,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_users_py",
-      "target": "routes_users_update_profile",
-      "confidence_score": 1.0
+      "target": "routes_users_update_profile"
     },
     {
       "relation": "contains",
@@ -2725,9 +3118,9 @@
       "source_file": "backend\\app\\api\\v1\\routes\\users.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_api_v1_routes_users_py",
-      "target": "routes_users_delete_account",
-      "confidence_score": 1.0
+      "target": "routes_users_delete_account"
     },
     {
       "relation": "contains",
@@ -2735,9 +3128,9 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_auth_py",
-      "target": "core_auth_get_jwks_client",
-      "confidence_score": 1.0
+      "target": "core_auth_get_jwks_client"
     },
     {
       "relation": "contains",
@@ -2745,9 +3138,9 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_auth_py",
-      "target": "core_auth_decode_claims",
-      "confidence_score": 1.0
+      "target": "core_auth_decode_claims"
     },
     {
       "relation": "calls",
@@ -2756,9 +3149,9 @@
       "source_file": "backend\\app\\core\\auth.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_auth_decode_claims",
-      "target": "core_auth_get_jwks_client",
-      "confidence_score": 1.0
+      "target": "core_auth_get_jwks_client"
     },
     {
       "relation": "calls",
@@ -2777,9 +3170,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_config_py",
-      "target": "core_config_settings",
-      "confidence_score": 1.0
+      "target": "core_config_settings"
     },
     {
       "relation": "contains",
@@ -2787,9 +3180,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_config_py",
-      "target": "core_config_cors_origins_list",
-      "confidence_score": 1.0
+      "target": "core_config_cors_origins_list"
     },
     {
       "relation": "contains",
@@ -2797,9 +3190,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_config_py",
-      "target": "core_config_supabase_project_ref",
-      "confidence_score": 1.0
+      "target": "core_config_supabase_project_ref"
     },
     {
       "relation": "contains",
@@ -2807,9 +3200,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_config_py",
-      "target": "core_config_supabase_jwks_url",
-      "confidence_score": 1.0
+      "target": "core_config_supabase_jwks_url"
     },
     {
       "relation": "contains",
@@ -2817,9 +3210,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_config_py",
-      "target": "core_config_config",
-      "confidence_score": 1.0
+      "target": "core_config_config"
     },
     {
       "relation": "inherits",
@@ -2827,9 +3220,9 @@
       "source_file": "backend\\app\\core\\config.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_config_settings",
-      "target": "basesettings",
-      "confidence_score": 1.0
+      "target": "basesettings"
     },
     {
       "relation": "contains",
@@ -2837,9 +3230,9 @@
       "source_file": "backend\\app\\core\\deps.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_deps_py",
-      "target": "core_deps_get_current_user",
-      "confidence_score": 1.0
+      "target": "core_deps_get_current_user"
     },
     {
       "relation": "calls",
@@ -2858,9 +3251,9 @@
       "source_file": "backend\\app\\core\\logging.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_core_logging_py",
-      "target": "core_logging_setup_logging",
-      "confidence_score": 1.0
+      "target": "core_logging_setup_logging"
     },
     {
       "relation": "contains",
@@ -2868,9 +3261,9 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_db_session_py",
-      "target": "db_session_base",
-      "confidence_score": 1.0
+      "target": "db_session_base"
     },
     {
       "relation": "contains",
@@ -2878,9 +3271,9 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_db_session_py",
-      "target": "db_session_get_db",
-      "confidence_score": 1.0
+      "target": "db_session_get_db"
     },
     {
       "relation": "inherits",
@@ -2888,9 +3281,9 @@
       "source_file": "backend\\app\\db\\session.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "db_session_base",
-      "target": "declarativebase",
-      "confidence_score": 1.0
+      "target": "declarativebase"
     },
     {
       "relation": "uses",
@@ -2898,9 +3291,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_applicationstatus",
-      "target": "db_session_base",
-      "confidence_score": 0.5
+      "target": "db_session_base"
     },
     {
       "relation": "uses",
@@ -2908,9 +3301,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_user",
-      "target": "db_session_base",
-      "confidence_score": 0.5
+      "target": "db_session_base"
     },
     {
       "relation": "uses",
@@ -2918,9 +3311,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_processedpayment",
-      "target": "db_session_base",
-      "confidence_score": 0.5
+      "target": "db_session_base"
     },
     {
       "relation": "uses",
@@ -2928,9 +3321,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_application",
-      "target": "db_session_base",
-      "confidence_score": 0.5
+      "target": "db_session_base"
     },
     {
       "relation": "uses",
@@ -2938,9 +3331,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_applicationevent",
-      "target": "db_session_base",
-      "confidence_score": 0.5
+      "target": "db_session_base"
     },
     {
       "relation": "uses",
@@ -2948,7 +3341,17 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L5",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "models_models_applicationdocument",
+      "target": "db_session_base"
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "backend\\app\\models\\models.py",
+      "source_location": "L5",
+      "weight": 0.8,
+      "source": "models_models_notification",
       "target": "db_session_base",
       "confidence_score": 0.5
     },
@@ -2959,9 +3362,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "enum",
-      "confidence_score": 1.0
+      "target": "enum"
     },
     {
       "relation": "contains",
@@ -2969,9 +3372,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_applicationstatus",
-      "confidence_score": 1.0
+      "target": "models_models_applicationstatus"
     },
     {
       "relation": "contains",
@@ -2979,9 +3382,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_user",
-      "confidence_score": 1.0
+      "target": "models_models_user"
     },
     {
       "relation": "contains",
@@ -2989,9 +3392,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_processedpayment",
-      "confidence_score": 1.0
+      "target": "models_models_processedpayment"
     },
     {
       "relation": "contains",
@@ -2999,9 +3402,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_application",
-      "confidence_score": 1.0
+      "target": "models_models_application"
     },
     {
       "relation": "contains",
@@ -3009,9 +3412,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_applicationevent",
-      "confidence_score": 1.0
+      "target": "models_models_applicationevent"
     },
     {
       "relation": "contains",
@@ -3019,8 +3422,18 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_models_models_py",
-      "target": "models_models_applicationdocument",
+      "target": "models_models_applicationdocument"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\models\\models.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "backend_app_models_models_py",
+      "target": "models_models_notification",
       "confidence_score": 1.0
     },
     {
@@ -3029,9 +3442,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_applicationstatus",
-      "target": "str",
-      "confidence_score": 1.0
+      "target": "str"
     },
     {
       "relation": "inherits",
@@ -3039,9 +3452,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_statusenum",
-      "target": "str",
-      "confidence_score": 1.0
+      "target": "str"
     },
     {
       "relation": "inherits",
@@ -3049,9 +3462,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_user",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -3059,9 +3472,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_processedpayment",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -3069,9 +3482,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_application",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -3079,9 +3492,9 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_applicationevent",
-      "target": "base",
-      "confidence_score": 1.0
+      "target": "base"
     },
     {
       "relation": "inherits",
@@ -3089,7 +3502,17 @@
       "source_file": "backend\\app\\models\\models.py",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_models_applicationdocument",
+      "target": "base"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\models\\models.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "models_models_notification",
       "target": "base",
       "confidence_score": 1.0
     },
@@ -3138,15 +3561,26 @@
       "target": "models_models_applicationdocument"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "services_notification_service_create_notification",
+      "target": "models_models_notification"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "enum",
-      "confidence_score": 1.0
+      "target": "enum"
     },
     {
       "relation": "contains",
@@ -3154,9 +3588,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_statusenum",
-      "confidence_score": 1.0
+      "target": "schemas_application_statusenum"
     },
     {
       "relation": "contains",
@@ -3164,9 +3598,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationcreate",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationcreate"
     },
     {
       "relation": "contains",
@@ -3174,9 +3608,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationupdate",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationupdate"
     },
     {
       "relation": "contains",
@@ -3184,9 +3618,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationresponse"
     },
     {
       "relation": "contains",
@@ -3194,9 +3628,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationeventresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationeventresponse"
     },
     {
       "relation": "contains",
@@ -3204,9 +3638,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationeventcreate",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationeventcreate"
     },
     {
       "relation": "contains",
@@ -3214,9 +3648,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationdocumentresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationdocumentresponse"
     },
     {
       "relation": "contains",
@@ -3224,9 +3658,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_applicationdetailresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_applicationdetailresponse"
     },
     {
       "relation": "contains",
@@ -3234,9 +3668,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_dashboardrecentapplication",
-      "confidence_score": 1.0
+      "target": "schemas_application_dashboardrecentapplication"
     },
     {
       "relation": "contains",
@@ -3244,9 +3678,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_dashboardresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_dashboardresponse"
     },
     {
       "relation": "contains",
@@ -3254,9 +3688,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_analyticsmonthcount",
-      "confidence_score": 1.0
+      "target": "schemas_application_analyticsmonthcount"
     },
     {
       "relation": "contains",
@@ -3264,9 +3698,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_analyticsresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_analyticsresponse"
     },
     {
       "relation": "contains",
@@ -3274,9 +3708,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_reminderresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_reminderresponse"
     },
     {
       "relation": "contains",
@@ -3284,9 +3718,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_resumeextractionresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_resumeextractionresponse"
     },
     {
       "relation": "contains",
@@ -3294,9 +3728,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_aianalyzeresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_aianalyzeresponse"
     },
     {
       "relation": "contains",
@@ -3304,9 +3738,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_application_py",
-      "target": "schemas_application_resumetailorresponse",
-      "confidence_score": 1.0
+      "target": "schemas_application_resumetailorresponse"
     },
     {
       "relation": "inherits",
@@ -3314,9 +3748,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_statusenum",
-      "target": "enum",
-      "confidence_score": 1.0
+      "target": "enum"
     },
     {
       "relation": "inherits",
@@ -3324,9 +3758,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationcreate",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3334,9 +3768,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationupdate",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3344,9 +3778,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3354,9 +3788,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationeventresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3364,9 +3798,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationeventcreate",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3374,9 +3808,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationdocumentresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3384,9 +3818,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_dashboardrecentapplication",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3394,9 +3828,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_dashboardresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3404,9 +3838,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_analyticsmonthcount",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3414,9 +3848,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_analyticsresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3424,9 +3858,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_reminderresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3434,9 +3868,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_resumeextractionresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3444,9 +3878,9 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_aianalyzeresponse",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3454,7 +3888,27 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_resumetailorresponse",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "schemas_notification_notificationbase",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "schemas_notification_notificationupdate",
       "target": "basemodel",
       "confidence_score": 1.0
     },
@@ -3464,9 +3918,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_user_userbase",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3474,9 +3928,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_user_userupdate",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -3484,8 +3938,68 @@
       "source_file": "backend\\app\\schemas\\application.py",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_application_applicationdetailresponse",
-      "target": "schemas_application_applicationresponse",
+      "target": "schemas_application_applicationresponse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_app_schemas_notification_py",
+      "target": "schemas_notification_notificationbase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "backend_app_schemas_notification_py",
+      "target": "schemas_notification_notificationcreate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "backend_app_schemas_notification_py",
+      "target": "schemas_notification_notificationupdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "backend_app_schemas_notification_py",
+      "target": "schemas_notification_notificationresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "schemas_notification_notificationcreate",
+      "target": "schemas_notification_notificationbase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\schemas\\notification.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "schemas_notification_notificationresponse",
+      "target": "schemas_notification_notificationbase",
       "confidence_score": 1.0
     },
     {
@@ -3494,9 +4008,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_user_py",
-      "target": "schemas_user_userbase",
-      "confidence_score": 1.0
+      "target": "schemas_user_userbase"
     },
     {
       "relation": "contains",
@@ -3504,9 +4018,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_user_py",
-      "target": "schemas_user_userupdate",
-      "confidence_score": 1.0
+      "target": "schemas_user_userupdate"
     },
     {
       "relation": "contains",
@@ -3514,9 +4028,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_user_py",
-      "target": "schemas_user_userresponse",
-      "confidence_score": 1.0
+      "target": "schemas_user_userresponse"
     },
     {
       "relation": "contains",
@@ -3524,9 +4038,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_schemas_user_py",
-      "target": "schemas_user_config",
-      "confidence_score": 1.0
+      "target": "schemas_user_config"
     },
     {
       "relation": "inherits",
@@ -3534,9 +4048,9 @@
       "source_file": "backend\\app\\schemas\\user.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "schemas_user_userresponse",
-      "target": "schemas_user_userbase",
-      "confidence_score": 1.0
+      "target": "schemas_user_userbase"
     },
     {
       "relation": "contains",
@@ -3544,9 +4058,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_ai_limiter_py",
-      "target": "services_ai_limiter_ailimiter",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter"
     },
     {
       "relation": "method",
@@ -3554,9 +4068,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_ai_limiter_ailimiter",
-      "target": "services_ai_limiter_ailimiter_new",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter_new"
     },
     {
       "relation": "method",
@@ -3564,9 +4078,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_ai_limiter_ailimiter",
-      "target": "services_ai_limiter_ailimiter_acquire",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter_acquire"
     },
     {
       "relation": "method",
@@ -3574,9 +4088,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_ai_limiter_ailimiter",
-      "target": "services_ai_limiter_ailimiter_release",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter_release"
     },
     {
       "relation": "rationale_for",
@@ -3584,9 +4098,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_ai_limiter_rationale_7",
-      "target": "services_ai_limiter_ailimiter",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter"
     },
     {
       "relation": "rationale_for",
@@ -3594,9 +4108,9 @@
       "source_file": "backend\\app\\services\\ai_limiter.py",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_ai_limiter_rationale_22",
-      "target": "services_ai_limiter_ailimiter_acquire",
-      "confidence_score": 1.0
+      "target": "services_ai_limiter_ailimiter_acquire"
     },
     {
       "relation": "contains",
@@ -3604,9 +4118,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_create_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_create_application"
     },
     {
       "relation": "contains",
@@ -3614,9 +4128,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_applications",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_applications"
     },
     {
       "relation": "contains",
@@ -3624,9 +4138,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "contains",
@@ -3634,9 +4148,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_update_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_update_application"
     },
     {
       "relation": "contains",
@@ -3644,9 +4158,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_application_detail",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application_detail"
     },
     {
       "relation": "contains",
@@ -3654,9 +4168,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_list_application_events",
-      "confidence_score": 1.0
+      "target": "services_application_service_list_application_events"
     },
     {
       "relation": "contains",
@@ -3664,9 +4178,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_create_application_event",
-      "confidence_score": 1.0
+      "target": "services_application_service_create_application_event"
     },
     {
       "relation": "contains",
@@ -3674,9 +4188,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_delete_application_event",
-      "confidence_score": 1.0
+      "target": "services_application_service_delete_application_event"
     },
     {
       "relation": "contains",
@@ -3684,9 +4198,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_create_application_document",
-      "confidence_score": 1.0
+      "target": "services_application_service_create_application_document"
     },
     {
       "relation": "contains",
@@ -3694,9 +4208,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L171",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_delete_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_delete_application"
     },
     {
       "relation": "contains",
@@ -3704,9 +4218,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_dashboard_data",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_dashboard_data"
     },
     {
       "relation": "contains",
@@ -3714,9 +4228,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_analytics_data",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_analytics_data"
     },
     {
       "relation": "contains",
@@ -3724,9 +4238,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L277",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_application_service_py",
-      "target": "services_application_service_get_reminders",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_reminders"
     },
     {
       "relation": "calls",
@@ -3735,9 +4249,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_update_application",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "calls",
@@ -3746,9 +4260,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_get_application_detail",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "calls",
@@ -3757,9 +4271,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_list_application_events",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "calls",
@@ -3768,9 +4282,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_create_application_event",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "calls",
@@ -3779,9 +4293,9 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L154",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_create_application_document",
-      "target": "services_application_service_get_application",
-      "confidence_score": 1.0
+      "target": "services_application_service_get_application"
     },
     {
       "relation": "calls",
@@ -3790,8 +4304,48 @@
       "source_file": "backend\\app\\services\\application_service.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_application_service_delete_application",
-      "target": "services_application_service_get_application",
+      "target": "services_application_service_get_application"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "backend_app_services_notification_service_py",
+      "target": "services_notification_service_create_notification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "backend_app_services_notification_service_py",
+      "target": "services_notification_service_get_user_notifications",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "backend_app_services_notification_service_py",
+      "target": "services_notification_service_mark_as_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\app\\services\\notification_service.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_app_services_notification_service_py",
+      "target": "services_notification_service_mark_all_as_read",
       "confidence_score": 1.0
     },
     {
@@ -3800,9 +4354,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "contains",
@@ -3810,9 +4364,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_check_credits",
-      "confidence_score": 1.0
+      "target": "services_user_service_check_credits"
     },
     {
       "relation": "contains",
@@ -3820,9 +4374,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_deduct_credit",
-      "confidence_score": 1.0
+      "target": "services_user_service_deduct_credit"
     },
     {
       "relation": "contains",
@@ -3830,9 +4384,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_add_credits",
-      "confidence_score": 1.0
+      "target": "services_user_service_add_credits"
     },
     {
       "relation": "contains",
@@ -3840,9 +4394,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_update_user",
-      "confidence_score": 1.0
+      "target": "services_user_service_update_user"
     },
     {
       "relation": "contains",
@@ -3850,9 +4404,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_app_services_user_service_py",
-      "target": "services_user_service_delete_user",
-      "confidence_score": 1.0
+      "target": "services_user_service_delete_user"
     },
     {
       "relation": "calls",
@@ -3861,9 +4415,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_user_service_check_credits",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "calls",
@@ -3872,9 +4426,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_user_service_deduct_credit",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "calls",
@@ -3883,9 +4437,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_user_service_add_credits",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "calls",
@@ -3894,9 +4448,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_user_service_update_user",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "calls",
@@ -3905,9 +4459,9 @@
       "source_file": "backend\\app\\services\\user_service.py",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_user_service_delete_user",
-      "target": "services_user_service_get_user_by_id",
-      "confidence_score": 1.0
+      "target": "services_user_service_get_user_by_id"
     },
     {
       "relation": "imports",
@@ -3916,9 +4470,9 @@
       "source_file": "src\\App.jsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_jsx",
-      "target": "contexts_authcontext_authprovider",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_authprovider"
     },
     {
       "relation": "imports",
@@ -3927,9 +4481,9 @@
       "source_file": "src\\App.jsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "contains",
@@ -3937,9 +4491,9 @@
       "source_file": "src\\App.jsx",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_jsx",
-      "target": "src_app_protectedroute",
-      "confidence_score": 1.0
+      "target": "src_app_protectedroute"
     },
     {
       "relation": "contains",
@@ -3947,9 +4501,9 @@
       "source_file": "src\\App.jsx",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_jsx",
-      "target": "src_app_publicroute",
-      "confidence_score": 1.0
+      "target": "src_app_publicroute"
     },
     {
       "relation": "contains",
@@ -3957,9 +4511,9 @@
       "source_file": "src\\App.jsx",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app_jsx",
-      "target": "src_app_app",
-      "confidence_score": 1.0
+      "target": "src_app_app"
     },
     {
       "relation": "calls",
@@ -3989,9 +4543,9 @@
       "source_file": "src\\components\\AppShell.jsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_appshell_jsx",
-      "target": "components_appshell_appshell",
-      "confidence_score": 1.0
+      "target": "components_appshell_appshell"
     },
     {
       "relation": "contains",
@@ -3999,9 +4553,9 @@
       "source_file": "src\\components\\CreditBadge.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_creditbadge_jsx",
-      "target": "components_creditbadge_creditbadge",
-      "confidence_score": 1.0
+      "target": "components_creditbadge_creditbadge"
     },
     {
       "relation": "contains",
@@ -4009,9 +4563,9 @@
       "source_file": "src\\components\\MobileNav.jsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_mobilenav_jsx",
-      "target": "components_mobilenav_mobilenav",
-      "confidence_score": 1.0
+      "target": "components_mobilenav_mobilenav"
     },
     {
       "relation": "contains",
@@ -4019,9 +4573,9 @@
       "source_file": "src\\components\\PricingModal.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_pricingmodal_jsx",
-      "target": "components_pricingmodal_pricingmodal",
-      "confidence_score": 1.0
+      "target": "components_pricingmodal_pricingmodal"
     },
     {
       "relation": "imports",
@@ -4030,9 +4584,9 @@
       "source_file": "src\\components\\Sidebar.jsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_sidebar_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "contains",
@@ -4040,9 +4594,9 @@
       "source_file": "src\\components\\Sidebar.jsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_sidebar_jsx",
-      "target": "components_sidebar_sidebar",
-      "confidence_score": 1.0
+      "target": "components_sidebar_sidebar"
     },
     {
       "relation": "calls",
@@ -4062,8 +4616,18 @@
       "source_file": "src\\components\\TopNav.jsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_topnav_jsx",
-      "target": "contexts_authcontext_useauth",
+      "target": "contexts_authcontext_useauth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\TopNav.jsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_topnav_jsx",
+      "target": "components_topnav_formatrelativetime",
       "confidence_score": 1.0
     },
     {
@@ -4072,9 +4636,9 @@
       "source_file": "src\\components\\TopNav.jsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_topnav_jsx",
-      "target": "components_topnav_topnav",
-      "confidence_score": 1.0
+      "target": "components_topnav_topnav"
     },
     {
       "relation": "calls",
@@ -4094,9 +4658,9 @@
       "source_file": "src\\contexts\\AuthContext.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_contexts_authcontext_jsx",
-      "target": "services_api_getsafesession",
-      "confidence_score": 1.0
+      "target": "services_api_getsafesession"
     },
     {
       "relation": "contains",
@@ -4104,9 +4668,9 @@
       "source_file": "src\\contexts\\AuthContext.jsx",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_contexts_authcontext_jsx",
-      "target": "contexts_authcontext_authprovider",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_authprovider"
     },
     {
       "relation": "contains",
@@ -4114,9 +4678,9 @@
       "source_file": "src\\contexts\\AuthContext.jsx",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_contexts_authcontext_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4125,9 +4689,9 @@
       "source_file": "src\\pages\\AddEdit.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_addedit_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4136,9 +4700,9 @@
       "source_file": "src\\pages\\Analytics.jsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_analytics_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4147,9 +4711,9 @@
       "source_file": "src\\pages\\Applications.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_applications_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4158,9 +4722,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_dashboard_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4169,9 +4733,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4180,7 +4744,18 @@
       "source_file": "src\\pages\\Login.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_login_jsx",
+      "target": "contexts_authcontext_useauth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\pages\\PaymentSuccess.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_pages_paymentsuccess_jsx",
       "target": "contexts_authcontext_useauth",
       "confidence_score": 1.0
     },
@@ -4191,9 +4766,9 @@
       "source_file": "src\\pages\\Profile.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_profile_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4202,9 +4777,9 @@
       "source_file": "src\\pages\\ResumeAnalyzer.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_resumeanalyzer_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4213,9 +4788,9 @@
       "source_file": "src\\pages\\ResumeTailor.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_resumetailor_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4224,9 +4799,9 @@
       "source_file": "src\\pages\\Settings.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_settings_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "imports",
@@ -4235,9 +4810,9 @@
       "source_file": "src\\pages\\Signup.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_signup_jsx",
-      "target": "contexts_authcontext_useauth",
-      "confidence_score": 1.0
+      "target": "contexts_authcontext_useauth"
     },
     {
       "relation": "calls",
@@ -4310,6 +4885,17 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "src\\pages\\PaymentSuccess.jsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "pages_paymentsuccess_paymentsuccess",
+      "target": "contexts_authcontext_useauth"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "src\\pages\\Profile.jsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -4364,32 +4950,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\data\\skills.js",
-      "source_location": "L5",
+      "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data_skills_js",
-      "target": "data_skills_parsefrontmatter",
-      "confidence_score": 1.0
+      "target": "data_skills_getskills"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src\\data\\skills.js",
-      "source_location": "L29",
+      "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_data_skills_js",
-      "target": "data_skills_getskills",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src\\data\\skills.js",
-      "source_location": "L38",
-      "weight": 1.0,
-      "source": "data_skills_getskills",
-      "target": "data_skills_parsefrontmatter",
-      "confidence_score": 1.0
+      "target": "data_skills_parsefrontmatter"
     },
     {
       "relation": "imports",
@@ -4398,9 +4973,20 @@
       "source_file": "src\\pages\\AddEdit.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_addedit_jsx",
-      "target": "data_skills_getskills",
-      "confidence_score": 1.0
+      "target": "data_skills_getskills"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\data\\skills.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "data_skills_getskills",
+      "target": "data_skills_parsefrontmatter"
     },
     {
       "relation": "contains",
@@ -4408,9 +4994,9 @@
       "source_file": "src\\pages\\AddEdit.jsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_addedit_jsx",
-      "target": "pages_addedit_addedit",
-      "confidence_score": 1.0
+      "target": "pages_addedit_addedit"
     },
     {
       "relation": "contains",
@@ -4418,9 +5004,9 @@
       "source_file": "src\\pages\\Analytics.jsx",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_analytics_jsx",
-      "target": "pages_analytics_formatdate",
-      "confidence_score": 1.0
+      "target": "pages_analytics_formatdate"
     },
     {
       "relation": "contains",
@@ -4428,9 +5014,9 @@
       "source_file": "src\\pages\\Analytics.jsx",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_analytics_jsx",
-      "target": "pages_analytics_formatmonth",
-      "confidence_score": 1.0
+      "target": "pages_analytics_formatmonth"
     },
     {
       "relation": "contains",
@@ -4438,9 +5024,9 @@
       "source_file": "src\\pages\\Analytics.jsx",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_analytics_jsx",
-      "target": "pages_analytics_analytics",
-      "confidence_score": 1.0
+      "target": "pages_analytics_analytics"
     },
     {
       "relation": "contains",
@@ -4448,9 +5034,9 @@
       "source_file": "src\\pages\\Applications.jsx",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_applications_jsx",
-      "target": "pages_applications_fmtdate",
-      "confidence_score": 1.0
+      "target": "pages_applications_fmtdate"
     },
     {
       "relation": "contains",
@@ -4458,9 +5044,9 @@
       "source_file": "src\\pages\\Applications.jsx",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_applications_jsx",
-      "target": "pages_applications_applications",
-      "confidence_score": 1.0
+      "target": "pages_applications_applications"
     },
     {
       "relation": "contains",
@@ -4468,9 +5054,9 @@
       "source_file": "src\\pages\\Autofill.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_autofill_jsx",
-      "target": "pages_autofill_autofill",
-      "confidence_score": 1.0
+      "target": "pages_autofill_autofill"
     },
     {
       "relation": "contains",
@@ -4478,9 +5064,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_dashboard_jsx",
-      "target": "pages_dashboard_formatdate",
-      "confidence_score": 1.0
+      "target": "pages_dashboard_formatdate"
     },
     {
       "relation": "contains",
@@ -4488,9 +5074,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_dashboard_jsx",
-      "target": "pages_dashboard_relativetime",
-      "confidence_score": 1.0
+      "target": "pages_dashboard_relativetime"
     },
     {
       "relation": "contains",
@@ -4498,9 +5084,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_dashboard_jsx",
-      "target": "pages_dashboard_remindertone",
-      "confidence_score": 1.0
+      "target": "pages_dashboard_remindertone"
     },
     {
       "relation": "contains",
@@ -4508,9 +5094,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_dashboard_jsx",
-      "target": "pages_dashboard_dashboard",
-      "confidence_score": 1.0
+      "target": "pages_dashboard_dashboard"
     },
     {
       "relation": "calls",
@@ -4519,9 +5105,9 @@
       "source_file": "src\\pages\\Dashboard.jsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_dashboard_relativetime",
-      "target": "pages_dashboard_formatdate",
-      "confidence_score": 1.0
+      "target": "pages_dashboard_formatdate"
     },
     {
       "relation": "contains",
@@ -4529,9 +5115,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_geteventstyle",
-      "confidence_score": 1.0
+      "target": "pages_details_geteventstyle"
     },
     {
       "relation": "contains",
@@ -4539,9 +5125,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_formatsalary",
-      "confidence_score": 1.0
+      "target": "pages_details_formatsalary"
     },
     {
       "relation": "contains",
@@ -4549,9 +5135,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_formateventdate",
-      "confidence_score": 1.0
+      "target": "pages_details_formateventdate"
     },
     {
       "relation": "contains",
@@ -4559,9 +5145,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_formateventtype",
-      "confidence_score": 1.0
+      "target": "pages_details_formateventtype"
     },
     {
       "relation": "contains",
@@ -4569,9 +5155,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_fileurl",
-      "confidence_score": 1.0
+      "target": "pages_details_fileurl"
     },
     {
       "relation": "contains",
@@ -4579,9 +5165,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_details_jsx",
-      "target": "pages_details_details",
-      "confidence_score": 1.0
+      "target": "pages_details_details"
     },
     {
       "relation": "calls",
@@ -4590,9 +5176,9 @@
       "source_file": "src\\pages\\Details.jsx",
       "source_location": "L303",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_details_details",
-      "target": "pages_details_formatsalary",
-      "confidence_score": 1.0
+      "target": "pages_details_formatsalary"
     },
     {
       "relation": "contains",
@@ -4600,9 +5186,9 @@
       "source_file": "src\\pages\\Login.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_login_jsx",
-      "target": "pages_login_login",
-      "confidence_score": 1.0
+      "target": "pages_login_login"
     },
     {
       "relation": "contains",
@@ -4610,9 +5196,9 @@
       "source_file": "src\\pages\\Notifications.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_notifications_jsx",
-      "target": "pages_notifications_notifications",
-      "confidence_score": 1.0
+      "target": "pages_notifications_notifications"
     },
     {
       "relation": "contains",
@@ -4620,9 +5206,9 @@
       "source_file": "src\\pages\\PaymentCancelled.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_paymentcancelled_jsx",
-      "target": "pages_paymentcancelled_paymentcancelled",
-      "confidence_score": 1.0
+      "target": "pages_paymentcancelled_paymentcancelled"
     },
     {
       "relation": "contains",
@@ -4630,9 +5216,9 @@
       "source_file": "src\\pages\\PaymentSuccess.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_paymentsuccess_jsx",
-      "target": "pages_paymentsuccess_paymentsuccess",
-      "confidence_score": 1.0
+      "target": "pages_paymentsuccess_paymentsuccess"
     },
     {
       "relation": "contains",
@@ -4640,9 +5226,9 @@
       "source_file": "src\\pages\\Profile.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_profile_jsx",
-      "target": "pages_profile_profile",
-      "confidence_score": 1.0
+      "target": "pages_profile_profile"
     },
     {
       "relation": "contains",
@@ -4650,9 +5236,9 @@
       "source_file": "src\\pages\\ResumeAnalyzer.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_resumeanalyzer_jsx",
-      "target": "pages_resumeanalyzer_resumeanalyzer",
-      "confidence_score": 1.0
+      "target": "pages_resumeanalyzer_resumeanalyzer"
     },
     {
       "relation": "contains",
@@ -4660,8 +5246,30 @@
       "source_file": "src\\pages\\ResumeTailor.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_resumetailor_jsx",
-      "target": "pages_resumetailor_resumetailor",
+      "target": "pages_resumetailor_resumetailor"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\pages\\Settings.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_pages_settings_jsx",
+      "target": "utils_theme_gettheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\pages\\Settings.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_pages_settings_jsx",
+      "target": "utils_theme_settheme",
       "confidence_score": 1.0
     },
     {
@@ -4670,9 +5278,20 @@
       "source_file": "src\\pages\\Settings.jsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_settings_jsx",
-      "target": "pages_settings_settings",
-      "confidence_score": 1.0
+      "target": "pages_settings_settings"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src\\pages\\Settings.jsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "pages_settings_settings",
+      "target": "utils_theme_gettheme"
     },
     {
       "relation": "contains",
@@ -4680,9 +5299,9 @@
       "source_file": "src\\pages\\Signup.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_pages_signup_jsx",
-      "target": "pages_signup_signup",
-      "confidence_score": 1.0
+      "target": "pages_signup_signup"
     },
     {
       "relation": "contains",
@@ -4690,9 +5309,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_getsafesession",
-      "confidence_score": 1.0
+      "target": "services_api_getsafesession"
     },
     {
       "relation": "contains",
@@ -4700,9 +5319,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_decodejwt",
-      "confidence_score": 1.0
+      "target": "services_api_decodejwt"
     },
     {
       "relation": "contains",
@@ -4710,9 +5329,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_isexpired",
-      "confidence_score": 1.0
+      "target": "services_api_isexpired"
     },
     {
       "relation": "contains",
@@ -4720,9 +5339,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_dorefresh",
-      "confidence_score": 1.0
+      "target": "services_api_dorefresh"
     },
     {
       "relation": "contains",
@@ -4730,9 +5349,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_getvalidtoken",
-      "confidence_score": 1.0
+      "target": "services_api_getvalidtoken"
     },
     {
       "relation": "contains",
@@ -4740,9 +5359,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_buildheaders",
-      "confidence_score": 1.0
+      "target": "services_api_buildheaders"
     },
     {
       "relation": "contains",
@@ -4750,9 +5369,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_rawfetch",
-      "confidence_score": 1.0
+      "target": "services_api_rawfetch"
     },
     {
       "relation": "contains",
@@ -4760,9 +5379,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_services_api_js",
-      "target": "services_api_request",
-      "confidence_score": 1.0
+      "target": "services_api_request"
     },
     {
       "relation": "calls",
@@ -4771,9 +5390,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_getvalidtoken",
-      "target": "services_api_getsafesession",
-      "confidence_score": 1.0
+      "target": "services_api_getsafesession"
     },
     {
       "relation": "calls",
@@ -4782,9 +5401,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_isexpired",
-      "target": "services_api_decodejwt",
-      "confidence_score": 1.0
+      "target": "services_api_decodejwt"
     },
     {
       "relation": "calls",
@@ -4793,9 +5412,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_getvalidtoken",
-      "target": "services_api_isexpired",
-      "confidence_score": 1.0
+      "target": "services_api_isexpired"
     },
     {
       "relation": "calls",
@@ -4804,9 +5423,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_getvalidtoken",
-      "target": "services_api_dorefresh",
-      "confidence_score": 1.0
+      "target": "services_api_dorefresh"
     },
     {
       "relation": "calls",
@@ -4815,9 +5434,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_request",
-      "target": "services_api_dorefresh",
-      "confidence_score": 1.0
+      "target": "services_api_dorefresh"
     },
     {
       "relation": "calls",
@@ -4826,9 +5445,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_request",
-      "target": "services_api_getvalidtoken",
-      "confidence_score": 1.0
+      "target": "services_api_getvalidtoken"
     },
     {
       "relation": "calls",
@@ -4837,9 +5456,9 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_rawfetch",
-      "target": "services_api_buildheaders",
-      "confidence_score": 1.0
+      "target": "services_api_buildheaders"
     },
     {
       "relation": "calls",
@@ -4848,8 +5467,60 @@
       "source_file": "src\\services\\api.js",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_api_request",
-      "target": "services_api_rawfetch",
+      "target": "services_api_rawfetch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_utils_theme_js",
+      "target": "utils_theme_gettheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_utils_theme_js",
+      "target": "utils_theme_settheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_utils_theme_js",
+      "target": "utils_theme_initializetheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "utils_theme_initializetheme",
+      "target": "utils_theme_gettheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\utils\\theme.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "utils_theme_initializetheme",
+      "target": "utils_theme_settheme",
       "confidence_score": 1.0
     }
   ],
