@@ -7,10 +7,10 @@ from sqlalchemy.orm import Session, selectinload
 from fastapi import HTTPException, status
 from app.models import Application, ApplicationDocument, ApplicationEvent
 from app.schemas import ApplicationCreate, ApplicationEventCreate, ApplicationUpdate, StatusEnum
-from app.core.logging import logger
+from app.services.s3_service import s3_service
 
+# Local UPLOADS_DIR kept for backward compatibility if needed, but not used for new uploads
 UPLOADS_DIR = Path(__file__).resolve().parents[2] / "uploads"
-UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def create_application(db: Session, user_id: uuid.UUID, data: ApplicationCreate) -> Application:
@@ -150,17 +150,17 @@ def create_application_document(
     user_id: uuid.UUID,
     filename: str,
     file_bytes: bytes,
+    content_type: str = None
 ) -> ApplicationDocument:
     app = get_application(db, app_id, user_id)
-    extension = Path(filename).suffix
-    stored_name = f"{uuid.uuid4()}{extension}"
-    destination = UPLOADS_DIR / stored_name
-    destination.write_bytes(file_bytes)
+    
+    # Upload to S3
+    file_url = s3_service.upload_file(file_bytes, filename, content_type)
 
     document = ApplicationDocument(
         application_id=app.id,
         name=filename,
-        file_url=f"/uploads/{stored_name}",
+        file_url=file_url,
     )
     db.add(document)
     db.commit()

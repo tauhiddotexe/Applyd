@@ -131,10 +131,42 @@ app.add_middleware(
 )
 
 
+# Request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    import time
+    start_time = time.time()
+    
+    # Extract user ID if available in request state (set by get_current_user)
+    # Note: get_current_user runs as a dependency, so it's not available in middleware 
+    # unless we parse the JWT ourselves or use a different approach.
+    # For now, we'll log what we can.
+    
+    response = await call_next(request)
+    
+    duration = time.time() - start_time
+    
+    extra = {
+        "method": request.method,
+        "path": request.url.path,
+        "status_code": response.status_code,
+        "duration": f"{duration:.4f}s",
+        "ip": request.client.host if request.client else "unknown",
+    }
+    
+    logger.info(f"API Request: {request.method} {request.url.path}", extra={"extra_info": extra})
+    return response
+
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled error: {exc} | path={request.url.path} | method={request.method}")
+    error_info = {
+        "path": request.url.path,
+        "method": request.method,
+        "error": str(exc),
+        "type": type(exc).__name__,
+    }
+    logger.error(f"Unhandled error: {exc}", extra={"extra_info": error_info})
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "Internal server error"},

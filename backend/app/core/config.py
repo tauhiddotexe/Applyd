@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     STRIPE_BASIC_PRICE_ID: str | None = None
     STRIPE_PRO_PRICE_ID: str | None = None
     FRONTEND_URL: str = "http://localhost:5173"
+    
+    # AWS S3 Configuration
+    AWS_ACCESS_KEY_ID: str | None = None
+    AWS_SECRET_ACCESS_KEY: str | None = None
+    AWS_REGION: str = "us-east-1"
+    AWS_S3_BUCKET: str | None = None
 
     @property
     def cors_origins_list(self) -> list[str]:

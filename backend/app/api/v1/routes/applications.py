@@ -94,4 +94,5 @@ async def upload_document(
         user_id,
         file.filename or "document",
         file_bytes,
+        file.content_type,
     )

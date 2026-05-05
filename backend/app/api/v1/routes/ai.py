@@ -219,7 +219,15 @@ def tailor_resume_with_gemini(resume_text: str, job_description: str) -> dict:
 
 
 @router.post("/extract-resume", response_model=ResumeExtractionResponse)
-async def extract_resume(file: UploadFile = File(...)):
+async def extract_resume(
+    file: UploadFile = File(...),
+    user_id: uuid.UUID = Depends(get_current_user)
+):
+    logger.info(f"AI: Extracting resume", extra={"extra_info": {
+        "user_id": str(user_id),
+        "filename": file.filename,
+        "content_type": file.content_type
+    }})
     if file.content_type != "application/pdf":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -243,7 +251,13 @@ async def extract_resume(file: UploadFile = File(...)):
 async def analyze_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
+    user_id: uuid.UUID = Depends(get_current_user)
 ):
+    logger.info(f"AI: Analyzing resume", extra={"extra_info": {
+        "user_id": str(user_id),
+        "filename": resume_file.filename,
+        "jd_length": len(job_description)
+    }})
     if resume_file.content_type != "application/pdf":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -276,6 +290,11 @@ async def tailor_resume(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
+    logger.info(f"AI: Tailoring resume", extra={"extra_info": {
+        "user_id": str(user_id),
+        "filename": resume_file.filename,
+        "jd_length": len(job_description)
+    }})
     # 1. Check credits
     if not user_service.check_credits(db, user_id):
         raise HTTPException(
@@ -322,6 +341,11 @@ async def optimize_resume(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
+    logger.info(f"AI: Optimizing resume (both)", extra={"extra_info": {
+        "user_id": str(user_id),
+        "filename": resume_file.filename,
+        "jd_length": len(job_description)
+    }})
     """Combined analysis and tailoring in one AI call."""
     if not user_service.check_credits(db, user_id):
         raise HTTPException(
@@ -439,12 +463,13 @@ def extract_text_sync(file_bytes: bytes, filename: str, content_type: str) -> st
 async def score_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
+    user_id: uuid.UUID = Depends(get_current_user)
 ):
-    logger.info(json.dumps({
-        "message": "Processing resume scoring request",
-        "payload": {"filename": resume_file.filename, "content_type": resume_file.content_type},
-        "timestamp": datetime.utcnow().isoformat()
-    }))
+    logger.info(f"AI: Scoring resume", extra={"extra_info": {
+        "user_id": str(user_id),
+        "filename": resume_file.filename,
+        "jd_length": len(job_description)
+    }})
 
     if not job_description.strip():
         raise HTTPException(

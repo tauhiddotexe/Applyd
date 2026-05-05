@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { toast } from 'react-hot-toast';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
 export const API_ROOT = API_BASE.replace('/api/v1', ''); // For static file access
@@ -115,7 +116,9 @@ async function request(endpoint, opts = {}) {
 
   if (!res.ok) {
     const errData = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(errData.detail || `Request failed: ${res.status}`);
+    const message = errData.detail || `Request failed: ${res.status}`;
+    toast.error(message);
+    throw new Error(message);
   }
   
   if (res.status === 204) return null;

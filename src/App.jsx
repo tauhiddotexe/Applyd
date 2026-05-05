@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import Notifications from './pages/Notifications';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancelled from './pages/PaymentCancelled';
+import { Toaster } from 'react-hot-toast';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Toaster position="top-right" />
         <Routes>
           {/* Public — redirect to dashboard if already logged in */}
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
