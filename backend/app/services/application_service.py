@@ -8,6 +8,7 @@ from fastapi import HTTPException, status
 from app.models import Application, ApplicationDocument, ApplicationEvent
 from app.schemas import ApplicationCreate, ApplicationEventCreate, ApplicationUpdate, StatusEnum
 from app.services.s3_service import s3_service
+from app.core.logging import logger
 
 # Local UPLOADS_DIR kept for backward compatibility if needed, but not used for new uploads
 UPLOADS_DIR = Path(__file__).resolve().parents[2] / "uploads"
