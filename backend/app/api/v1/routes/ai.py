@@ -365,41 +365,17 @@ async def optimize_resume(
 
 import re
 
-try:
-    import numpy as np
-    HAS_NUMPY = True
-except ImportError:
-    HAS_NUMPY = False
+import re
 
+# Semantic scoring disabled to keep deployment package lightweight for EB
+HAS_NUMPY = False
 _embedding_model = None
 
 def get_embedding_model():
-    global _embedding_model
-    if _embedding_model is None:
-        try:
-            from sentence_transformers import SentenceTransformer
-            logger.info("Loading sentence transformer model...")
-            _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-        except ImportError:
-            logger.warning("sentence-transformers not installed. Semantic similarity will be skipped.")
-            return None
-    return _embedding_model
+    return None
 
 def cosine_sim(a, b):
-    if HAS_NUMPY:
-        norm_a = np.linalg.norm(a)
-        norm_b = np.linalg.norm(b)
-        if norm_a == 0 or norm_b == 0:
-            return 0.0
-        return np.dot(a, b) / (norm_a * norm_b)
-    else:
-        # Pure python fallback
-        dot_product = sum(x*y for x, y in zip(a, b))
-        norm_a = sum(x*x for x in a) ** 0.5
-        norm_b = sum(x*x for x in b) ** 0.5
-        if norm_a == 0 or norm_b == 0:
-            return 0.0
-        return dot_product / (norm_a * norm_b)
+    return 0.0
 
 SYNONYMS = {
     "js": "javascript",
@@ -529,21 +505,11 @@ async def score_resume(
 
     keyword_score = ((len(req_match) * 2 + len(opt_match)) / total_weight) * 100
 
-    # Semantic Similarity Scoring
-    try:
-        model = await run_in_threadpool(get_embedding_model)
-        # SentenceTransformers can handle long texts but truncates them. 
-        # We encode synchronously in threadpool to avoid blocking event loop.
-        embeddings = await run_in_threadpool(model.encode, [job_description, resume_text])
-        semantic_score = cosine_sim(embeddings[0], embeddings[1]) * 100
-        semantic_score = max(0, min(100, semantic_score))
-    except Exception as e:
-        logger.error(f"Semantic scoring failed: {e}")
-        # Fallback to pure keyword score if embeddings fail
-        semantic_score = keyword_score
+    # Semantic Similarity Scoring - Disabled for lightweight deployment
+    semantic_score = keyword_score
 
     # Final Score Combination
-    final_score = int((keyword_score * 0.7) + (semantic_score * 0.3))
+    final_score = int(keyword_score)
     final_score = max(0, min(100, final_score))
 
     suggestions = []
