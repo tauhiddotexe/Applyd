@@ -6,39 +6,31 @@
 *.p12
 *.crt
 
-# CLAUDE.md
+# Local Agent Folders
 CLAUDE.md
 my-skills/
+tasks/
+graphify-out/
+.antigravity/
+.agents/
+scratch/
+logs/
 
 # Build and Deploy
 *.zip
-cf-config.json
-current-cf-config*.json
-new-cf-config.json
-policy.json
-s3-policy.json
-backend/trust-policy.json
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!vite.config.js
+!postcss.config.js
+!tailwind.config.js
 backend/deploy*.zip
 
-# User Requested List
-CLAUDE.md
-.env
-.env.*
-*.pem
-*.key
-*.log
-.ebextensions/*.bak
-.python-version
-**pycache**/
-.pytest_cache/
-.vscode/
-.idea/
-*.tmp
-*.temp
-.antigravity/
-scratch/
-logs/
-tasks/
+# AWS / Elastic Beanstalk
+.ebextensions/
+.ebignore
+.elasticbeanstalk/
 
 # Dependencies
 node_modules/
@@ -47,27 +39,26 @@ backend/venv/
 # Build
 dist/
 build/
+backend/static/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
+.python-version
+.pytest_cache/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# graphify
-graphify-out/*
-!graphify-out/GRAPH_REPORT.md
-!graphify-out/graph.json
-graphify-out/cache/
-graphify-out/manifest.json
-graphify-out/cost.json
-
-# Antigravity
-.agents/
+# IDE
+.vscode/
+.idea/
 
 # Local Reports
 walkthrough.md
 applyd_project_report.md
+*.tmp
+*.temp
+*.log
