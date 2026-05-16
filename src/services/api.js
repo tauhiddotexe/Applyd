@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 import { toast } from 'react-hot-toast';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'development' ? 'http://127.0.0.1:8000/api/v1' : '');
 export const API_ROOT = API_BASE.replace('/api/v1', ''); // For static file access
 
 
@@ -69,7 +69,11 @@ function rawFetch(endpoint, opts, token) {
   const headers = buildHeaders(token);
   if (opts?.body instanceof FormData) delete headers['Content-Type'];
   
-  const url = `${API_BASE}${endpoint}`;
+  // Defensive URL construction: ensure no double slashes
+  const cleanBase = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${cleanBase}${cleanEndpoint}`;
+  
   return fetch(url, {
     ...opts,
     headers: { ...headers, ...(opts?.headers || {}) },

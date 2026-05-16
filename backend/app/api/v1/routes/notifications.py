@@ -10,14 +10,14 @@ from app.services import notification_service
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
 @router.get("/", response_model=List[NotificationResponse])
-async def get_notifications(
+def get_notifications(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user)
 ):
     return notification_service.get_user_notifications(db, user_id)
 
 @router.put("/{notification_id}/read")
-async def mark_notification_read(
+def mark_notification_read(
     notification_id: uuid.UUID,
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user)
@@ -28,7 +28,7 @@ async def mark_notification_read(
     return {"status": "success"}
 
 @router.put("/read-all")
-async def mark_all_notifications_read(
+def mark_all_notifications_read(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user)
 ):

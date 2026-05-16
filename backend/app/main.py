@@ -1,9 +1,10 @@
+import time
 from pathlib import Path
 from contextlib import asynccontextmanager
 from sqlalchemy import text
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
@@ -104,14 +105,18 @@ def run_migrations():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Applyd API lifecycle starting...")
     # Run migrations in a way that doesn't block startup if DB is down
-    run_migrations()
+    try:
+        run_migrations()
+    except Exception as e:
+        logger.error(f"Post-migration failure in lifespan: {e}")
     
     logger.info(f"CORS Origins: {settings.cors_origins_list}")
-    logger.info("Applyd API started")
+    logger.info("Applyd API fully initialized and ready to serve requests")
     yield
     engine.dispose()
-    logger.info("Applyd API shutdown")
+    logger.info("Applyd API shutdown complete")
 
 
 app = FastAPI(
@@ -134,7 +139,6 @@ app.add_middleware(
 # Request logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    import time
     start_time = time.time()
     
     # Extract user ID if available in request state (set by get_current_user)
@@ -150,11 +154,11 @@ async def log_requests(request: Request, call_next):
         "method": request.method,
         "path": request.url.path,
         "status_code": response.status_code,
-        "duration": f"{duration:.4f}s",
+        "duration_ms": f"{duration*1000:.2f}ms",
         "ip": request.client.host if request.client else "unknown",
     }
     
-    logger.info(f"API Request: {request.method} {request.url.path}", extra={"extra_info": extra})
+    logger.info(f"REQ_END: {request.method} {request.url.path} {response.status_code} ({duration*1000:.2f}ms)", extra={"extra_info": extra})
     return response
 
 # Global exception handler
@@ -189,3 +193,29 @@ app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "applyd-api"}
+
+
+# Serve static files for frontend
+STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
+
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # 1. If path is empty, return index.html
+    if not full_path:
+        return FileResponse(STATIC_DIR / "index.html")
+    
+    # 2. If it's a real file in static, return it
+    file_path = STATIC_DIR / full_path
+    if file_path.is_file():
+        return FileResponse(file_path)
+    
+    # 3. If it's an API route that didn't match, 404
+    if full_path.startswith("api/"):
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+    
+    # 4. Otherwise, return index.html for SPA routing
+    index_path = STATIC_DIR / "index.html"
+    if index_path.is_file():
+        return FileResponse(index_path)
+    
+    return JSONResponse(status_code=404, content={"detail": "Frontend not found"})

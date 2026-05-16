@@ -8,7 +8,9 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: str
-    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    # Production: Set these via environment variables
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,https://dpjpe49st5qyi.cloudfront.net"
+    FRONTEND_URL: str = "http://localhost:5173"
     LOG_LEVEL: str = "INFO"
     OPENAI_API_KEY: str | None = None
     OPENAI_MODEL: str = "gpt-5.5"
@@ -19,7 +21,6 @@ class Settings(BaseSettings):
     STRIPE_WEBHOOK_SECRET: str | None = None
     STRIPE_BASIC_PRICE_ID: str | None = None
     STRIPE_PRO_PRICE_ID: str | None = None
-    FRONTEND_URL: str = "http://localhost:5173"
     
     # AWS S3 Configuration
     AWS_ACCESS_KEY_ID: str | None = None

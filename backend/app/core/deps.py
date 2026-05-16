@@ -1,4 +1,5 @@
 import uuid
+import time
 
 import jwt as _jwt
 from fastapi import Depends, HTTPException, Request, status
@@ -14,11 +15,14 @@ from app.models import User
 security = HTTPBearer(auto_error=False)
 
 
-async def get_current_user(
+def get_current_user(
     request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
     db: Session = Depends(get_db),
 ) -> uuid.UUID:
+    start_auth = time.time()
+    
+    logger.debug(f"AUTH_START: {request.method} {request.url.path}")
     auth_header = request.headers.get("authorization")
     logger.debug(f"Authorization header present: {bool(auth_header)}")
 
@@ -32,7 +36,9 @@ async def get_current_user(
     token = credentials.credentials
 
     try:
+        t0 = time.time()
         payload = decode_claims(token)
+        logger.debug(f"AUTH_DECODE_DONE: {time.time()-t0:.4f}s")
     except _jwt.ExpiredSignatureError:
         logger.warning("401 Unauthorized: token expired")
         raise HTTPException(
@@ -68,8 +74,10 @@ async def get_current_user(
     print(f"DEBUG: Incoming request for user_id (type {type(user_id)}): {user_id}")
 
     try:
+        t_db_start = time.time()
         result = db.execute(select(User).where(User.id == user_id))
         existing = result.scalar_one_or_none()
+        logger.debug(f"AUTH_DB_LOOKUP_DONE: {time.time()-t_db_start:.4f}s")
         
         metadata = payload.get("user_metadata", {})
         email = payload.get("email") or metadata.get("email") or f"{user_id}@supabase.user"

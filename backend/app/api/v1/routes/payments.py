@@ -1,6 +1,7 @@
 import uuid
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.core.deps import get_current_user
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/payments", tags=["Payments"])
 stripe.api_key = settings.STRIPE_API_KEY
 
 @router.post("/create-checkout-session")
-async def create_checkout_session(
+def create_checkout_session(
     plan_type: str,
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
@@ -93,11 +94,12 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
                 user_id = uuid.UUID(user_id_str)
                 credits_to_add = 15 if plan_type == "basic" else 40
                 
-                success = user_service.add_credits(db, user_id, credits_to_add, plan_type, session_id)
+                # Use run_in_threadpool since this is an async route
+                success = await run_in_threadpool(user_service.add_credits, db, user_id, credits_to_add, plan_type, session_id)
                 
                 if success:
                     logger.info(f"Successfully fulfilled {plan_type} plan for user {user_id}")
-                    notification_service.create_notification(
+                    await run_in_threadpool(notification_service.create_notification,
                         db, user_id, "plan_upgrade",
                         f"Plan upgraded to {plan_type.upper()}! {credits_to_add} credits added."
                     )

@@ -88,7 +88,8 @@ async def upload_document(
     user_id: uuid.UUID = Depends(get_current_user),
 ):
     file_bytes = await file.read()
-    return application_service.create_application_document(
+    return await run_in_threadpool(
+        application_service.create_application_document,
         db,
         app_id,
         user_id,

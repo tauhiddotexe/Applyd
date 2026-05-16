@@ -296,7 +296,8 @@ async def tailor_resume(
         "jd_length": len(job_description)
     }})
     # 1. Check credits
-    if not user_service.check_credits(db, user_id):
+    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
+    if not has_credits:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Insufficient credits. Please upgrade your plan.",
@@ -329,7 +330,7 @@ async def tailor_resume(
     result = await call_gemini_unified(resume_text, job_description.strip(), mode="tailor")
     
     # 2. Deduct credit
-    user_service.deduct_credit(db, user_id)
+    await run_in_threadpool(user_service.deduct_credit, db, user_id)
     
     return result
 
@@ -346,8 +347,8 @@ async def optimize_resume(
         "filename": resume_file.filename,
         "jd_length": len(job_description)
     }})
-    """Combined analysis and tailoring in one AI call."""
-    if not user_service.check_credits(db, user_id):
+    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
+    if not has_credits:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Insufficient credits.",
@@ -359,11 +360,9 @@ async def optimize_resume(
     )
     
     result = await call_gemini_unified(resume_text, job_description.strip(), mode="both")
-    user_service.deduct_credit(db, user_id)
+    await run_in_threadpool(user_service.deduct_credit, db, user_id)
     return result
 
-
-import re
 
 import re
 

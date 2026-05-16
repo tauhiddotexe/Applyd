@@ -1,10 +1,47 @@
+# Environment and Secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.crt
+
+# CLAUDE.md
+CLAUDE.md
+
+# Build and Deploy
+*.zip
+cf-config.json
+current-cf-config*.json
+new-cf-config.json
+policy.json
+s3-policy.json
+backend/trust-policy.json
+backend/deploy*.zip
+
+# User Requested List
+CLAUDE.md
+.env
+.env.*
+*.pem
+*.key
+*.log
+.ebextensions/*.bak
+.python-version
+**pycache**/
+.pytest_cache/
+.vscode/
+.idea/
+*.tmp
+*.temp
+.antigravity/
+scratch/
+logs/
+tasks/
+
 # Dependencies
 node_modules/
 backend/venv/
-
-# Environment
-.env
-backend/.env
 
 # Build
 dist/
@@ -15,37 +52,20 @@ __pycache__/
 *.pyc
 *.pyo
 
-# IDE
-.vscode/
-.idea/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
-
-# Project specific
-my-skills/
-src/data/
-
 # graphify
-# Ignore everything inside graphify-out
 graphify-out/*
-
-# But keep these two
 !graphify-out/GRAPH_REPORT.md
 !graphify-out/graph.json
-
-# Ignore heavy / local-only files
 graphify-out/cache/
 graphify-out/manifest.json
 graphify-out/cost.json
 
-# Ignore Antigravity local config
+# Antigravity
 .agents/
-scratch/
 
 # Local Reports
 walkthrough.md
