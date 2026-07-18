@@ -20,7 +20,7 @@ def update_profile(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user)
 ):
-    user = user_service.update_user(db, user_id, user_data.dict(exclude_unset=True))
+    user = user_service.update_user(db, user_id, user_data.model_dump(exclude_unset=True))
     return user
 
 @router.delete("/account")

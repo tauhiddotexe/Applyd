@@ -4,13 +4,49 @@ import { toast } from 'react-hot-toast';
 const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'development' ? 'http://127.0.0.1:8000/api/v1' : '');
 export const API_ROOT = API_BASE.replace('/api/v1', ''); // For static file access
 
+const DEV_TOKEN_KEY = 'applyd_dev_token';
+
 
 let sessionPromise = null;
 let refreshPromise = null;
 
+function getDevToken() {
+  try { return localStorage.getItem(DEV_TOKEN_KEY); }
+  catch { return null; }
+}
+
+function setDevToken(token) {
+  try { localStorage.setItem(DEV_TOKEN_KEY, token); }
+  catch {}
+}
+
+function clearDevToken() {
+  try { localStorage.removeItem(DEV_TOKEN_KEY); }
+  catch {}
+}
+
+function buildMockSession(token) {
+  return {
+    data: {
+      session: {
+        access_token: token,
+        refresh_token: token,
+        user: { id: 'dev-user', email: 'dev@applyd.local' },
+      },
+    },
+    error: null,
+  };
+}
+
 export async function getSafeSession() {
   if (!sessionPromise) {
-    sessionPromise = supabase.auth.getSession().finally(() => {
+    sessionPromise = supabase.auth.getSession().then((result) => {
+      if (!result?.data?.session) {
+        const devToken = getDevToken();
+        if (devToken) return buildMockSession(devToken);
+      }
+      return result;
+    }).finally(() => {
       sessionPromise = null;
     });
   }
@@ -34,7 +70,13 @@ async function doRefresh() {
       refreshPromise = null;
     });
   }
-  return refreshPromise;
+  const result = await refreshPromise;
+  if (result?.data?.session?.access_token) {
+    return result;
+  }
+  const devToken = getDevToken();
+  if (devToken) return buildMockSession(devToken);
+  return result;
 }
 
 // 1. Single helper to get a valid token (waits for refresh, reads once, refreshes if needed)
@@ -58,6 +100,8 @@ async function getValidToken() {
 
   return token;
 }
+
+export { setDevToken, clearDevToken };
 
 function buildHeaders(token) {
   const h = { 'Content-Type': 'application/json' };
@@ -193,9 +237,29 @@ export const resumeAPI = {
     return request('/ai/optimize', { method: 'POST', body: fd });
   },
   score: (file, jd) => {
-    // Note: score uses local model, no Gemini, so no cooldown needed
     const fd = new FormData(); fd.append('resume_file', file); fd.append('job_description', jd);
     return request('/ai/resume-score', { method: 'POST', body: fd });
+  },
+  downloadTailored: async (tailoredPoints, resumeFile, editedText) => {
+    const fd = new FormData();
+    if (editedText) {
+      fd.append('edited_text', editedText);
+    } else {
+      fd.append('tailored_points', typeof tailoredPoints === 'string' ? tailoredPoints : JSON.stringify(tailoredPoints));
+    }
+    if (resumeFile) fd.append('resume_file', resumeFile);
+    const token = await getValidToken();
+    const cleanBase = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
+    const res = await fetch(`${cleanBase}/ai/download-tailored`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: fd,
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ detail: 'Download failed' }));
+      throw new Error(errData.detail || 'Download failed');
+    }
+    return res.blob();
   },
 };
 

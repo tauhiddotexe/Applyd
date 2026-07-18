@@ -136,13 +136,21 @@ class ReminderResponse(BaseModel):
 class ResumeExtractionResponse(BaseModel):
     resume_text: str = Field(serialization_alias="resumeText")
 
+class ScoreBreakdown(BaseModel):
+    keyword_match: int
+    semantic_similarity: int
+    llm_analysis: int
+    section_coverage: int
+    final: int
+
 class AIAnalyzeResponse(BaseModel):
     match_score: int = Field(serialization_alias="matchScore")
     summary: str
     missing_keywords: list[str] = Field(serialization_alias="missingKeywords")
     strengths: list[str]
     improvements: list[str]
-    resume_rewrite_suggestions: list[str] = Field(serialization_alias="resumeRewriteSuggestions")
+    resume_rewrite_suggestions: list[str] = Field(default_factory=list, serialization_alias="resumeRewriteSuggestions")
+    score_breakdown: ScoreBreakdown | None = Field(default=None, serialization_alias="scoreBreakdown")
 
     model_config = {"populate_by_name": True}
 
@@ -152,6 +160,9 @@ class ResumeTailorResponse(BaseModel):
     before_score: int
     after_score: int
     improvement: int
+    score_breakdown: ScoreBreakdown | None = Field(default=None, serialization_alias="scoreBreakdown")
+    structured_tailor: dict | None = Field(default=None, serialization_alias="structuredTailor")
+    resume_text: str = ""
 
     model_config = {"populate_by_name": True}
 

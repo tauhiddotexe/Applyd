@@ -155,12 +155,15 @@ def create_application_document(
 ) -> ApplicationDocument:
     app = get_application(db, app_id, user_id)
     
+    # Sanitize filename: keep only alphanumeric, dots, hyphens, underscores
+    safe_name = "".join(c for c in filename if c.isalnum() or c in "._- ").strip() or "document"
+    
     # Upload to S3
-    file_url = s3_service.upload_file(file_bytes, filename, content_type)
+    file_url = s3_service.upload_file(file_bytes, safe_name, content_type)
 
     document = ApplicationDocument(
         application_id=app.id,
-        name=filename,
+        name=safe_name,
         file_url=file_url,
     )
     db.add(document)
@@ -221,6 +224,8 @@ def get_dashboard_data(db: Session, user_id: uuid.UUID) -> dict:
 
 def get_analytics_data(db: Session, user_id: uuid.UUID) -> dict:
     try:
+        from app.db.session import is_sqlite as _is_sqlite
+
         total_result = db.execute(
             select(func.count()).select_from(Application).where(Application.user_id == user_id)
         )
@@ -242,7 +247,10 @@ def get_analytics_data(db: Session, user_id: uuid.UUID) -> dict:
             key = status_value.value if hasattr(status_value, "value") else str(status_value)
             by_status[key] = count
 
-        month_expr = func.to_char(func.date_trunc("month", Application.created_at), "YYYY-MM")
+        if _is_sqlite:
+            month_expr = func.strftime("%Y-%m", Application.created_at)
+        else:
+            month_expr = func.to_char(func.date_trunc("month", Application.created_at), "YYYY-MM")
         month_result = db.execute(
             select(month_expr.label("month"), func.count().label("count"))
             .where(Application.user_id == user_id)

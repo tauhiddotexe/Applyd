@@ -62,3 +62,9 @@ applyd_project_report.md
 *.tmp
 *.temp
 *.log
+
+# Database
+*.db
+
+# Screenshots
+*.png

@@ -1,402 +1,55 @@
 import json
 import asyncio
-import string
-import pdfplumber
-import docx
+import re
+import uuid
 from datetime import datetime
 from io import BytesIO
-from urllib import request as urllib_request
-from urllib.error import HTTPError, URLError
 
-import google.generativeai as genai
-from google.api_core import exceptions as google_exceptions
-import uuid
-from sqlalchemy.orm import Session
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status, Depends
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import StreamingResponse
 from pypdf import PdfReader
-from app.db.session import get_db
+import pdfplumber
+import docx
+from sqlalchemy.orm import Session
+
 from app.core.deps import get_current_user
-from app.services import user_service
 from app.core.config import settings
 from app.core.logging import logger
+from app.db.session import get_db
+from app.services import user_service
 from app.schemas import AIAnalyzeResponse, ResumeExtractionResponse, ResumeTailorResponse
+from app.services.ai_limiter import ai_limiter
+from app.workflow.graph import analyze_compiled, tailor_compiled
+from app.services.pdf_service import ResumePDF
 
-# Configure Gemini
-if settings.GOOGLE_API_KEY:
-    masked_key = f"{settings.GOOGLE_API_KEY[:8]}...{settings.GOOGLE_API_KEY[-4:]}"
-    logger.info(f"Configuring Gemini with key: {masked_key}")
-    genai.configure(api_key=settings.GOOGLE_API_KEY)
-else:
-    logger.warning("GOOGLE_API_KEY not found in settings")
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
-
-# Removed extract_response_text as Gemini SDK handles it better
-
-
-from app.services.ai_limiter import ai_limiter
-
-def extract_resume_summary(resume_text: str) -> str:
-    """Extracts key experience points and skills to reduce token noise."""
-    lines = [line.strip() for line in resume_text.split('\n') if line.strip()]
-    # Priority: lines starting with bullets or numbers, or short impactful sentences
-    bullet_points = [l for l in lines if l.startswith(('-', '*', '•')) or (len(l) > 15 and l[0].isdigit())]
-    
-    if len(bullet_points) >= 5:
-        points = bullet_points[:12]
-    else:
-        # Fallback to meaningful lines
-        points = [l for l in lines if 20 < len(l) < 200][:15]
-    
-    return "\n".join(points)
-
-def extract_top_keywords_for_prompt(jd_text: str) -> str:
-    """Extracts top 10-12 keywords for the prompt."""
-    keywords = normalize_and_tokenize(jd_text)
-    # Sort by length or frequency if we had it, but length is a decent proxy for 'meaningful' tech terms
-    sorted_kws = sorted(list(keywords), key=len, reverse=True)
-    return ", ".join(sorted_kws[:12])
-
-
-def calculate_local_score(text: str, keywords: list) -> int:
-    """Deterministic keyword-based scoring (fast, no AI)."""
-    if not keywords:
-        return 0
-    text = text.lower()
-    matched = sum(1 for kw in keywords if kw.lower() in text)
-    return int((matched / len(keywords)) * 100)
-
-
-async def call_gemini_unified(resume_text: str, job_description: str, mode: str = "both") -> dict:
-    """
-    Unified Gemini caller optimized for token efficiency and deterministic scoring.
-    """
-    if not settings.GOOGLE_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="GOOGLE_API_KEY is not configured",
-        )
-
-    # Preprocessing
-    resume_summary = extract_resume_summary(resume_text)
-    keywords_set = normalize_and_tokenize(job_description)
-    # Filter for quality
-    valid_kws = sorted(list(keywords_set), key=len, reverse=True)[:12]
-    top_keywords_str = ", ".join(valid_kws)
-
-    # Calculate 'Before' score
-    before_score = calculate_local_score(resume_summary, valid_kws)
-
-    await ai_limiter.acquire()
-    try:
-        model = genai.GenerativeModel(
-            model_name=settings.GEMINI_MODEL,
-            generation_config={"response_mime_type": "application/json"}
-        )
-        
-        base_context = (
-            "Role: Senior recruiter optimizing resumes for ATS and hiring managers.\n\n"
-            "Constraints:\n"
-            "- Do NOT invent experience, tools, or metrics.\n"
-            "- Use metrics ONLY if present or clearly implied.\n"
-            "- Avoid generic phrases (e.g., 'worked on', 'helped').\n"
-            "- Use strong action verbs.\n"
-            "- Keep each bullet concise (max 2 lines).\n"
-            "- Ensure natural language (no keyword stuffing).\n\n"
-            "Focus:\n"
-            "- Align resume content with job description keywords.\n"
-            "- Emphasize impact, results, and relevance.\n"
-        )
-
-        if mode == "analyze":
-            prompt = (
-                f"{base_context}\nTask: Analyze how well the resume matches the JD.\n\n"
-                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
-                "Return JSON: {\"match_score\": 0-100, \"summary\": \"\", \"strengths\": [], \"missing_keywords\": [], \"improvements\": []}"
-            )
-        elif mode == "tailor":
-            prompt = (
-                f"{base_context}\nTask: Generate high-impact, ATS-optimized bullet points based on the resume and JD.\n\n"
-                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
-                "Return JSON only with this schema:\n"
-                "{\n"
-                "  \"summary\": \"a brief 2-3 sentence overview of the original resume\",\n"
-                "  \"improved_points\": [\n"
-                "    {\"original\": \"brief snippet of original point\", \"improved\": \"full rewritten bullet point\"}\n"
-                "  ],\n"
-                "  \"suggestions\": [\"short explanation of strategic changes\"]\n"
-                "}"
-            )
-        else: # both
-            prompt = (
-                f"{base_context}\nTask: Perform ATS analysis and provide tailored bullet points.\n\n"
-                f"Input:\nResume Summary:\n{resume_summary}\n\nTop JD Keywords: {top_keywords_str}\n\n"
-                "Return JSON only with this schema:\n"
-                "{\n"
-                "  \"analysis\": {\"match_score\": 0-100, \"summary\": \"\", \"strengths\": [], \"missing_keywords\": [], \"improvements\": []},\n"
-                "  \"tailoring\": {\n"
-                "    \"summary\": \"...\",\n"
-                "    \"improved_points\": [{\"original\": \"...\", \"improved\": \"...\"}],\n"
-                "    \"suggestions\": []\n"
-                "  }\n"
-                "}"
-            )
-
-        # 3. Call Gemini with Retry
-        max_retries = 3
-        retry_delay = 2
-        for attempt in range(max_retries):
-            try:
-                response = await run_in_threadpool(model.generate_content, prompt)
-                if not response.text:
-                    raise ValueError("Empty response from Gemini")
-                result = json.loads(response.text)
-                break
-            except google_exceptions.ResourceExhausted:
-                if attempt == max_retries - 1:
-                    raise
-                wait_time = retry_delay * (2 ** attempt)
-                logger.warning(f"Gemini 429 (Quota Exceeded). Retrying in {wait_time}s... (Attempt {attempt+1}/{max_retries})")
-                await asyncio.sleep(wait_time)
-            except Exception as e:
-                logger.error(f"Error during Gemini call: {e}")
-                raise
-
-        # Post-processing: Calculate 'After' score for tailoring modes
-        if mode in ("tailor", "both"):
-            tailor_data = result if mode == "tailor" else result.get("tailoring", {})
-            raw_improved = tailor_data.get("improved_points", [])
-            
-            # Extract strings for the final response if they were objects
-            if raw_improved and isinstance(raw_improved[0], dict):
-                improved_strings = [p.get("improved", "") for p in raw_improved]
-                tailor_data["improved_points"] = [s for s in improved_strings if s]
-            
-            improved_text = " ".join(tailor_data.get("improved_points", []))
-            after_score = calculate_local_score(improved_text, valid_kws)
-            
-            # Boost after_score slightly if improvements were made
-            improvement = max(0, after_score - before_score)
-            
-            score_data = {
-                "before_score": before_score,
-                "after_score": after_score,
-                "improvement": improvement
-            }
-            
-            if mode == "tailor":
-                result.update(score_data)
-            else:
-                result["tailoring"].update(score_data)
-
-        return result
-
-    except google_exceptions.ResourceExhausted:
-        logger.error("Gemini API quota exceeded (429)")
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="The AI is currently at its free-tier limit. Please wait a few minutes before trying again.",
-        )
-    except Exception as exc:
-        logger.error(f"Gemini API error: {exc}")
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="AI service encountered an error. Please try again shortly.",
-        )
-    finally:
-        ai_limiter.release()
-
-
-def analyze_resume_with_gemini(resume_text: str, job_description: str) -> dict:
-    return asyncio.run(call_gemini_unified(resume_text, job_description, mode="analyze"))
-
-
-def tailor_resume_with_gemini(resume_text: str, job_description: str) -> dict:
-    return asyncio.run(call_gemini_unified(resume_text, job_description, mode="tailor"))
-
-
-
-@router.post("/extract-resume", response_model=ResumeExtractionResponse)
-async def extract_resume(
-    file: UploadFile = File(...),
-    user_id: uuid.UUID = Depends(get_current_user)
-):
-    logger.info(f"AI: Extracting resume", extra={"extra_info": {
-        "user_id": str(user_id),
-        "filename": file.filename,
-        "content_type": file.content_type
-    }})
-    if file.content_type != "application/pdf":
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only PDF resumes are supported",
-        )
-
-    file_bytes = await file.read()
-    reader = PdfReader(BytesIO(file_bytes))
-    resume_text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
-
-    if not resume_text:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Could not extract text from PDF",
-        )
-
-    return {"resume_text": resume_text}
-
-
-@router.post("/analyze", response_model=AIAnalyzeResponse)
-async def analyze_resume(
-    resume_file: UploadFile = File(...),
-    job_description: str = Form(...),
-    user_id: uuid.UUID = Depends(get_current_user)
-):
-    logger.info(f"AI: Analyzing resume", extra={"extra_info": {
-        "user_id": str(user_id),
-        "filename": resume_file.filename,
-        "jd_length": len(job_description)
-    }})
-    if resume_file.content_type != "application/pdf":
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only PDF resumes are supported",
-        )
-
-    file_bytes = await resume_file.read()
-    reader = PdfReader(BytesIO(file_bytes))
-    resume_text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
-
-    if not resume_text:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Could not extract text from PDF",
-        )
-
-    if not job_description.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Job description is required",
-        )
-
-    return await call_gemini_unified(resume_text, job_description.strip(), mode="analyze")
-
-
-@router.post("/resume-tailor", response_model=ResumeTailorResponse)
-async def tailor_resume(
-    resume_file: UploadFile = File(...),
-    job_description: str = Form(...),
-    db: Session = Depends(get_db),
-    user_id: uuid.UUID = Depends(get_current_user),
-):
-    logger.info(f"AI: Tailoring resume", extra={"extra_info": {
-        "user_id": str(user_id),
-        "filename": resume_file.filename,
-        "jd_length": len(job_description)
-    }})
-    # 1. Check credits
-    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
-    if not has_credits:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient credits. Please upgrade your plan.",
-        )
-
-    if not job_description.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Job description is required",
-        )
-
-    try:
-        file_bytes = await resume_file.read()
-        resume_text = await run_in_threadpool(
-            extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
-        )
-    except Exception as e:
-        logger.error(f"Tailoring extraction failed: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Could not extract text from resume. Ensure it is a valid PDF or DOCX.",
-        )
-
-    if not resume_text.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Resume text is empty",
-        )
-
-    result = await call_gemini_unified(resume_text, job_description.strip(), mode="tailor")
-    
-    # 2. Deduct credit
-    await run_in_threadpool(user_service.deduct_credit, db, user_id)
-    
-    return result
-
-
-@router.post("/optimize")
-async def optimize_resume(
-    resume_file: UploadFile = File(...),
-    job_description: str = Form(...),
-    db: Session = Depends(get_db),
-    user_id: uuid.UUID = Depends(get_current_user),
-):
-    logger.info(f"AI: Optimizing resume (both)", extra={"extra_info": {
-        "user_id": str(user_id),
-        "filename": resume_file.filename,
-        "jd_length": len(job_description)
-    }})
-    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
-    if not has_credits:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient credits.",
-        )
-
-    file_bytes = await resume_file.read()
-    resume_text = await run_in_threadpool(
-        extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
-    )
-    
-    result = await call_gemini_unified(resume_text, job_description.strip(), mode="both")
-    await run_in_threadpool(user_service.deduct_credit, db, user_id)
-    return result
-
-
-import re
-
-# Semantic scoring disabled to keep deployment package lightweight for EB
-HAS_NUMPY = False
-_embedding_model = None
-
-def get_embedding_model():
-    return None
-
-def cosine_sim(a, b):
-    return 0.0
+MAX_FILE_SIZE = 10 * 1024 * 1024
+ALLOWED_PDF_TYPES = {"application/pdf"}
+ALLOWED_RESUME_TYPES = {
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/msword",
+}
 
 SYNONYMS = {
-    "js": "javascript",
-    "reactjs": "react",
-    "node": "nodejs",
-    "vuejs": "vue",
-    "ts": "typescript",
-    "postgres": "postgresql",
-    "k8s": "kubernetes",
-    "aws": "amazon web services",
-    "gcp": "google cloud",
-    "ml": "machine learning"
+    "js": "javascript", "reactjs": "react", "node": "nodejs",
+    "vuejs": "vue", "ts": "typescript", "postgres": "postgresql",
+    "k8s": "kubernetes", "aws": "amazon web services",
+    "gcp": "google cloud", "ml": "machine learning",
 }
 
 STOP_WORDS = {
-    "and", "the", "to", "of", "a", "in", "for", "is", "on", "that", "by", "this", "with", 
-    "i", "you", "it", "not", "or", "be", "are", "from", "at", "as", "your", "an", "will", 
+    "and", "the", "to", "of", "a", "in", "for", "is", "on", "that", "by", "this", "with",
+    "i", "you", "it", "not", "or", "be", "are", "from", "at", "as", "your", "an", "will",
     "we", "can", "have", "has", "but", "about", "if", "all", "so", "up", "out", "who", "which",
-    "required", "requirements", "strong", "familiarity", "plus", "years", "experience", 
-    "development", "familiar", "knowledge", "skills", "ability", "proficient", "preferred", 
-    "understanding", "expert", "hands", "bonus", "role", "team", "work", "projects", "tools"
+    "required", "requirements", "strong", "familiarity", "plus", "years", "experience",
+    "development", "familiar", "knowledge", "skills", "ability", "proficient", "preferred",
+    "understanding", "expert", "hands", "bonus", "role", "team", "work", "projects", "tools",
 }
+
 
 def normalize_and_tokenize(text: str) -> set:
     text = text.lower()
@@ -405,18 +58,20 @@ def normalize_and_tokenize(text: str) -> set:
     words = set(re.findall(r'\b[a-z0-9]+\b', text))
     return words - STOP_WORDS
 
+
 def parse_jd(jd_text: str):
     text = jd_text.lower()
     optional_markers = ["nice to have", "bonus", "preferred", "optional", "plus"]
-    optional_text = ""
     required_text = text
+    optional_text = ""
     for marker in optional_markers:
         if marker in text:
             parts = text.split(marker, 1)
             required_text = parts[0]
-            optional_text += " " + parts[1]
+            optional_text = " " + parts[1]
             break
     return required_text, optional_text
+
 
 def extract_text_sync(file_bytes: bytes, filename: str, content_type: str) -> str:
     file_stream = BytesIO(file_bytes)
@@ -427,37 +82,332 @@ def extract_text_sync(file_bytes: bytes, filename: str, content_type: str) -> st
             return "\n".join(pages)
     elif content_type in [
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/msword"
+        "application/msword",
     ] or filename.endswith(".docx"):
         doc = docx.Document(file_stream)
         return "\n".join([para.text for para in doc.paragraphs])
+    raise ValueError("Invalid file type")
+
+
+async def validate_and_read_file(file: UploadFile, allowed_types: set[str]) -> bytes:
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Only {', '.join(allowed_types)} files are supported",
+        )
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)}MB",
+        )
+    return contents
+
+
+@router.post("/extract-resume", response_model=ResumeExtractionResponse)
+async def extract_resume(
+    file: UploadFile = File(...),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    logger.info("AI: Extracting resume", extra={"extra_info": {
+        "user_id": str(user_id), "filename": file.filename, "content_type": file.content_type,
+    }})
+    file_bytes = await validate_and_read_file(file, ALLOWED_PDF_TYPES)
+    reader = PdfReader(BytesIO(file_bytes))
+    resume_text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
+    if not resume_text:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not extract text from PDF")
+    return {"resume_text": resume_text}
+
+
+@router.post("/analyze", response_model=AIAnalyzeResponse)
+async def analyze_resume(
+    resume_file: UploadFile = File(...),
+    job_description: str = Form(...),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    logger.info("AI: Analyzing resume", extra={"extra_info": {
+        "user_id": str(user_id), "filename": resume_file.filename, "jd_length": len(job_description),
+    }})
+
+    file_bytes = await validate_and_read_file(resume_file, ALLOWED_PDF_TYPES)
+    reader = PdfReader(BytesIO(file_bytes))
+    resume_text = "\n".join((page.extract_text() or "") for page in reader.pages).strip()
+    if not resume_text:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not extract text from PDF")
+    if not job_description.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job description is required")
+
+    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
+    if not has_credits:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient credits. Please upgrade your plan.")
+
+    await ai_limiter.acquire()
+    try:
+        state = {
+            "resume_text": resume_text,
+            "job_description": job_description.strip(),
+            "resume_summary": "",
+            "keywords": [],
+            "before_score": 0,
+            "analysis_result": None,
+            "improved_points": [],
+            "suggestions": [],
+            "after_score": 0,
+            "improvement": 0,
+            "error": None,
+            "retries": 0,
+            "mode": "analyze",
+        }
+        result_state = await run_in_threadpool(analyze_compiled.invoke, state)
+        analysis = result_state.get("analysis_result", {})
+        await run_in_threadpool(user_service.deduct_credit, db, user_id)
+        return {
+            "match_score": analysis.get("match_score") or analysis.get("matchScore") or result_state.get("before_score", 0),
+            "summary": analysis.get("summary", ""),
+            "strengths": analysis.get("strengths", []),
+            "missing_keywords": analysis.get("missing_keywords") or analysis.get("missingKeywords") or [],
+            "improvements": analysis.get("improvements", []),
+            "score_breakdown": result_state.get("score_breakdown"),
+        }
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Analyze failed: {e}")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="AI service encountered an error. Please try again shortly.")
+    finally:
+        ai_limiter.release()
+
+
+@router.post("/resume-tailor", response_model=ResumeTailorResponse)
+async def tailor_resume(
+    resume_file: UploadFile = File(None),
+    job_description: str = Form(...),
+    resume_text: str = Form(None),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    logger.info("AI: Tailoring resume", extra={"extra_info": {
+        "user_id": str(user_id), "jd_length": len(job_description),
+    }})
+
+    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
+    if not has_credits:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient credits. Please upgrade your plan.")
+    if not job_description.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job description is required")
+
+    if resume_text:
+        resume_text = resume_text.strip()
+    elif resume_file:
+        file_bytes = await validate_and_read_file(resume_file, ALLOWED_RESUME_TYPES)
+        resume_text = await run_in_threadpool(
+            extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
+        )
     else:
-        raise ValueError("Invalid file type")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Either resume_file or resume_text is required")
+
+    if not resume_text.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resume text is empty")
+
+    await ai_limiter.acquire()
+    try:
+        state = {
+            "resume_text": resume_text,
+            "job_description": job_description.strip(),
+            "resume_summary": "",
+            "keywords": [],
+            "before_score": 0,
+            "analysis_result": None,
+            "improved_points": [],
+            "suggestions": [],
+            "after_score": 0,
+            "improvement": 0,
+            "error": None,
+            "retries": 0,
+            "mode": "tailor",
+            "parsed_resume": None,
+            "parsed_jd": None,
+            "matched_keywords": [],
+            "missing_keywords": [],
+            "semantic_score": 0.0,
+            "keyword_score": 0,
+            "section_coverage": 0.0,
+            "score_breakdown": None,
+            "structured_tailor": None,
+        }
+        result_state = await run_in_threadpool(tailor_compiled.invoke, state)
+        await run_in_threadpool(user_service.deduct_credit, db, user_id)
+        return {
+            "improved_points": [
+                p.get("improved", p) if isinstance(p, dict) else p
+                for p in result_state.get("improved_points", [])
+            ],
+            "structured_tailor": result_state.get("structured_tailor"),
+            "resume_text": resume_text,
+            "before_score": result_state.get("before_score", 0),
+            "after_score": result_state.get("after_score", 0),
+            "improvement": result_state.get("improvement", 0),
+            "summary": "",
+            "suggestions": result_state.get("suggestions", []),
+            "score_breakdown": result_state.get("score_breakdown"),
+        }
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Tailor failed: {e}")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="AI service encountered an error. Please try again shortly.")
+    finally:
+        ai_limiter.release()
+
+
+@router.post("/optimize")
+async def optimize_resume(
+    resume_file: UploadFile = File(...),
+    job_description: str = Form(...),
+    db: Session = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    logger.info("AI: Optimizing resume", extra={"extra_info": {
+        "user_id": str(user_id), "filename": resume_file.filename, "jd_length": len(job_description),
+    }})
+    has_credits = await run_in_threadpool(user_service.check_credits, db, user_id)
+    if not has_credits:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient credits.")
+    if not job_description.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job description is required")
+
+    file_bytes = await validate_and_read_file(resume_file, ALLOWED_RESUME_TYPES)
+    resume_text = await run_in_threadpool(
+        extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
+    )
+    if not resume_text.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resume text is empty")
+
+    await ai_limiter.acquire()
+    try:
+        analyze_state = {
+            "resume_text": resume_text,
+            "job_description": job_description.strip(),
+            "resume_summary": "",
+            "keywords": [],
+            "before_score": 0,
+            "analysis_result": None,
+            "improved_points": [],
+            "suggestions": [],
+            "after_score": 0,
+            "improvement": 0,
+            "error": None,
+            "retries": 0,
+            "mode": "analyze",
+        }
+        analyze_result = await run_in_threadpool(analyze_compiled.invoke, analyze_state)
+        analysis = analyze_result.get("analysis_result", {})
+
+        tailor_state = {
+            "resume_text": resume_text,
+            "job_description": job_description.strip(),
+            "resume_summary": "",
+            "keywords": analyze_result.get("keywords", []),
+            "before_score": analyze_result.get("before_score", 0),
+            "analysis_result": None,
+            "improved_points": [],
+            "suggestions": [],
+            "after_score": 0,
+            "improvement": 0,
+            "error": None,
+            "retries": 0,
+            "mode": "tailor",
+        }
+        tailor_result = await run_in_threadpool(tailor_compiled.invoke, tailor_state)
+
+        await run_in_threadpool(user_service.deduct_credit, db, user_id)
+        return {
+            "analysis": {
+                "matchScore": analysis.get("match_score", analyze_result.get("before_score", 0)),
+                "summary": analysis.get("summary", ""),
+                "strengths": analysis.get("strengths", []),
+                "missingKeywords": analysis.get("missing_keywords", []),
+                "improvements": analysis.get("improvements", []),
+            },
+            "tailoring": {
+                "improvedPoints": [
+                    p.get("improved", p) if isinstance(p, dict) else p
+                    for p in tailor_result.get("improved_points", [])
+                ],
+                "before_score": tailor_result.get("before_score", 0),
+                "after_score": tailor_result.get("after_score", 0),
+                "improvement": tailor_result.get("improvement", 0),
+                "summary": "",
+                "suggestions": tailor_result.get("suggestions", []),
+            },
+        }
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Optimize failed: {e}")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="AI service encountered an error. Please try again shortly.")
+    finally:
+        ai_limiter.release()
+
+
+@router.post("/download-tailored")
+async def download_tailored(
+    tailored_points: str = Form(default="[]"),
+    resume_file: UploadFile = File(None),
+    resume_text: str = Form(None),
+    edited_text: str = Form(None),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    logger.info("AI: Downloading tailored PDF", extra={"extra_info": {"user_id": str(user_id)}})
+    try:
+        if edited_text:
+            pdf = ResumePDF()
+            pdf_bytes = pdf.build_from_text(edited_text)
+        elif tailored_points:
+            data = json.loads(tailored_points)
+            if isinstance(data, dict) and "sections" in data:
+                pdf = ResumePDF()
+                pdf_bytes = pdf.build_structured(data["sections"])
+            elif isinstance(data, list):
+                if resume_text:
+                    text = resume_text
+                elif resume_file:
+                    file_bytes = await validate_and_read_file(resume_file, ALLOWED_RESUME_TYPES)
+                    text = await run_in_threadpool(
+                        extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
+                    )
+                else:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resume text is required for legacy format")
+                pdf = ResumePDF()
+                pdf_bytes = pdf.build(text, data)
+            else:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid tailored_points format")
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Either edited_text or tailored_points is required")
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=tailored_resume.pdf"},
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"PDF generation failed: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to generate PDF.")
+
 
 @router.post("/resume-score")
 async def score_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
-    user_id: uuid.UUID = Depends(get_current_user)
+    user_id: uuid.UUID = Depends(get_current_user),
 ):
-    logger.info(f"AI: Scoring resume", extra={"extra_info": {
-        "user_id": str(user_id),
-        "filename": resume_file.filename,
-        "jd_length": len(job_description)
+    logger.info("AI: Scoring resume", extra={"extra_info": {
+        "user_id": str(user_id), "filename": resume_file.filename, "jd_length": len(job_description),
     }})
-
     if not job_description.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Job description cannot be empty"
-        )
-        
-    try:
-        file_bytes = await resume_file.read()
-    except Exception as e:
-        logger.error(f"Failed to read uploaded file: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to read file")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job description cannot be empty")
 
+    file_bytes = await validate_and_read_file(resume_file, ALLOWED_RESUME_TYPES)
     try:
         resume_text = await run_in_threadpool(
             extract_text_sync, file_bytes, resume_file.filename, resume_file.content_type
@@ -469,33 +419,27 @@ async def score_resume(
             "message": "Extraction failure",
             "payload": {"filename": resume_file.filename},
             "timestamp": datetime.utcnow().isoformat(),
-            "error": str(e)
+            "error": str(e),
         }))
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Extraction failure")
 
     if not resume_text.strip():
-        logger.error("Extracted resume text is empty")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not extract text from resume")
 
-    # Keyword Scoring
     required_text, optional_text = parse_jd(job_description)
     required_kw = normalize_and_tokenize(required_text)
     optional_kw = normalize_and_tokenize(optional_text)
     resume_kw = normalize_and_tokenize(resume_text)
 
-    # Some basic filtering to ensure we aren't just matching random small words as keywords
-    # Let's assume a keyword is something that is > 2 chars or in SYNONYMS values
     valid_kws = set(SYNONYMS.values())
     required_kw = {w for w in required_kw if len(w) > 2 or w in valid_kws}
     optional_kw = {w for w in optional_kw if len(w) > 2 or w in valid_kws}
-    
+
     if not required_kw and not optional_kw:
-        # Fallback if somehow extraction fails
         required_kw = normalize_and_tokenize(job_description)
 
     req_match = required_kw.intersection(resume_kw)
     opt_match = optional_kw.intersection(resume_kw)
-
     missing_req = required_kw - req_match
 
     total_weight = len(required_kw) * 2 + len(optional_kw)
@@ -503,19 +447,12 @@ async def score_resume(
         total_weight = 1
 
     keyword_score = ((len(req_match) * 2 + len(opt_match)) / total_weight) * 100
-
-    # Semantic Similarity Scoring - Disabled for lightweight deployment
-    semantic_score = keyword_score
-
-    # Final Score Combination
-    final_score = int(keyword_score)
-    final_score = max(0, min(100, final_score))
+    final_score = max(0, min(100, int(keyword_score)))
 
     suggestions = []
     if missing_req:
         top_missing = list(missing_req)[:3]
         suggestions.append(f"Add missing required skills: {', '.join(top_missing).title()}")
-    
     if final_score < 60:
         suggestions.append("Strengthen experience with core requirements to improve ATS ranking.")
         suggestions.append("Ensure you use the exact terminology found in the job description.")
@@ -525,16 +462,12 @@ async def score_resume(
     else:
         suggestions.append("Strong match! Ensure your bullet points are impactful and clear.")
 
-    all_matched = list(req_match.union(opt_match))
-    all_missing = list(missing_req)
-    
-    # Limit to top 15 to keep UI clean
-    all_matched = sorted(all_matched)[:15]
-    all_missing = sorted(all_missing)[:15]
+    all_matched = sorted(list(req_match.union(opt_match)))[:15]
+    all_missing = sorted(list(missing_req))[:15]
 
     return {
         "score": final_score,
         "matched_keywords": all_matched,
         "missing_keywords": all_missing,
-        "suggestions": suggestions
+        "suggestions": suggestions,
     }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../services/supabase';
-import { getSafeSession, userAPI } from '../services/api';
+import { getSafeSession, userAPI, setDevToken, clearDevToken } from '../services/api';
 
 const defaultAuthContext = {
   user: null,
@@ -45,7 +45,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut().catch(() => {});
+    clearDevToken();
     setUser(null);
     setProfile(null);
     setSession(null);
@@ -117,15 +118,40 @@ export function AuthProvider({ children }) {
 
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      if (subscription) subscription.unsubscribe();
     };
   }, [commitSession, refreshProfile, logout]);
 
   const login = useCallback(async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw new Error(error.message);
-    return data.user;
-  }, []);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      clearTimeout(timeoutId);
+      if (error) {
+        throw error;
+      }
+      return data.user;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+      const res = await fetch(`${API_BASE}/auth/dev-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) throw new Error('Dev login failed');
+      const devData = await res.json();
+      setDevToken(devData.access_token);
+      commitSession({
+        access_token: devData.access_token,
+        refresh_token: devData.access_token,
+        user: devData.user,
+      });
+      return devData.user;
+    }
+  }, [commitSession]);
 
   const signup = useCallback(async ({ name, email, password }) => {
     const { data, error } = await supabase.auth.signUp({

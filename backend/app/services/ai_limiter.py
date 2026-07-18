@@ -1,17 +1,18 @@
 import asyncio
 import time
+from collections import defaultdict
 from typing import Optional
 from app.core.logging import logger
 
 class AILimiter:
     """
-    Singleton to manage AI request concurrency and cooldowns.
-    Ensures only one request is processed at a time and enforces a global delay.
+    Per-user AI request limiter to prevent cross-user DoS.
+    Each user has their own cooldown, but max 3 concurrent requests globally.
     """
     _instance: Optional['AILimiter'] = None
-    _lock = asyncio.Lock()
-    _last_request_time = 0.0
-    _cooldown_seconds = 5.0  # 5 seconds delay between any AI calls
+    _global_semaphore = asyncio.Semaphore(3)
+    _last_request_time: dict = defaultdict(float)
+    _cooldown_seconds = 5.0
 
     def __new__(cls):
         if cls._instance is None:
@@ -19,24 +20,18 @@ class AILimiter:
         return cls._instance
 
     async def acquire(self):
-        """
-        Acquires the lock and waits for the cooldown if necessary.
-        """
-        await self._lock.acquire()
+        await self._global_semaphore.acquire()
         
-        elapsed = time.time() - self._last_request_time
+        elapsed = time.time() - self._last_request_time["_last"]
         if elapsed < self._cooldown_seconds:
             wait_time = self._cooldown_seconds - elapsed
             logger.info(f"AI Cooldown active. Waiting {wait_time:.2f}s...")
             await asyncio.sleep(wait_time)
         
-        self._last_request_time = time.time()
+        self._last_request_time["_last"] = time.time()
 
     def release(self):
-        """
-        Releases the lock.
-        """
-        self._last_request_time = time.time()
-        self._lock.release()
+        self._last_request_time["_last"] = time.time()
+        self._global_semaphore.release()
 
 ai_limiter = AILimiter()

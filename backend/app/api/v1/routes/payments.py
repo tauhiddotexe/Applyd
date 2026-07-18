@@ -47,7 +47,7 @@ def create_checkout_session(
         return {"url": session.url}
     except Exception as e:
         logger.error(f"Stripe session creation failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Payment session creation failed")
 
 @router.post("/webhook")
 async def stripe_webhook(request: Request, db: Session = Depends(get_db)):

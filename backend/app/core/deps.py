@@ -46,7 +46,7 @@ def get_current_user(
             detail="Token has expired",
         )
     except _jwt.PyJWTError as e:
-        logger.warning(f"401 Unauthorized: JWT decode failed: {e} | token_start={token[:20]}...")
+        logger.warning(f"401 Unauthorized: JWT decode failed")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
@@ -71,7 +71,6 @@ def get_current_user(
         )
 
     logger.debug(f"Decoded user_id: {user_id}")
-    print(f"DEBUG: Incoming request for user_id (type {type(user_id)}): {user_id}")
 
     try:
         t_db_start = time.time()
@@ -90,7 +89,7 @@ def get_current_user(
                 email=email, 
                 full_name=full_name,
                 avatar_url=avatar_url,
-                credits=3, # Default credits for new users
+                credits=9, # Default credits for new users
                 plan="free"
             )
             db.add(new_user)

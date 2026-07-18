@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI, API_ROOT } from '../services/api';
 import { STATUS_COLORS, STATUS_LABELS, EVENT_STYLES } from '../constants/status';
+import { FadeIn, StaggerContainer, StaggerItem } from '../components/ui/MotionDiv';
+import CompanyLogo from '../components/ui/CompanyLogo';
 
 const getEventStyle = (type) => {
   const t = type?.toLowerCase() || '';
@@ -17,11 +20,7 @@ const getEventStyle = (type) => {
 function formatSalary(app) {
   const { salaryMin, salaryMax, currency } = app;
   if ((!salaryMin && !salaryMax) || !currency) return 'Not specified';
-  const formatter = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 0,
-  });
+  const formatter = new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 });
   if (salaryMin && salaryMax) return `${formatter.format(salaryMin)} - ${formatter.format(salaryMax)}`;
   if (salaryMin) return formatter.format(salaryMin);
   return formatter.format(salaryMax);
@@ -29,13 +28,7 @@ function formatSalary(app) {
 
 function formatEventDate(value) {
   if (!value) return '';
-  return new Date(value).toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  return new Date(value).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
 function formatEventType(value) {
@@ -63,6 +56,7 @@ export default function Details() {
   const [eventError, setEventError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     if (authLoading || !userId) return;
@@ -81,12 +75,7 @@ export default function Details() {
 
   const handleDelete = async () => {
     if (!confirm('Delete this application permanently?')) return;
-    try {
-      await applicationsAPI.delete(id);
-      nav('/applications');
-    } catch (err) {
-      alert(err.message || 'Delete failed');
-    }
+    try { await applicationsAPI.delete(id); nav('/applications'); } catch (err) { alert(err.message || 'Delete failed'); }
   };
 
   const handleAddEvent = async (e) => {
@@ -94,11 +83,7 @@ export default function Details() {
     setEventLoading(true);
     setEventError(null);
     try {
-      const event = await applicationsAPI.createEvent(id, {
-        type: eventForm.type,
-        date: new Date(eventForm.date).toISOString(),
-        notes: eventForm.notes || null,
-      });
+      const event = await applicationsAPI.createEvent(id, { type: eventForm.type, date: new Date(eventForm.date).toISOString(), notes: eventForm.notes || null });
       setApp((prev) => ({ ...prev, events: [...(prev?.events || []), event] }));
       setEventForm({ type: '', date: '', notes: '' });
       setEventModalOpen(false);
@@ -135,287 +120,330 @@ export default function Details() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-[60vh]">
       <span className="material-symbols-outlined text-primary animate-spin text-4xl">progress_activity</span>
     </div>
   );
 
   if (error || !app) return (
-    <div className="max-w-4xl mx-auto p-10">
+    <div className="max-w-4xl mx-auto p-4 md:p-10">
       <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-3xl p-10 text-center space-y-6">
         <div className="w-20 h-20 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto text-red-600 dark:text-red-400">
           <span className="material-symbols-outlined text-4xl">error</span>
         </div>
         <div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-slate-50">{error || 'Application not found'}</h3>
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white">{error || 'Application not found'}</h3>
           <p className="text-slate-500 dark:text-slate-400 font-medium mt-2">The application you're looking for doesn't exist or you don't have access.</p>
         </div>
-        <button onClick={() => nav('/applications')} className="text-primary dark:text-primary font-bold hover:underline">Back to applications</button>
+        <button onClick={() => nav('/applications')} className="text-primary font-bold hover:underline">Back to applications</button>
       </div>
     </div>
   );
 
-  const domain = app.company.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
-  const initials = app.company.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
+    <div className="p-4 md:p-8 lg:p-10 max-w-7xl mx-auto space-y-8 md:space-y-10">
       {/* Top Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-10 border-b border-slate-200 dark:border-white/10">
-        <div className="flex items-center gap-6">
-          <div className="relative h-20 w-20 rounded-3xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none flex items-center justify-center overflow-hidden shrink-0">
-            <img 
-              src={`https://logo.clearbit.com/${domain}`} 
-              alt={app.company}
-              className="h-full w-full object-contain p-4 transition-transform duration-500 hover:scale-110"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
-            />
-            <div className="hidden absolute inset-0 flex items-center justify-center bg-primary/10 text-primary font-black text-2xl">
-              {initials}
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">{app.role}</h1>
-              <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${STATUS_COLORS[app.status] || 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300'}`}>
-                {STATUS_LABELS[app.status] || app.status}
-              </span>
-            </div>
-            <p className="text-xl text-slate-500 dark:text-slate-400 font-medium">
-              at <span className="text-slate-900 dark:text-slate-50 font-black">{app.company}</span>
-              <span className="mx-3 text-slate-200 dark:text-white/10 hidden sm:inline">•</span>
-              <span className="text-sm font-bold uppercase tracking-tighter text-slate-400 dark:text-slate-500 block sm:inline">{app.location || 'Remote'}</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {app.link && (
-            <a href={app.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 transition-all">
-              <span className="material-symbols-outlined text-[20px]">link</span>
-              Apply Link
-            </a>
-          )}
-          <button 
-            onClick={() => nav(`/applications/${id}/edit`)}
-            className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-2xl text-sm font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-          >
-            <span className="material-symbols-outlined text-[20px]">edit</span>
-            Edit
-          </button>
-          <button 
-            onClick={handleDelete}
-            className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-2xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-all"
-          >
-            <span className="material-symbols-outlined">delete</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Main Content */}
-        <div className="lg:col-span-8 space-y-10">
-          {/* Notes & Description */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 px-2">
-              <span className="material-symbols-outlined text-primary">description</span>
-              <h3 className="text-lg font-black text-slate-900 dark:text-slate-50 tracking-tight">Description & Notes</h3>
-            </div>
-            <div className="bg-white dark:bg-white/5 p-8 rounded-[32px] border border-slate-200 dark:border-white/10 shadow-sm">
-              <p className="text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed font-medium">
-                {app.notes || 'No notes provided for this application.'}
+      <FadeIn>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-200 dark:border-white/[0.06]">
+          <div className="flex items-center gap-4 md:gap-6 min-w-0">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="shrink-0"
+            >
+              <CompanyLogo company={app.company} link={app.link} className="h-16 w-16 md:h-20 md:w-20 rounded-3xl" size="lg" />
+            </motion.div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight truncate">{app.role}</h1>
+                <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap ${STATUS_COLORS[app.status] || 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300'}`}>
+                  {STATUS_LABELS[app.status] || app.status}
+                </span>
+              </div>
+              <p className="text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                at <span className="text-slate-900 dark:text-white font-black">{app.company}</span>
+                <span className="mx-2 md:mx-3 text-slate-200 dark:text-white/10 hidden sm:inline">&bull;</span>
+                <span className="text-xs md:text-sm font-bold uppercase tracking-tighter text-slate-400 dark:text-slate-500 block sm:inline mt-1 sm:mt-0">{app.location || 'Remote'}</span>
               </p>
             </div>
-          </section>
+          </div>
 
-          {/* Journey Timeline */}
-          <section className="space-y-6">
-            <div className="flex items-center justify-between px-2">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-purple-600 dark:text-purple-400">route</span>
-                <h3 className="text-lg font-black text-slate-900 dark:text-slate-50 tracking-tight">Interview Journey</h3>
+          <div className="flex items-center gap-2 md:gap-3">
+            {app.link && (
+              <a href={app.link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 md:px-6 py-3 bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-2xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition-all shrink-0">
+                <span className="material-symbols-outlined text-[20px]">link</span>
+                <span className="hidden sm:inline">Apply Link</span>
+              </a>
+            )}
+            <motion.button
+              onClick={() => nav(`/applications/${id}/edit`)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-primary text-white rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+            >
+              <span className="material-symbols-outlined text-[20px]">edit</span>
+              <span className="hidden sm:inline">Edit</span>
+            </motion.button>
+            <motion.button
+              onClick={handleDelete}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-2xl hover:bg-red-100 dark:hover:bg-red-500/20 transition-all"
+            >
+              <span className="material-symbols-outlined">delete</span>
+            </motion.button>
+          </div>
+        </div>
+      </FadeIn>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
+        {/* Main Content */}
+        <div className="lg:col-span-8 space-y-8 md:space-y-10">
+          {/* Notes */}
+          <FadeIn delay={0.05}>
+            <section className="space-y-4">
+              <div className="flex items-center gap-2 px-1">
+                <span className="material-symbols-outlined text-primary">description</span>
+                <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">Description & Notes</h3>
               </div>
-              <button 
-                onClick={() => setEventModalOpen(true)}
-                className="text-sm font-bold text-primary dark:text-primary hover:underline flex items-center gap-1"
-              >
-                <span className="material-symbols-outlined text-[18px]">add</span>
-                Add Event
-              </button>
-            </div>
+              <div className="bg-white dark:bg-white/[0.04] p-6 md:p-8 rounded-[32px] border border-slate-200 dark:border-white/[0.06] card-shadow">
+                <p className="text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed font-medium">
+                  {app.notes || 'No notes provided for this application.'}
+                </p>
+              </div>
+            </section>
+          </FadeIn>
 
-            <div className="bg-white dark:bg-white/5 p-8 rounded-[40px] border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
-              {timeline.length ? (
-                <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/5 space-y-12">
-                  {timeline.map((event) => {
-                    const style = getEventStyle(event.type);
-                    return (
-                      <div key={event.id} className="relative group">
-                        <div className={`absolute -left-[45px] top-0 w-8 h-8 rounded-xl ${style.color} text-white flex items-center justify-center shadow-lg transition-transform group-hover:scale-110`}>
-                          <span className="material-symbols-outlined text-[16px]">{style.icon}</span>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-black text-slate-900 dark:text-slate-50">{formatEventType(event.type)}</h4>
-                              <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-1">{formatEventDate(event.date)}</p>
+          {/* Timeline */}
+          <FadeIn delay={0.1}>
+            <section className="space-y-5">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-purple-600 dark:text-purple-400">route</span>
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">Interview Journey</h3>
+                </div>
+                <motion.button
+                  onClick={() => setEventModalOpen(true)}
+                  whileHover={{ x: 2 }}
+                  className="text-sm font-bold text-primary hover:underline flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[18px]">add</span>
+                  Add Event
+                </motion.button>
+              </div>
+
+              <div className="bg-white dark:bg-white/[0.04] p-6 md:p-8 rounded-[40px] border border-slate-200 dark:border-white/[0.06] card-shadow overflow-hidden">
+                {timeline.length ? (
+                  <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/[0.06] space-y-10">
+                    {timeline.map((event, idx) => {
+                      const style = getEventStyle(event.type);
+                      return (
+                        <motion.div
+                          key={event.id}
+                          initial={reduce ? undefined : { opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05, duration: 0.3 }}
+                          className="relative group"
+                        >
+                          <motion.div
+                            className={`absolute -left-[45px] top-0 w-8 h-8 rounded-xl ${style.color} text-white flex items-center justify-center shadow-lg`}
+                            whileHover={{ scale: 1.15 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                          >
+                            <span className="material-symbols-outlined text-[16px]">{style.icon}</span>
+                          </motion.div>
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-black text-slate-900 dark:text-white">{formatEventType(event.type)}</h4>
+                                <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-1">{formatEventDate(event.date)}</p>
+                              </div>
+                              <button
+                                onClick={() => handleDeleteEvent(event.id)}
+                                className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100"
+                              >
+                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                              </button>
                             </div>
-                            <button 
-                              onClick={() => handleDeleteEvent(event.id)}
-                              className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
-                            >
-                              <span className="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
+                            {event.notes && (
+                              <div className="p-4 bg-slate-50 dark:bg-white/[0.02] rounded-2xl text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed italic border-l-4 border-slate-200 dark:border-white/[0.08]">
+                                {event.notes}
+                              </div>
+                            )}
                           </div>
-                          {event.notes && (
-                            <div className="p-4 bg-slate-50 dark:bg-white/[0.03] rounded-2xl text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed italic border-l-4 border-slate-200 dark:border-white/10">
-                              {event.notes}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="py-20 text-center space-y-4">
-                  <div className="w-16 h-16 bg-slate-50 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto">
-                    <span className="material-symbols-outlined text-slate-300 dark:text-slate-700 text-3xl">event_busy</span>
+                        </motion.div>
+                      );
+                    })}
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">No events recorded yet.</p>
-                </div>
-              )}
-            </div>
-          </section>
+                ) : (
+                  <div className="py-16 md:py-20 text-center space-y-4">
+                    <div className="w-16 h-16 bg-slate-50 dark:bg-white/[0.06] rounded-full flex items-center justify-center mx-auto">
+                      <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 text-3xl">event_busy</span>
+                    </div>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">No events recorded yet.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </FadeIn>
         </div>
 
         {/* Sidebar */}
-        <div className="lg:col-span-4 space-y-8">
-          {/* Stats Card */}
-          <div className="bg-slate-950 p-8 rounded-[40px] text-white shadow-2xl shadow-slate-900/40 space-y-6">
-            <h3 className="text-lg font-black tracking-tight">Quick Info</h3>
-            <div className="space-y-4">
-              <div className="p-4 bg-white/5 rounded-2xl space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Salary Package</p>
-                <p className="font-black text-lg text-slate-50">{formatSalary(app)}</p>
-              </div>
-              <div className="p-4 bg-white/5 rounded-2xl space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recruiter / Contact</p>
-                <p className="font-black text-lg text-slate-50">{app.recruiter || 'Not specified'}</p>
-              </div>
-              <div className="p-4 bg-white/5 rounded-2xl space-y-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Added On</p>
-                <p className="font-black text-lg text-slate-50">{new Date(app.created_at).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Documents Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between px-2">
-              <h3 className="text-lg font-black text-slate-900 dark:text-slate-50 tracking-tight">Documents</h3>
-              <label className="text-sm font-bold text-primary dark:text-primary-container hover:underline cursor-pointer">
-                {uploading ? 'Uploading...' : 'Upload'}
-                <input type="file" className="hidden" onChange={handleUploadDocument} disabled={uploading} />
-              </label>
-            </div>
-            
-            <div className="bg-white dark:bg-white/5 p-6 rounded-[32px] border border-slate-200 dark:border-white/10 shadow-sm space-y-2">
-              {app.documents?.length ? (
-                app.documents.map((doc) => (
-                  <a 
-                    key={doc.id} 
-                    href={fileUrl(doc.fileUrl)} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="flex items-center justify-between p-4 bg-slate-50 dark:bg-white/[0.03] hover:bg-primary/5 dark:hover:bg-primary/10 rounded-2xl transition-all group"
+        <div className="lg:col-span-4 space-y-6 md:space-y-8">
+          <FadeIn delay={0.1}>
+            <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 md:p-8 rounded-[40px] text-white shadow-2xl shadow-slate-900/40 space-y-6 relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-[80px]" />
+              <h3 className="text-lg font-black tracking-tight relative z-10">Quick Info</h3>
+              <div className="space-y-3 relative z-10">
+                {[
+                  { label: 'Salary Package', value: formatSalary(app) },
+                  { label: 'Recruiter / Contact', value: app.recruiter || 'Not specified' },
+                  { label: 'Added On', value: new Date(app.created_at).toLocaleDateString() },
+                ].map((item, idx) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + idx * 0.05 }}
+                    className="p-4 bg-white/[0.06] rounded-2xl hover:bg-white/[0.08] transition-colors"
                   >
-                    <div className="flex items-center gap-3 overflow-hidden">
-                      <span className="material-symbols-outlined text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">description</span>
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm text-slate-700 dark:text-slate-200 truncate">{doc.name}</p>
-                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{new Date(doc.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                    <span className="material-symbols-outlined text-slate-300">download</span>
-                  </a>
-                ))
-              ) : (
-                <div className="py-8 text-center">
-                  <p className="text-slate-400 dark:text-slate-500 text-sm font-medium">No documents yet.</p>
-                </div>
-              )}
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.12em]">{item.label}</p>
+                    <p className="font-black text-base md:text-lg text-white mt-0.5">{item.value}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          </FadeIn>
+
+          {/* Documents */}
+          <FadeIn delay={0.15}>
+            <section className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">Documents</h3>
+                <label className="text-sm font-bold text-primary hover:underline cursor-pointer">
+                  {uploading ? 'Uploading...' : 'Upload'}
+                  <input type="file" className="hidden" onChange={handleUploadDocument} disabled={uploading} />
+                </label>
+              </div>
+
+              <div className="bg-white dark:bg-white/[0.04] p-5 md:p-6 rounded-[32px] border border-slate-200 dark:border-white/[0.06] card-shadow space-y-2">
+                {app.documents?.length ? (
+                  app.documents.map((doc, idx) => (
+                    <motion.a
+                      key={doc.id}
+                      href={fileUrl(doc.fileUrl)}
+                      target="_blank"
+                      rel="noreferrer"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.03 }}
+                      className="flex items-center justify-between p-4 bg-slate-50 dark:bg-white/[0.02] hover:bg-primary/5 dark:hover:bg-primary/10 rounded-2xl transition-all group"
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <span className="material-symbols-outlined text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">description</span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-sm text-slate-700 dark:text-slate-200 truncate">{doc.name}</p>
+                          <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{new Date(doc.createdAt).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-primary transition-colors">download</span>
+                    </motion.a>
+                  ))
+                ) : (
+                  <div className="py-8 text-center">
+                    <p className="text-slate-400 dark:text-slate-500 text-sm font-medium">No documents yet.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </FadeIn>
         </div>
       </div>
 
       {/* Event Modal */}
-      {eventModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl p-10 space-y-8 animate-in fade-in zoom-in-95 border border-transparent dark:border-white/10">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight">Add Event</h3>
-              <button onClick={() => setEventModalOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors">
-                <span className="material-symbols-outlined dark:text-slate-400">close</span>
-              </button>
-            </div>
-            
-            <form className="space-y-6" onSubmit={handleAddEvent}>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Event Type</label>
-                <input 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-primary dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold dark:text-slate-100" 
-                  placeholder="e.g. Technical Interview"
-                  value={eventForm.type} 
-                  onChange={(e) => setEventForm((prev) => ({ ...prev, type: e.target.value }))} 
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Date & Time</label>
-                <input 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-primary dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold dark:text-slate-100" 
-                  type="datetime-local" 
-                  value={eventForm.date} 
-                  onChange={(e) => setEventForm((prev) => ({ ...prev, date: e.target.value }))} 
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Notes</label>
-                <textarea 
-                  className="w-full px-6 py-4 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-primary dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold min-h-[120px] resize-none dark:text-slate-100" 
-                  placeholder="Add any specific notes..."
-                  value={eventForm.notes} 
-                  onChange={(e) => setEventForm((prev) => ({ ...prev, notes: e.target.value }))} 
-                />
-              </div>
-              
-              <div className="flex gap-4 pt-4">
-                <button 
-                  type="button" 
-                  onClick={() => setEventModalOpen(false)} 
-                  className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+      <AnimatePresence>
+        {eventModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+          >
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-lg bg-white dark:bg-dark-surface rounded-[32px] shadow-2xl p-6 md:p-10 space-y-6 md:space-y-8 border border-slate-200 dark:border-white/[0.08]"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Add Event</h3>
+                <motion.button
+                  onClick={() => setEventModalOpen(false)}
+                  whileHover={{ rotate: 90 }}
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-full transition-colors"
                 >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={eventLoading} 
-                  className="flex-1 px-6 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 transition-all"
-                >
-                  {eventLoading ? 'Saving...' : 'Save Event'}
-                </button>
+                  <span className="material-symbols-outlined dark:text-slate-400">close</span>
+                </motion.button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <form className="space-y-5" onSubmit={handleAddEvent}>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em] px-1">Event Type</label>
+                  <input
+                    className="w-full px-5 py-4 bg-slate-50 dark:bg-white/[0.04] border border-transparent focus:border-primary dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold dark:text-white text-sm"
+                    placeholder="e.g. Technical Interview"
+                    value={eventForm.type}
+                    onChange={(e) => setEventForm((prev) => ({ ...prev, type: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em] px-1">Date & Time</label>
+                  <input
+                    className="w-full px-5 py-4 bg-slate-50 dark:bg-white/[0.04] border border-transparent focus:border-primary dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold dark:text-white text-sm"
+                    type="datetime-local"
+                    value={eventForm.date}
+                    onChange={(e) => setEventForm((prev) => ({ ...prev, date: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em] px-1">Notes</label>
+                  <textarea
+                    className="w-full px-5 py-4 bg-slate-50 dark:bg-white/[0.04] border border-transparent focus:border-primary dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold min-h-[100px] resize-none dark:text-white text-sm"
+                    placeholder="Add any specific notes..."
+                    value={eventForm.notes}
+                    onChange={(e) => setEventForm((prev) => ({ ...prev, notes: e.target.value }))}
+                  />
+                </div>
+
+                {eventError && (
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl flex items-center gap-2 text-sm font-bold">
+                    <span className="material-symbols-outlined text-[18px]">error</span>
+                    {eventError}
+                  </div>
+                )}
+
+                <div className="flex gap-4 pt-2">
+                  <button type="button" onClick={() => setEventModalOpen(false)} className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-all text-sm">
+                    Cancel
+                  </button>
+                  <motion.button
+                    type="submit"
+                    disabled={eventLoading}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="flex-1 px-6 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 disabled:opacity-50 transition-all text-sm"
+                  >
+                    {eventLoading ? 'Saving...' : 'Save Event'}
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-

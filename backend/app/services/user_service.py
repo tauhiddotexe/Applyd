@@ -15,21 +15,26 @@ def check_credits(db: Session, user_id: uuid.UUID) -> bool:
     return user.credits > 0
 
 def deduct_credit(db: Session, user_id: uuid.UUID) -> bool:
-    user = get_user_by_id(db, user_id)
-    if not user or user.credits <= 0:
-        return False
-    
-    user.credits -= 1
-    db.add(user)
+    from sqlalchemy import update
+    result = db.execute(
+        update(User)
+        .where(User.id == user_id, User.credits > 0)
+        .values(credits=User.credits - 1)
+        .returning(User.credits)
+    )
+    row = result.fetchone()
     db.commit()
-    
-    if user.credits <= 1:
+    if row is None:
+        return False
+
+    remaining = row[0]
+    if remaining <= 1:
         notification_service.create_notification(
             db, user_id, "low_credits",
-            f"You have {user.credits} credits remaining. Upgrade now to continue using AI features!"
+            f"You have {remaining} credits remaining. Upgrade now to continue using AI features!"
         )
 
-    logger.info(f"Credit deducted for user {user_id}. Remaining: {user.credits}")
+    logger.info(f"Credit deducted for user {user_id}. Remaining: {remaining}")
     return True
 
 def add_credits(db: Session, user_id: uuid.UUID, amount: int, plan_type: str, session_id: str):

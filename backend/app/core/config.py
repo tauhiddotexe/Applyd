@@ -10,12 +10,22 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     # Production: Set these via environment variables
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,https://dpjpe49st5qyi.cloudfront.net"
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "http://127.0.0.1:5173"
     LOG_LEVEL: str = "INFO"
-    OPENAI_API_KEY: str | None = None
-    OPENAI_MODEL: str = "gpt-5.5"
-    GOOGLE_API_KEY: str | None = None
-    GEMINI_MODEL: str = "gemini-2.0-flash"
+    OPENROUTER_API_KEY: str | None = None
+    OPENROUTER_MODEL: str = "deepseek/deepseek-chat-v3-0324:free"
+    OPENROUTER_FALLBACK_MODELS: str = (
+        "qwen/qwen3-coder:free,"
+        "nvidia/nemotron-3-ultra-550b-a55b:free,"
+        "meta-llama/llama-3.3-70b-instruct:free"
+    )
+
+    @property
+    def model_fallback_chain(self) -> list[str]:
+        models = [self.OPENROUTER_MODEL]
+        extras = [m.strip() for m in self.OPENROUTER_FALLBACK_MODELS.split(",") if m.strip()]
+        models.extend(m for m in extras if m not in models)
+        return models
     
     STRIPE_API_KEY: str | None = None
     STRIPE_WEBHOOK_SECRET: str | None = None
@@ -34,6 +44,8 @@ class Settings(BaseSettings):
 
     @property
     def supabase_project_ref(self) -> str:
+        if self.DATABASE_URL.startswith("sqlite"):
+            return "localhost"
         parsed = urlparse(self.DATABASE_URL)
         username = parsed.username or ""
         if username.startswith("postgres.") and "." in username:
@@ -52,6 +64,11 @@ class Settings(BaseSettings):
     @property
     def supabase_jwks_url(self) -> str:
         return f"https://{self.supabase_project_ref}.supabase.co/auth/v1/.well-known/jwks.json"
+
+    # Dev mode: secret for local JWT signing (bypasses Supabase)
+    # Must be overridden via env var in production
+    DEV_SECRET: str = "applyd-dev-secret-change-in-production"
+    DEV_MODE: bool = True
 
     class Config:
         env_file = ".env"

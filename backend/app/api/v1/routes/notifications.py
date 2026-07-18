@@ -9,7 +9,7 @@ from app.services import notification_service
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
-@router.get("/", response_model=List[NotificationResponse])
+@router.get("", response_model=List[NotificationResponse])
 def get_notifications(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user)

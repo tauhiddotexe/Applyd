@@ -4,20 +4,26 @@ from contextlib import asynccontextmanager
 from sqlalchemy import text
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
-from app.db.session import engine, Base
-from app.api.v1.routes import ai, analytics, applications, dashboard, events, reminders, payments, users, notifications
+from app.db.session import engine, Base, is_sqlite
+from app.api.v1.routes import ai, analytics, applications, auth, dashboard, events, jobs, reminders, payments, users, notifications
 
 UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def run_migrations():
-    """Run ad-hoc migrations. Failure here should not crash the app."""
+    """Create tables if using SQLite, run PG migrations otherwise."""
     try:
+        if is_sqlite:
+            logger.info("SQLite mode: creating all tables via SQLAlchemy...")
+            Base.metadata.create_all(bind=engine)
+            logger.info("SQLite tables created successfully")
+            return
         logger.info("Running database migrations...")
         with engine.begin() as conn:
             # User table updates
@@ -126,6 +132,37 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Request body size limit middleware (1MB for non-upload routes)
+MAX_BODY_SIZE = 1 * 1024 * 1024  # 1 MB
+
+
+@app.middleware("http")
+async def limit_request_body(request: Request, call_next):
+    if request.method in ("POST", "PUT", "PATCH") and not request.url.path.startswith("/uploads"):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > MAX_BODY_SIZE:
+            return JSONResponse(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                content={"detail": "Request body too large"},
+            )
+    return await call_next(request)
+
+
+# Security headers middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response: Response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    if settings.DEV_MODE:
+        response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'"
+    else:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self'"
+    return response
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -164,6 +201,8 @@ async def log_requests(request: Request, call_next):
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    tb = traceback.format_exc()
     error_info = {
         "path": request.url.path,
         "method": request.method,
@@ -171,9 +210,10 @@ async def global_exception_handler(request: Request, exc: Exception):
         "type": type(exc).__name__,
     }
     logger.error(f"Unhandled error: {exc}", extra={"extra_info": error_info})
+    logger.error(f"Traceback:\n{tb}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error"},
+        content={"detail": f"Internal server error: {exc}", "traceback": tb},
     )
 
 
@@ -184,9 +224,11 @@ app.include_router(analytics.router, prefix="/api/v1")
 app.include_router(events.router, prefix="/api/v1")
 app.include_router(reminders.router, prefix="/api/v1")
 app.include_router(ai.router, prefix="/api/v1")
+app.include_router(jobs.router, prefix="/api/v1")
 app.include_router(payments.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(notifications.router, prefix="/api/v1")
+app.include_router(auth.router, prefix="/api/v1")
 app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
@@ -197,25 +239,32 @@ async def health():
 
 # Serve static files for frontend
 STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
+RESOLVED_STATIC = STATIC_DIR.resolve()
+
 
 @app.get("/{full_path:path}")
 async def serve_spa(full_path: str):
     # 1. If path is empty, return index.html
     if not full_path:
         return FileResponse(STATIC_DIR / "index.html")
-    
-    # 2. If it's a real file in static, return it
-    file_path = STATIC_DIR / full_path
-    if file_path.is_file():
-        return FileResponse(file_path)
-    
+
+    # 2. If it's a real file in static, return it (with path traversal protection)
+    candidate = (STATIC_DIR / full_path).resolve()
+    try:
+        candidate.relative_to(RESOLVED_STATIC)
+    except ValueError:
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+
+    if candidate.is_file():
+        return FileResponse(candidate)
+
     # 3. If it's an API route that didn't match, 404
     if full_path.startswith("api/"):
         return JSONResponse(status_code=404, content={"detail": "Not found"})
-    
+
     # 4. Otherwise, return index.html for SPA routing
     index_path = STATIC_DIR / "index.html"
     if index_path.is_file():
         return FileResponse(index_path)
-    
+
     return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
