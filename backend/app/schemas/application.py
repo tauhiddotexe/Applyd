@@ -162,6 +162,8 @@ class ResumeTailorResponse(BaseModel):
     improvement: int
     score_breakdown: ScoreBreakdown | None = Field(default=None, serialization_alias="scoreBreakdown")
     structured_tailor: dict | None = Field(default=None, serialization_alias="structuredTailor")
+    structured_tailor_resume: dict | None = Field(default=None, serialization_alias="structuredTailorResume")
+    extracted_resume: dict | None = Field(default=None, serialization_alias="extractedResume")
     resume_text: str = ""
 
     model_config = {"populate_by_name": True}

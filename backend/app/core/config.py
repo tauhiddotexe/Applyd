@@ -13,11 +13,11 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://127.0.0.1:5173"
     LOG_LEVEL: str = "INFO"
     OPENROUTER_API_KEY: str | None = None
-    OPENROUTER_MODEL: str = "deepseek/deepseek-chat-v3-0324:free"
+    OPENROUTER_MODEL: str = "openrouter/free"
     OPENROUTER_FALLBACK_MODELS: str = (
-        "qwen/qwen3-coder:free,"
-        "nvidia/nemotron-3-ultra-550b-a55b:free,"
-        "meta-llama/llama-3.3-70b-instruct:free"
+        "meta-llama/llama-3.3-70b-instruct:free,"
+        "nvidia/nemotron-3-nano-30b-a3b:free,"
+        "qwen/qwen3-next-80b-a3b-instruct:free"
     )
 
     @property

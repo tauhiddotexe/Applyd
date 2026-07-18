@@ -1,116 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { resumeAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { FadeIn, StaggerContainer, StaggerItem } from '../components/ui/MotionDiv';
-
-function SectionEditor({ section, index, onUpdate }) {
-  const [editingIdx, setEditingIdx] = useState(null);
-  const [editValue, setEditValue] = useState('');
-
-  const name = section.name || '';
-  const isBulletSec = !!section.improved_bullets;
-  const items = isBulletSec ? section.improved_bullets : (section.improved ? [section.improved] : []);
-
-  const startEdit = (idx, val) => {
-    setEditingIdx(idx);
-    setEditValue(val);
-  };
-
-  const saveEdit = (idx) => {
-    if (isBulletSec) {
-      const updated = [...section.improved_bullets];
-      updated[idx] = editValue;
-      onUpdate(index, { ...section, improved_bullets: updated });
-    } else {
-      onUpdate(index, { ...section, improved: editValue });
-    }
-    setEditingIdx(null);
-  };
-
-  const cancelEdit = () => {
-    setEditingIdx(null);
-  };
-
-  const keyHandler = (e, idx) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      saveEdit(idx);
-    }
-    if (e.key === 'Escape') cancelEdit();
-  };
-
-  return (
-    <div className="border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden">
-      <div className="px-5 py-3 bg-slate-50 dark:bg-white/[0.03] border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
-        <h4 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{name}</h4>
-        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-white dark:bg-white/5 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10">
-          {isBulletSec ? 'Bullets' : 'Text'}
-        </span>
-      </div>
-      <div className="p-4 space-y-2">
-        {items.length === 0 && (
-          <p className="text-sm text-slate-400 italic">No content</p>
-        )}
-        {items.map((item, idx) => (
-          <div key={idx} className="group relative">
-            {editingIdx === idx ? (
-              <div className="flex gap-2">
-                {isBulletSec ? (
-                  <textarea
-                    className="flex-1 bg-white dark:bg-white/5 border-2 border-primary/40 rounded-xl p-3 text-sm font-medium text-slate-800 dark:text-slate-200 outline-none resize-none min-h-[60px]"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    onKeyDown={(e) => keyHandler(e, idx)}
-                    autoFocus
-                  />
-                ) : (
-                  <textarea
-                    className="flex-1 bg-white dark:bg-white/5 border-2 border-primary/40 rounded-xl p-3 text-sm font-medium text-slate-800 dark:text-slate-200 outline-none resize-none min-h-[80px]"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    onKeyDown={(e) => keyHandler(e, idx)}
-                    autoFocus
-                  />
-                )}
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={() => saveEdit(idx)}
-                    className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
-                    title="Save"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">check</span>
-                  </button>
-                  <button
-                    onClick={cancelEdit}
-                    className="p-2 bg-slate-200 dark:bg-white/10 text-slate-500 rounded-lg hover:bg-slate-300 dark:hover:bg-white/20 transition-colors"
-                    title="Cancel"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">close</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => startEdit(idx, item)}
-                className="flex items-start gap-2 p-2.5 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.03] border border-transparent hover:border-slate-200 dark:hover:border-white/10 transition-all group"
-              >
-                {isBulletSec && (
-                  <span className="text-primary/60 mt-0.5 shrink-0 text-sm font-bold">•</span>
-                )}
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed flex-1">
-                  {item}
-                </p>
-                <span className="material-symbols-outlined text-[14px] text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity mt-0.5">edit</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+import ResumeBuilder from '../components/ResumeBuilder';
 
 export default function ResumeTailor() {
   const location = useLocation();
@@ -122,20 +16,11 @@ export default function ResumeTailor() {
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
-  const [editedSections, setEditedSections] = useState(null);
+  const [editedResume, setEditedResume] = useState(null);
   const [hasEdits, setHasEdits] = useState(false);
   const reduce = useReducedMotion();
 
-  const sections = editedSections || result?.structuredTailor?.sections || null;
-
-  const handleSectionUpdate = useCallback((secIndex, updatedSec) => {
-    setEditedSections(prev => {
-      const next = prev ? [...prev] : [...(result?.structuredTailor?.sections || [])];
-      next[secIndex] = updatedSec;
-      return next;
-    });
-    setHasEdits(true);
-  }, [result]);
+  const currentResume = editedResume || result?.structuredTailorResume || null;
 
   if (authLoading || !user) {
     return (
@@ -154,7 +39,7 @@ export default function ResumeTailor() {
     }
     setResumeFile(file);
     setResult(null);
-    setEditedSections(null);
+    setEditedResume(null);
     setHasEdits(false);
     setError(null);
   };
@@ -173,8 +58,8 @@ export default function ResumeTailor() {
     try {
       const data = await resumeAPI.tailorResume(resumeFile, jobDesc.trim());
       setResult(data);
-      if (data.structuredTailor?.sections) {
-        setEditedSections(JSON.parse(JSON.stringify(data.structuredTailor.sections)));
+      if (data.structuredTailorResume) {
+        setEditedResume(JSON.parse(JSON.stringify(data.structuredTailorResume)));
       }
     } catch (err) {
       setError(err.message || 'Tailoring failed');
@@ -191,41 +76,22 @@ export default function ResumeTailor() {
     resumeAPI.tailorResume(resumeFile, jobDesc)
       .then(data => {
         setResult(data);
-        if (data.structuredTailor?.sections) {
-          setEditedSections(JSON.parse(JSON.stringify(data.structuredTailor.sections)));
+        if (data.structuredTailorResume) {
+          setEditedResume(JSON.parse(JSON.stringify(data.structuredTailorResume)));
         }
       })
       .catch(err => setError(err.message || 'Tailoring failed'))
       .finally(() => setLoading(false));
   }, [resumeFile, jobDesc]);
 
-  const buildFullText = () => {
-    if (!editedSections) return '';
-    return editedSections.map(sec => {
-      const name = sec.name || '';
-      const header = name.toUpperCase();
-      if (sec.improved_bullets) {
-        return `${header}\n${sec.improved_bullets.map(b => `  - ${b}`).join('\n')}`;
-      }
-      if (sec.improved) {
-        return `${header}\n  ${sec.improved}`;
-      }
-      return '';
-    }).join('\n\n');
-  };
-
   const handleDownload = async () => {
-    if (!result) return;
+    if (!currentResume) return;
     setDownloading(true);
     try {
-      const fullText = buildFullText();
-      const structuredTailor = result.structuredTailor;
-      const payload = editedSections ? { sections: editedSections } : structuredTailor;
-
       const blob = await resumeAPI.downloadTailored(
-        JSON.stringify(payload),
+        JSON.stringify({ structured_tailor_resume: currentResume }),
         resumeFile,
-        fullText || null,
+        null,
       );
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -244,7 +110,7 @@ export default function ResumeTailor() {
     setResumeFile(null);
     setJobDesc('');
     setResult(null);
-    setEditedSections(null);
+    setEditedResume(null);
     setHasEdits(false);
     setHasAutoTailored(false);
     setError(null);
@@ -325,7 +191,7 @@ export default function ResumeTailor() {
         </div>
 
         <div className="xl:col-span-7">
-          {result ? (
+          {currentResume ? (
             <StaggerContainer>
               <StaggerItem>
                 <motion.div initial={reduce ? {} : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-r from-primary to-indigo-600 rounded-3xl p-8 shadow-xl text-white overflow-hidden relative">
@@ -336,22 +202,22 @@ export default function ResumeTailor() {
                     <h3 className="text-white/80 text-[10px] font-black uppercase tracking-widest mb-4">ATS Match Transformation</h3>
                     <div className="flex items-center gap-8 flex-wrap">
                       <div className="text-center">
-                        <p className="text-3xl font-black opacity-40 line-through mb-1">{result.before_score}%</p>
+                        <p className="text-3xl font-black opacity-40 line-through mb-1">{result?.before_score || 0}%</p>
                         <p className="text-[10px] uppercase font-black tracking-tighter opacity-70">Before</p>
                       </div>
                       <div className="w-12 h-1 bg-white/20 rounded-full hidden sm:block"></div>
                       <div className="text-center">
-                        <motion.p initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 150, damping: 12, delay: 0.3 }} className="text-6xl font-black mb-1">{result.after_score}%</motion.p>
+                        <motion.p initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 150, damping: 12, delay: 0.3 }} className="text-6xl font-black mb-1">{result?.after_score || 0}%</motion.p>
                         <p className="text-[10px] uppercase font-black tracking-tighter opacity-70">After Optimization</p>
                       </div>
                       <div className="ml-auto bg-white/20 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20">
-                        <span className="text-2xl font-black">+{result.improvement}%</span>
+                        <span className="text-2xl font-black">+{result?.improvement || 0}%</span>
                       </div>
                     </div>
                     <div className="mt-8 w-full bg-white/10 rounded-full h-3 overflow-hidden border border-white/5">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${result.after_score}%` }}
+                        animate={{ width: `${result?.after_score || 0}%` }}
                         transition={{ duration: 1.2, ease: 'easeOut', delay: 0.5 }}
                         className="bg-white h-full rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]"
                       />
@@ -360,45 +226,38 @@ export default function ResumeTailor() {
                 </motion.div>
               </StaggerItem>
 
-              {result.structured_tailor?.summary && (
+              {result?.structuredTailorResume?.tailoring_strategy && (
                 <StaggerItem>
                   <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
                     <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Tailoring Strategy</h3>
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"{result.structured_tailor.summary}"</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"{result.structuredTailorResume.tailoring_strategy}"</p>
                   </div>
                 </StaggerItem>
               )}
 
-              {sections && sections.length > 0 && (
-                <StaggerItem>
-                  <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                        <span className="material-symbols-outlined text-emerald-500 text-[18px]">description</span>
-                        Tailored Resume
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        {hasEdits && (
-                          <span className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">Edited</span>
-                        )}
-                        <span className="text-[10px] text-slate-400 font-medium">Click any text to edit</span>
-                      </div>
-                    </div>
-                    <div className="space-y-4 max-h-[600px] overflow-y-auto pr-1">
-                      {sections.map((sec, i) => (
-                        <SectionEditor
-                          key={i}
-                          section={sec}
-                          index={i}
-                          onUpdate={handleSectionUpdate}
-                        />
-                      ))}
-                    </div>
+              <StaggerItem>
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <span className="material-symbols-outlined text-emerald-500 text-[18px]">description</span>
+                    Tailored Resume Preview
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    {hasEdits && (
+                      <span className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">Edited</span>
+                    )}
+                    <span className="text-[10px] text-slate-400 font-medium">Click any text to edit</span>
                   </div>
-                </StaggerItem>
-              )}
+                </div>
+                <ResumeBuilder
+                  resume={currentResume}
+                  onResumeChange={(updated) => {
+                    setEditedResume(updated);
+                    setHasEdits(true);
+                  }}
+                />
+              </StaggerItem>
 
-              {result.suggestions?.length > 0 && (
+              {result?.suggestions?.length > 0 && (
                 <StaggerItem>
                   <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
                     <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2">
@@ -444,7 +303,7 @@ export default function ResumeTailor() {
                 </div>
                 <h3 className="text-xl font-black text-slate-900 dark:text-slate-50 mb-2">Ready to Optimize?</h3>
                 <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm leading-relaxed">
-                  Upload your resume and paste the job description. The AI will rewrite each section to match the role. Click any section to edit before downloading.
+                  Upload your resume and paste the job description. The AI will rewrite each section to match the role. Click any text to edit before downloading.
                 </p>
               </div>
             </FadeIn>

@@ -27,3 +27,5 @@ class ResumeState(TypedDict):
     section_coverage: float
     score_breakdown: Optional[dict]
     structured_tailor: Optional[dict]
+    extracted_resume: Optional[dict]
+    structured_tailor_resume: Optional[dict]

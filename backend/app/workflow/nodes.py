@@ -7,7 +7,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from app.core.config import settings
 from app.core.logging import logger
 from .state import ResumeState
-from .prompts import ANALYZE_SYSTEM, TAILOR_SYSTEM, VALIDATE_SYSTEM
+from .prompts import ANALYZE_SYSTEM, TAILOR_SYSTEM, VALIDATE_SYSTEM, EXTRACT_SYSTEM
 from .parser import parse_resume
 from .scorer import (
     keyword_match_score,
@@ -115,6 +115,25 @@ def _call_llm_json(system: str, user: str) -> dict:
     raise _AllModelsFailed(f"All {len(models)} models failed. Last error: {last_error}")
 
 
+def call_extract_llm(state: ResumeState) -> dict:
+    try:
+        result = _call_llm_json(EXTRACT_SYSTEM, state["resume_text"])
+        return {"extracted_resume": result}
+    except Exception as e:
+        logger.error(f"Resume extraction LLM failed: {e}")
+        fallback = {
+            "contact": {},
+            "summary": "",
+            "experiences": [],
+            "education": [],
+            "skills": [],
+            "projects": [],
+            "certifications": [],
+            "languages": [],
+        }
+        return {"extracted_resume": fallback}
+
+
 def preprocess(state: ResumeState) -> dict:
     resume = state["resume_text"].replace("{", "{{").replace("}", "}}")
     jd = state["job_description"].replace("{", "{{").replace("}", "}}")
@@ -205,6 +224,35 @@ def call_analyze_llm(state: ResumeState) -> dict:
         }
 
 
+def _structured_to_flat_text(structured: dict) -> str:
+    lines = []
+    summary = structured.get("summary", "")
+    if summary:
+        lines.append(f"SUMMARY\n  {summary}")
+    for exp in structured.get("experiences", []):
+        title = exp.get("job_title", "")
+        company = exp.get("company", "")
+        if title or company:
+            lines.append(f"{title} @ {company}".strip("@ "))
+        for b in exp.get("bullets", []):
+            lines.append(f"  - {b}")
+    for proj in structured.get("projects", []):
+        name = proj.get("name", "")
+        if name:
+            lines.append(f"PROJECT: {name}")
+        for b in proj.get("bullets", []):
+            lines.append(f"  - {b}")
+    skills = structured.get("skills", [])
+    if skills:
+        lines.append(f"SKILLS: {', '.join(skills)}")
+    for edu in structured.get("education", []):
+        degree = edu.get("degree", "")
+        school = edu.get("school", "")
+        if degree or school:
+            lines.append(f"{degree} - {school}".strip(" -"))
+    return "\n".join(lines)
+
+
 def _sections_to_text(sections: list[dict]) -> str:
     lines = []
     for sec in sections:
@@ -221,6 +269,46 @@ def _sections_to_text(sections: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def _structured_to_old_sections(structured: dict) -> list[dict]:
+    sections = []
+    summary = structured.get("summary", "")
+    if summary:
+        sections.append({"name": "Summary", "original": "", "improved": summary})
+    for exp in structured.get("experiences", []):
+        title = exp.get("job_title", "")
+        company = exp.get("company", "")
+        dates = f"{exp.get('start_date', '')} - {exp.get('end_date', '')}"
+        name = f"{title} @ {company}" if title and company else (title or company or "Experience")
+        original = f"{title} at {company} ({dates})" if title and company else dates
+        bullets = exp.get("bullets", [])
+        if bullets:
+            sections.append({
+                "name": name,
+                "original": original,
+                "original_bullets": bullets,
+                "improved_bullets": list(bullets),
+            })
+    skills = structured.get("skills", [])
+    if skills:
+        sections.append({"name": "Skills", "original": ", ".join(skills), "improved": ", ".join(skills)})
+    for edu in structured.get("education", []):
+        degree = edu.get("degree", "")
+        school = edu.get("school", "")
+        dates = f"{edu.get('start_date', '')} - {edu.get('end_date', '')}"
+        name = f"{degree} @ {school}" if degree and school else (degree or school or "Education")
+        original = f"{degree} at {school} ({dates})" if degree and school else dates
+        sections.append({"name": name, "original": original, "improved": original})
+    for proj in structured.get("projects", []):
+        name = proj.get("name", "Project")
+        bullets = proj.get("bullets", [])
+        if bullets:
+            sections.append({"name": name, "original_bullets": bullets, "improved_bullets": list(bullets)})
+    certs = structured.get("certifications", [])
+    if certs:
+        sections.append({"name": "Certifications", "original": ", ".join(certs), "improved": ", ".join(certs)})
+    return sections
+
+
 def call_tailor_llm(state: ResumeState) -> dict:
     gt = _extract_ground_truth(state["resume_text"])
     system = TAILOR_SYSTEM.replace("{ground_truth}", gt)
@@ -228,39 +316,38 @@ def call_tailor_llm(state: ResumeState) -> dict:
     matched = state.get("matched_keywords", [])
     missing = state.get("missing_keywords", [])
 
-    parsed = state.get("parsed_resume", parse_resume(state["resume_text"]))
-    sections = parsed.get("sections", {})
-    resume_with_headers = ""
-    for name, content in sections.items():
-        resume_with_headers += f"\n=== {name.upper()} ===\n{content}\n"
+    extracted = state.get("extracted_resume") or {}
+    resume_json = _resume_to_prompt_text(extracted)
+    jd_for_prompt = state["job_description"]
 
     user = (
-        f"Original Resume (with sections):\n{resume_with_headers}\n\n"
-        f"Full raw resume text:\n{state['resume_text']}\n\n"
-        f"Job Description:\n{state['job_description']}\n\n"
+        f"Job Description:\n{jd_for_prompt}\n\n"
         f"Top JD Keywords: {', '.join(jd_keywords)}\n\n"
         f"Already-matched keywords: {', '.join(matched[:10])}\n\n"
         f"Missing keywords to incorporate (if truthful): {', '.join(missing[:10])}\n\n"
-        f"Rewrite the resume section by section to better match this job description.\n"
-        f"Stay true to the GROUND TRUTH. Do NOT invent anything."
+        f"Structured Resume to Tailor:\n{resume_json}\n\n"
+        f"Return the COMPLETE tailored resume JSON following the schema. "
+        f"Preserve all metadata. Only improve the descriptive content."
     )
     try:
         result = _call_llm_json(system, user)
-        sections_result = result.get("sections", [])
-
         improved_points = []
-        for sec in sections_result:
-            improved_bullets = sec.get("improved_bullets")
-            improved = sec.get("improved")
-            if improved_bullets:
-                for b in improved_bullets:
-                    improved_points.append({"original": "", "improved": b})
-            elif improved:
-                improved_points.append({"original": "", "improved": improved})
+        for exp in result.get("experiences", []):
+            for b in exp.get("bullets", []):
+                improved_points.append({"original": "", "improved": b})
+        for proj in result.get("projects", []):
+            for b in proj.get("bullets", []):
+                improved_points.append({"original": "", "improved": b})
+        summary = result.get("summary", "")
+        if summary:
+            improved_points.append({"original": "", "improved": summary})
+
+        old_sections = _structured_to_old_sections(result)
 
         return {
             "improved_points": improved_points,
-            "structured_tailor": result,
+            "structured_tailor": {"sections": old_sections, "suggestions": result.get("suggestions", []), "summary": result.get("tailoring_strategy", "")},
+            "structured_tailor_resume": result,
             "suggestions": result.get("suggestions", []),
         }
     except Exception as e:
@@ -268,9 +355,49 @@ def call_tailor_llm(state: ResumeState) -> dict:
         return {
             "improved_points": [],
             "structured_tailor": None,
+            "structured_tailor_resume": None,
             "suggestions": ["Tailoring temporarily unavailable. Try again later."],
             "error": str(e),
         }
+
+
+def _resume_to_prompt_text(extracted: dict) -> str:
+    lines = []
+    contact = extracted.get("contact", {})
+    if contact.get("name"):
+        lines.append(f"Name: {contact['name']}")
+    if contact.get("email"):
+        lines.append(f"Email: {contact['email']}")
+    summary = extracted.get("summary", "")
+    if summary:
+        lines.append(f"\nSUMMARY:\n{summary}")
+    for exp in extracted.get("experiences", []):
+        title = exp.get("job_title", "")
+        company = exp.get("company", "")
+        dates = f"{exp.get('start_date', '')} - {exp.get('end_date', '')}"
+        lines.append(f"\n{title} @ {company} ({dates})")
+        for b in exp.get("bullets", []):
+            lines.append(f"  - {b}")
+    skills = extracted.get("skills", [])
+    if skills:
+        lines.append(f"\nSKILLS: {', '.join(skills)}")
+    for edu in extracted.get("education", []):
+        degree = edu.get("degree", "")
+        school = edu.get("school", "")
+        dates = f"{edu.get('start_date', '')} - {edu.get('end_date', '')}"
+        lines.append(f"\n{degree} - {school} ({dates})")
+    for proj in extracted.get("projects", []):
+        name = proj.get("name", "")
+        lines.append(f"\nPROJECT: {name}")
+        for b in proj.get("bullets", []):
+            lines.append(f"  - {b}")
+    certs = extracted.get("certifications", [])
+    if certs:
+        lines.append(f"\nCERTIFICATIONS: {', '.join(certs)}")
+    langs = extracted.get("languages", [])
+    if langs:
+        lines.append(f"\nLANGUAGES: {', '.join(langs)}")
+    return "\n".join(lines)
 
 
 def validate_tailored(state: ResumeState) -> dict:
@@ -300,15 +427,19 @@ def score_final(state: ResumeState) -> dict:
     parsed = state.get("parsed_resume", parse_resume(state["resume_text"]))
     sections = parsed.get("sections", {})
 
-    structured = state.get("structured_tailor")
-    if structured and structured.get("sections"):
-        tailored_text = _sections_to_text(structured["sections"])
+    structured_resume = state.get("structured_tailor_resume")
+    if structured_resume:
+        tailored_text = _structured_to_flat_text(structured_resume)
     else:
-        points = state.get("improved_points", [])
-        tailored_text = " ".join(
-            p.get("improved", p) if isinstance(p, dict) else p
-            for p in points
-        )
+        structured = state.get("structured_tailor")
+        if structured and structured.get("sections"):
+            tailored_text = _sections_to_text(structured["sections"])
+        else:
+            points = state.get("improved_points", [])
+            tailored_text = " ".join(
+                p.get("improved", p) if isinstance(p, dict) else p
+                for p in points
+            )
 
     full_text = tailored_text if tailored_text.strip() else state["resume_text"]
 

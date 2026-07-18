@@ -235,6 +235,8 @@ async def tailor_resume(
             "section_coverage": 0.0,
             "score_breakdown": None,
             "structured_tailor": None,
+            "extracted_resume": None,
+            "structured_tailor_resume": None,
         }
         result_state = await run_in_threadpool(tailor_compiled.invoke, state)
         await run_in_threadpool(user_service.deduct_credit, db, user_id)
@@ -244,6 +246,8 @@ async def tailor_resume(
                 for p in result_state.get("improved_points", [])
             ],
             "structured_tailor": result_state.get("structured_tailor"),
+            "structured_tailor_resume": result_state.get("structured_tailor_resume"),
+            "extracted_resume": result_state.get("extracted_resume"),
             "resume_text": resume_text,
             "before_score": result_state.get("before_score", 0),
             "after_score": result_state.get("after_score", 0),
@@ -364,7 +368,10 @@ async def download_tailored(
             pdf_bytes = pdf.build_from_text(edited_text)
         elif tailored_points:
             data = json.loads(tailored_points)
-            if isinstance(data, dict) and "sections" in data:
+            if isinstance(data, dict) and "structured_tailor_resume" in data:
+                pdf = ResumePDF()
+                pdf_bytes = pdf.build_structured(data["structured_tailor_resume"])
+            elif isinstance(data, dict) and "sections" in data:
                 pdf = ResumePDF()
                 pdf_bytes = pdf.build_structured(data["sections"])
             elif isinstance(data, list):

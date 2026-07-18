@@ -17,6 +17,13 @@ from app.schemas.application import (
     ScoreBreakdown,
     StatusEnum,
 )
+from app.schemas.resume import (
+    ResumeContact,
+    ResumeExperience,
+    ResumeEducation,
+    ResumeProject,
+    StructuredResume,
+)
 
 __all__ = [
     "ApplicationCreate",
@@ -36,4 +43,9 @@ __all__ = [
     "ResumeTailorResponse",
     "ScoreBreakdown",
     "StatusEnum",
+    "ResumeContact",
+    "ResumeExperience",
+    "ResumeEducation",
+    "ResumeProject",
+    "StructuredResume",
 ]

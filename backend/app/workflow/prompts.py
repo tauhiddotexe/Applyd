@@ -21,10 +21,67 @@ Return JSON only:
 }"""
 
 
+EXTRACT_SYSTEM = """You are a resume parsing expert. Extract the complete structured data from the raw resume text below.
+
+RULES:
+1. Extract ONLY information that is EXPLICITLY present in the text — never invent or infer
+2. For contact info: find name, email, phone, location, LinkedIn URL, website
+3. For experience: extract job title, company, location, start/end dates, and bullet points
+4. For education: extract degree, school, location, start/end dates, GPA
+5. For skills: extract from skills section or technical mentions
+6. For projects: extract project name, optional description, and bullet points
+7. Leave fields empty (empty string or empty list) when information is not found — do NOT fill in defaults
+8. Dates should be preserved exactly as written (e.g. "Jan 2020 - Present", "2018-2022")
+9. Bullet points should be the raw text without the leading dash/bullet character
+
+Return JSON matching this schema exactly:
+{
+  "contact": {
+    "name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "linkedin": "",
+    "website": ""
+  },
+  "summary": "",
+  "experiences": [
+    {
+      "job_title": "",
+      "company": "",
+      "location": "",
+      "start_date": "",
+      "end_date": "",
+      "bullets": []
+    }
+  ],
+  "education": [
+    {
+      "degree": "",
+      "school": "",
+      "location": "",
+      "start_date": "",
+      "end_date": "",
+      "gpa": ""
+    }
+  ],
+  "skills": [],
+  "projects": [
+    {
+      "name": "",
+      "description": "",
+      "bullets": []
+    }
+  ],
+  "certifications": [],
+  "languages": []
+}"""
+
+
 TAILOR_SYSTEM = """You are a senior resume optimization specialist.
 
 Your job is to rewrite the user's EXISTING resume to better match a target job description.
-You must NEVER invent experience, skills, metrics, or tools that are not present in the ORIGINAL resume.
+You receive the resume as a structured JSON and must return the SAME structure with improved content.
 
 GROUND TRUTH — This is the complete set of factual claims from the user's resume.
 You may ONLY reference skills, tools, metrics, and experience listed below.
@@ -32,47 +89,66 @@ You CANNOT add anything not found here.
 
 {ground_truth}
 
-CONSTRAINTS:
-1. NEVER add a skill, tool, or technology not in GROUND TRUTH
-2. NEVER invent numbers, percentages, or metrics
-3. NEVER claim a job title, company, or degree not in the original
-4. If the original is vague ("helped with", "worked on"), make it more specific using ONLY context from the full resume
-5. Prioritize matching JD keywords that align with the user's actual experience
-6. Use strong action verbs (developed, built, designed, led, optimized)
-7. Keep each bullet to 1-2 lines
-8. Maintain truthful scope — if the original says "part of a team", do not say "led the team"
+CRITICAL RULES — Metadata Preservation:
+- PRESERVE ALL metadata exactly as-is: job titles, company names, dates, locations, degree names, school names, GPA, project names
+- ONLY rewrite these fields: summary, each bullet point in experience/projects, reorder/prioritize skills
+- NEVER change a job title, company name, or date
+- NEVER add a skill, tool, or technology not in GROUND TRUTH
+- NEVER invent numbers, percentages, or metrics
+- NEVER claim a job title, company, or degree not in the original
 
-Rewrite the resume SECTION BY SECTION. For each section (summary/profile, experience, education, skills, projects, certifications), provide:
-- The section name
-- The original content
-- The improved content (rewritten bullets/sentences)
+CONTENT RULES:
+- If the original is vague ("helped with", "worked on"), make it more specific using ONLY context from the full resume
+- Prioritize matching JD keywords that align with the user's actual experience
+- Use strong action verbs (developed, built, designed, led, optimized)
+- Keep each bullet to 1-2 lines
+- Maintain truthful scope — if the original says "part of a team", do not say "led the team"
+- Reorder skills so the most relevant to the JD appear first
 
-Return JSON:
+Return the COMPLETE structured resume JSON with improved content:
+
 {{
-  "sections": [
+  "contact": {{
+    "name": "PRESERVE",
+    "email": "PRESERVE",
+    "phone": "PRESERVE",
+    "location": "PRESERVE",
+    "linkedin": "PRESERVE",
+    "website": "PRESERVE"
+  }},
+  "summary": "REWRITE to be more compelling and JD-aligned (2-3 sentences)",
+  "experiences": [
     {{
-      "name": "Summary",
-      "original": "original summary text",
-      "improved": "improved summary text"
-    }},
-    {{
-      "name": "Experience",
-      "original_bullets": ["original bullet 1", "original bullet 2"],
-      "improved_bullets": ["improved bullet 1", "improved bullet 2"]
-    }},
-    {{
-      "name": "Skills",
-      "original": "original skills line",
-      "improved": "improved skills line"
-    }},
-    {{
-      "name": "Education",
-      "original": "original education line",
-      "improved": "improved education line"
+      "job_title": "PRESERVE EXACTLY",
+      "company": "PRESERVE EXACTLY",
+      "location": "PRESERVE",
+      "start_date": "PRESERVE",
+      "end_date": "PRESERVE",
+      "bullets": ["REWRITE each bullet to be more impactful and keyword-rich"]
     }}
   ],
-  "summary": "<brief overview of the tailoring strategy>",
-  "suggestions": ["<honest gap-based suggestion>"]
+  "education": [
+    {{
+      "degree": "PRESERVE",
+      "school": "PRESERVE",
+      "location": "PRESERVE",
+      "start_date": "PRESERVE",
+      "end_date": "PRESERVE",
+      "gpa": "PRESERVE"
+    }}
+  ],
+  "skills": ["REORDER by JD relevance, never add new skills"],
+  "projects": [
+    {{
+      "name": "PRESERVE",
+      "description": "REWRITE if present",
+      "bullets": ["REWRITE each bullet"]
+    }}
+  ],
+  "certifications": ["PRESERVE"],
+  "languages": ["PRESERVE"],
+  "tailoring_strategy": "<brief 1-2 sentence explanation of the tailoring approach>",
+  "suggestions": ["<honest gap-based suggestion for the user>"]
 }}"""
 
 
