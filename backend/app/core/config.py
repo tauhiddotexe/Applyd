@@ -9,8 +9,8 @@ load_dotenv()
 class Settings(BaseSettings):
     DATABASE_URL: str
     # Production: Set these via environment variables
-    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,https://dpjpe49st5qyi.cloudfront.net"
-    FRONTEND_URL: str = "http://127.0.0.1:5173"
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,https://applyd-mark2.vercel.app"
+    FRONTEND_URL: str = "https://applyd-mark2.vercel.app"
     LOG_LEVEL: str = "INFO"
     OPENROUTER_API_KEY: str | None = None
     OPENROUTER_MODEL: str = "openrouter/free"
@@ -68,7 +68,7 @@ class Settings(BaseSettings):
     # Dev mode: secret for local JWT signing (bypasses Supabase)
     # Must be overridden via env var in production
     DEV_SECRET: str = "applyd-dev-secret-change-in-production"
-    DEV_MODE: bool = True
+    DEV_MODE: bool = False
 
     class Config:
         env_file = ".env"

@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 import { toast } from 'react-hot-toast';
 
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'development' ? 'http://127.0.0.1:8000/api/v1' : '');
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'development' ? 'http://localhost:8000/api/v1' : '');
 export const API_ROOT = API_BASE.replace('/api/v1', ''); // For static file access
 
 const DEV_TOKEN_KEY = 'applyd_dev_token';
