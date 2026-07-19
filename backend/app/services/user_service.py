@@ -12,9 +12,17 @@ def check_credits(db: Session, user_id: uuid.UUID) -> bool:
     user = get_user_by_id(db, user_id)
     if not user:
         return False
+    if user.plan == "unlimited":
+        return True
     return user.credits > 0
 
 def deduct_credit(db: Session, user_id: uuid.UUID) -> bool:
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return False
+    if user.plan == "unlimited":
+        return True
+
     from sqlalchemy import update
     result = db.execute(
         update(User)

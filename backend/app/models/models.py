@@ -21,7 +21,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    credits: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
+    credits: Mapped[int] = mapped_column(Integer, default=20, nullable=False)
     plan: Mapped[str] = mapped_column(String(32), default="free", nullable=False)
     avatar_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     settings: Mapped[dict | None] = mapped_column(JSON, nullable=True, default=lambda: {"notifications": True})

@@ -89,7 +89,7 @@ def get_current_user(
                 email=email, 
                 full_name=full_name,
                 avatar_url=avatar_url,
-                credits=9, # Default credits for new users
+                credits=20, # Default credits for new users
                 plan="free"
             )
             db.add(new_user)
