@@ -29,6 +29,7 @@ logs/
 !vite.config.js
 !postcss.config.js
 !tailwind.config.js
+!vercel.json
 backend/deploy*.zip
 
 # AWS / Elastic Beanstalk
