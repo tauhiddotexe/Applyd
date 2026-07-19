@@ -5,7 +5,7 @@ from sqlalchemy import text
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse, FileResponse, Response
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
@@ -237,34 +237,16 @@ async def health():
     return {"status": "ok", "service": "applyd-api"}
 
 
-# Serve static files for frontend
-STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
-RESOLVED_STATIC = STATIC_DIR.resolve()
+@app.get("/")
+async def root():
+    return {
+        "service": "applyd-api",
+        "docs": "/docs",
+        "openapi": "/openapi.json",
+        "health": "/health",
+    }
 
 
 @app.get("/{full_path:path}")
-async def serve_spa(full_path: str):
-    # 1. If path is empty, return index.html
-    if not full_path:
-        return FileResponse(STATIC_DIR / "index.html")
-
-    # 2. If it's a real file in static, return it (with path traversal protection)
-    candidate = (STATIC_DIR / full_path).resolve()
-    try:
-        candidate.relative_to(RESOLVED_STATIC)
-    except ValueError:
-        return JSONResponse(status_code=404, content={"detail": "Not found"})
-
-    if candidate.is_file():
-        return FileResponse(candidate)
-
-    # 3. If it's an API route that didn't match, 404
-    if full_path.startswith("api/"):
-        return JSONResponse(status_code=404, content={"detail": "Not found"})
-
-    # 4. Otherwise, return index.html for SPA routing
-    index_path = STATIC_DIR / "index.html"
-    if index_path.is_file():
-        return FileResponse(index_path)
-
-    return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+async def catch_all(full_path: str):
+    return JSONResponse(status_code=404, content={"detail": "Not found"})
