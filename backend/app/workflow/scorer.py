@@ -1,10 +1,9 @@
-import functools
 import json
 import re
 from pathlib import Path
 
-import numpy as np
-from sentence_transformers import SentenceTransformer, util
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 _SEMANTIC_WEIGHT = 0.35
 _KEYWORD_WEIGHT = 0.25
@@ -40,11 +39,6 @@ def _load_taxonomy() -> dict:
     return _SKILL_TAXONOMY
 
 
-@functools.lru_cache(maxsize=1)
-def _get_embedding_model():
-    return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-
-
 def _normalize(text: str) -> set:
     text = text.lower()
     for k, v in _SYNONYMS.items():
@@ -65,20 +59,18 @@ def keyword_match_score(resume_text: str, jd_text: str) -> tuple[int, list[str],
 
 
 def semantic_similarity_score(resume_text: str, jd_text: str, chunk_size: int = 2000) -> float:
-    model = _get_embedding_model()
     resume_chunks = [resume_text[i:i + chunk_size] for i in range(0, len(resume_text), chunk_size)]
     jd_chunks = [jd_text[i:i + chunk_size] for i in range(0, len(jd_text), chunk_size)]
 
-    resume_emb = model.encode(resume_chunks, convert_to_tensor=True, show_progress_bar=False)
-    jd_emb = model.encode(jd_chunks, convert_to_tensor=True, show_progress_bar=False)
+    if not resume_chunks or not jd_chunks:
+        return 0.0
 
-    if resume_emb.dim() == 1:
-        resume_emb = resume_emb.unsqueeze(0)
-    if jd_emb.dim() == 1:
-        jd_emb = jd_emb.unsqueeze(0)
+    vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+    all_texts = resume_chunks + jd_chunks
+    tfidf = vectorizer.fit_transform(all_texts)
 
-    sim = util.cos_sim(resume_emb, jd_emb)
-    return float(sim.max().item())
+    sim = cosine_similarity(tfidf[:len(resume_chunks)], tfidf[len(resume_chunks):])
+    return float(sim.max())
 
 
 def section_coverage_score(resume_sections: dict) -> float:
