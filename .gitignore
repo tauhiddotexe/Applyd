@@ -13,6 +13,10 @@ tasks/
 graphify-out/
 .antigravity/
 .agents/
+.opencode/
+AGENTS.md
+AGENTS2.md
+SECURITY.md
 scratch/
 logs/
 
