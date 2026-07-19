@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/v1/(.*)",
-      "destination": "https://applyd-backend.onrender.com/api/v1/$1"
+      "destination": "https://applyd-hylo.onrender.com/api/v1/$1"
     },
     {
       "source": "/(.*)",
