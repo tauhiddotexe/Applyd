@@ -51,6 +51,7 @@ __pycache__/
 *.pyc
 *.pyo
 .python-version
+!backend/.python-version
 .pytest_cache/
 
 # OS

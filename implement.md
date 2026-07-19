@@ -1,25 +1,18 @@
-# Applyd — Deployment Guide: Render (Backend) + Vercel (Frontend)
+# Applyd — Deployment Guide (Vercel + Render)
 
-## Architecture
+## ✅ Done
 
-```
-User → Vercel CDN (SPA)
-            │
-            ├── /* → /index.html (SPA fallback)
-            │
-            └── /api/v1/* → Render backend (proxy)
-                                │
-                                └── Supabase DB
-```
-
-No code changes. Files added: `vercel.json`, `.vercelignore`.
+- **Vercel (Frontend):** Live at `https://applyd.vercel.app`
+- **Config files:** `vercel.json`, `.vercelignore` — in repo
+- **`backend/.python-version`** — pins Python 3.12 (Render requires this file)
+- **`backend/runtime.txt`** — deleted (Render does NOT read this file)
 
 ---
 
-## Step 1: Create Render Web Service (Backend)
+## Step: Create Render Web Service (Backend)
 
 1. Go to https://dashboard.render.com → **New +** → **Web Service**
-2. Connect your GitHub repo: `tauhiddotexe/Applyd`
+2. Connect GitHub repo: `tauhiddotexe/Applyd`
 3. Fill in:
 
    | Field | Value |
@@ -30,7 +23,7 @@ No code changes. Files added: `vercel.json`, `.vercelignore`.
    | **Start Command** | `gunicorn app.main:app -w 1 -k uvicorn.workers.UvicornWorker --timeout 120` |
    | **Plan** | Free |
 
-4. Add environment variables (click **Advanced** → **Add Environment Variable**):
+4. Click **Advanced** → **Add Environment Variable** — add these:
 
    | Variable | Value |
    |---|---|
@@ -38,100 +31,38 @@ No code changes. Files added: `vercel.json`, `.vercelignore`.
    | `CORS_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173,https://applyd.vercel.app` |
    | `FRONTEND_URL` | `https://applyd.vercel.app` |
    | `DEV_MODE` | `false` |
-   | `OPENROUTER_API_KEY` | your OpenRouter key |
+   | `OPENROUTER_API_KEY` | (your key) |
    | `OPENROUTER_MODEL` | `openrouter/free` |
    | `OPENROUTER_FALLBACK_MODELS` | `meta-llama/llama-3.3-70b-instruct:free,nvidia/nemotron-3-nano-30b-a3b:free,qwen/qwen3-next-80b-a3b-instruct:free` |
-   | `STRIPE_API_KEY` | your Stripe secret key |
-   | `STRIPE_WEBHOOK_SECRET` | your Stripe webhook secret |
-   | `STRIPE_BASIC_PRICE_ID` | price_xxx |
-   | `STRIPE_PRO_PRICE_ID` | price_xxx |
-   | `AWS_ACCESS_KEY_ID` | your AWS access key |
-   | `AWS_SECRET_ACCESS_KEY` | your AWS secret key |
+   | `STRIPE_API_KEY` | (your Stripe secret) |
+   | `STRIPE_WEBHOOK_SECRET` | (your webhook secret) |
+   | `STRIPE_BASIC_PRICE_ID` | (price_xxx) |
+   | `STRIPE_PRO_PRICE_ID` | (price_xxx) |
+   | `AWS_ACCESS_KEY_ID` | (your AWS key) |
+   | `AWS_SECRET_ACCESS_KEY` | (your AWS secret) |
    | `AWS_REGION` | `ap-south-1` |
-   | `AWS_S3_BUCKET` | your S3 bucket name |
+   | `AWS_S3_BUCKET` | (your S3 bucket) |
    | `LOG_LEVEL` | `INFO` |
 
 5. Click **Create Web Service**
-6. Wait for deploy to finish. Note the URL: `https://applyd-backend.onrender.com`
+6. **IMPORTANT:** If this is NOT the first deploy, go to **Settings** → **Build & Deploy** → **Clear build cache & deploy** (the previous failed build may have cached Python 3.14)
+7. Wait for build + deploy to finish (first build takes a while — pip installs all deps including torch)
 
 ---
 
-## Step 2: Update `vercel.json` with Render URL
+## After Render Is Live
 
-Once Render gives you a URL, update the proxy destination in `vercel.json` (project root):
+Tell me the Render URL (e.g. `https://applyd-backend.onrender.com`) and I'll:
 
-```json
-{
-  "rewrites": [
-    {
-      "source": "/api/v1/(.*)",
-      "destination": "https://YOUR-RENDER-URL.onrender.com/api/v1/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
-}
-```
-
-Commit and push to GitHub:
-```bash
-git add vercel.json
-git commit -m "update vercel.json with Render URL"
-git push
-```
+1. Update `vercel.json` with the correct proxy destination
+2. Push to GitHub so Vercel auto-redeploys
 
 ---
 
-## Step 3: Deploy Frontend to Vercel
+## ⚠️ Key Render Gotchas
 
-1. Go to https://vercel.com → **Add New** → **Project**
-2. Import your GitHub repo: `tauhiddotexe/Applyd`
-3. It auto-detects **Vite** — leave defaults:
-
-   | Setting | Value |
-   |---|---|
-   | Framework Preset | Vite |
-   | Build Command | `npm run build` |
-   | Output Directory | `dist` |
-
-4. Add environment variables:
-
-   | Variable | Value |
-   |---|---|
-   | `VITE_SUPABASE_URL` | `https://mavnhukwcfbydbfvhxvs.supabase.co` |
-   | `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hdm5odWt3Y2ZieWRiZnZoeHZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjE1ODMsImV4cCI6MjA5MjkzNzU4M30.U6OJnRHdlK5Ga_eAV8UIvu5yR8VlOuZfj-kHmTK7mN4` |
-   | `VITE_API_URL` | `/api/v1` |
-
-5. Click **Deploy**
-6. Note the Vercel URL: `https://applyd.vercel.app`
-
----
-
-## Step 4: Update CORS on Render
-
-After Vercel deploy completes, go to **Render Dashboard** → your web service → **Environment** → update:
-
-| Variable | New Value |
+| Mistake | Fix |
 |---|---|
-| `CORS_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173,https://applyd.vercel.app` (replace with actual Vercel URL) |
-| `FRONTEND_URL` | `https://applyd.vercel.app` (replace with actual Vercel URL) |
-
-Click **Save Changes** → Render will redeploy automatically.
-
----
-
-## Step 5: Verify
-
-1. Open your Vercel URL
-2. Log in, browse dashboard, applications, AI features
-3. Check browser dev tools → Network tab → API calls should hit Render (no CORS errors)
-4. Verify file uploads, resume scoring, everything works
-
----
-
-## Rollback
-
-- **Vercel**: Previous deployment is still live — go to project → Deployments → click previous deploy
-- **Render**: Web service → Events → Deploy a previous version
+| `runtime.txt` does NOT work on Render | Use `.python-version` in the service root (`backend/`) |
+| Default Python is now **3.14** (alpha) — no wheels for most packages | `.python-version` with `3.12` forces a stable version |
+| Build cache may retain old Python detection | Clear build cache in Render dashboard after changing Python version |
