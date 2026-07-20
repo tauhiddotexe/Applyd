@@ -1,147 +1,122 @@
 <div align="center">
-  <h1>🚀 Applyd</h1>
-  <p><strong>The AI-Powered Job Application & Resume Optimization Platform</strong></p>
+  <h1>Applyd</h1>
+  <p><strong>AI-Powered Job Application & Resume Optimization Platform</strong></p>
 
   <p>
-    <a href="#features">Features</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#getting-started">Getting Started</a> •
-    <a href="#environment-variables">Environment Setup</a> •
-    <a href="#contributing">Contributing</a>
+    <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18">
+    <img src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white" alt="FastAPI">
+    <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python 3.12">
+    <img src="https://img.shields.io/badge/PostgreSQL-Supabase-3FCF8E?logo=supabase&logoColor=white" alt="Supabase PostgreSQL">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-v3-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
+    <img src="https://img.shields.io/badge/Stripe-008CDD?logo=stripe&logoColor=white" alt="Stripe">
   </p>
 </div>
 
 ---
 
-## 💡 About Applyd
+## Overview
 
-**Applyd** is a modern, full-stack SaaS platform designed to supercharge the job search process. By leveraging the power of AI (Google Gemini), Applyd analyzes and tailors resumes for specific job descriptions, tracks application lifecycles, and provides actionable insights through a beautiful, responsive dashboard.
+Applyd supercharges your job search by combining AI-powered resume optimization with a Kanban-style application tracker. Analyze and tailor your resume for any job description, track applications across stages, and gain actionable insights — all in one place.
 
-Whether you're managing dozens of ongoing applications or looking to perfectly align your resume with your dream role, Applyd provides the tools to organize, optimize, and succeed.
+## Features
 
-## ✨ Key Features
+- **Resume Optimization** — AI-driven keyword extraction and tailoring to match job descriptions
+- **Application Tracking** — Kanban dashboard with drag-and-drop status management
+- **Resume Scoring** — Compare your resume against job descriptions with detailed gap analysis
+- **Analytics** — Visualize your job search progress and application metrics
+- **Authentication** — Secure session management via Supabase Auth
+- **Payment Integration** — Credit-based billing powered by Stripe
+- **Dark Mode** — Full theme support with a polished design system
 
-- **🤖 AI-Powered Resume Optimization:** Automatically extract keywords and tailor your resume to match specific job descriptions using Google Gemini AI.
-- **📊 Application Tracking Dashboard:** A centralized, visual kanban-style and card-based interface to track the status of all your applications (Applied, Interviewing, Offered, Rejected).
-- **🔒 Secure Authentication:** Production-ready JWT authentication and session management powered by Supabase Auth.
-- **💳 Built-in SaaS Billing:** Seamless credit purchases and tier upgrades integrated with Stripe.
-- **🎨 Premium UI/UX:** A stunning, highly responsive design system built with Tailwind CSS, featuring dark mode support, glassmorphism, and smooth micro-animations.
+## Tech Stack
 
-## 🛠️ Tech Stack
+| Frontend | Backend | Infrastructure |
+|---|---|---|
+| React 18 + Vite 6 | FastAPI (Python 3.12) | Vercel (frontend) |
+| Tailwind CSS 3 | SQLAlchemy 2.0 + Alembic | Render (backend) |
+| React Router 6 | LangChain + LangGraph | Supabase PostgreSQL |
+| GSAP | OpenRouter AI (multi-model) | AWS S3 (storage) |
+| Phosphor Icons | Stripe | Supabase Auth |
 
-### Frontend
-- **Framework:** React 18 + Vite
-- **Styling:** Tailwind CSS (Custom Design System)
-- **State & Data Fetching:** React Hooks, Axios
-- **Routing:** React Router DOM
-
-### Backend
-- **Framework:** FastAPI (Python 3.10+)
-- **AI Integration:** Google Generative AI (Gemini)
-- **Database & Auth:** Supabase (PostgreSQL + Supabase Auth)
-- **Payments:** Stripe integration for credit/subscription management
-- **Server:** Uvicorn
-
-## 🚀 Getting Started
-
-Follow these instructions to get a local copy of the project up and running.
+## Getting Started
 
 ### Prerequisites
 
-Ensure you have the following installed on your local machine:
-- **Node.js** (v18 or higher)
-- **Python** (v3.10 or higher)
-- A **Supabase** account (for Database & Auth)
-- A **Google Gemini API Key**
-- A **Stripe Account** (for testing billing/credits)
+- Node.js 18+
+- Python 3.12+
+- A Supabase account
+- An OpenRouter API key
+- A Stripe account
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/tauhiddotexe/applyd.git
-cd applyd
-```
-
-### 2. Frontend Setup
-
-Install the Node dependencies and start the Vite development server:
+### Frontend
 
 ```bash
-# Install dependencies
 npm install
-
-# Start the frontend dev server
 npm run dev
 ```
-*The frontend will run at `http://localhost:5173`.*
 
-### 3. Backend Setup
+The dev server runs at `http://localhost:5173`.
 
-Open a new terminal window, navigate to the `backend` directory, set up your Python environment, and start FastAPI:
+### Backend
 
 ```bash
 cd backend
-
-# Create a virtual environment
 python -m venv venv
 
-# Activate the virtual environment
-# On Windows:
+# Windows:
 venv\Scripts\activate
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Start the FastAPI development server
 uvicorn app.main:app --reload --port 8000
 ```
-*The backend API will run at `http://localhost:8000`.*
-*You can access the interactive API docs at `http://localhost:8000/docs`.*
 
-## ⚙️ Environment Variables
+The API runs at `http://localhost:8000`. Interactive docs at `/docs`.
 
-To run this project, you will need to add the following environment variables. 
+## Environment Variables
 
-### Frontend (`.env` in the root directory)
-```env
-VITE_API_URL=http://localhost:8000/api/v1
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
+Copy the template below into your environment:
+
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | Backend API base URL |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key |
+| `VITE_STRIPE_PUBLIC_KEY` | Stripe publishable key |
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_KEY` | Supabase service role key |
+| `SUPABASE_JWT_SECRET` | Supabase JWT secret |
+| `OPENROUTER_API_KEY` | OpenRouter API key |
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret |
+| `AWS_ACCESS_KEY_ID` | AWS S3 access key |
+| `AWS_SECRET_ACCESS_KEY` | AWS S3 secret key |
+| `AWS_S3_BUCKET_NAME` | AWS S3 bucket name |
+| `AWS_REGION` | AWS region |
+| `ENVIRONMENT` | `development` or `production` |
+
+## Project Structure
+
+```
+src/                          # React frontend
+├── components/               # Reusable UI components
+├── pages/                    # Route-level pages
+├── services/                 # API client layer
+└── contexts/                 # Auth state management
+
+backend/                      # FastAPI backend
+├── app/
+│   ├── api/v1/routes/        # API endpoints
+│   ├── core/                 # Config, auth, dependencies
+│   ├── db/                   # Database session
+│   ├── models/               # SQLAlchemy models
+│   ├── schemas/              # Pydantic schemas
+│   ├── services/             # Business logic
+│   └── workflow/             # LangGraph AI workflow
+└── requirements.txt
 ```
 
-### Backend (`backend/.env`)
-```env
-# Supabase Configuration
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_service_role_key
-SUPABASE_JWT_SECRET=your_supabase_jwt_secret
+## License
 
-# AI Integration
-GEMINI_API_KEY=your_google_gemini_api_key
-
-# Payment/Stripe Integration
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-
-# App Environment
-ENVIRONMENT=development
-```
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
+MIT
