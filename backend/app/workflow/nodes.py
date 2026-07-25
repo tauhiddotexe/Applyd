@@ -31,6 +31,7 @@ def _get_llm(model: str, temperature: float = 0.3):
         openai_api_base=settings.active_llm_base_url,
         temperature=temperature,
         max_tokens=4096,
+        timeout=60,
     )
 
 
