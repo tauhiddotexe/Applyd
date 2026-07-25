@@ -65,6 +65,15 @@ class Application(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+    suitability_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    suitability_reason: Mapped[str | None] = mapped_column(nullable=True)
+    score_breakdown: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    tailored_headline: Mapped[str | None] = mapped_column(nullable=True)
+    tailored_summary: Mapped[str | None] = mapped_column(nullable=True)
+    tailored_skills: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    selected_project_ids: Mapped[str | None] = mapped_column(nullable=True)
+    tailored_resume_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
     user: Mapped["User"] = relationship(back_populates="applications")
     events: Mapped[list["ApplicationEvent"]] = relationship(
         back_populates="application",

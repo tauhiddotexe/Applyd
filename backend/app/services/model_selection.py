@@ -15,11 +15,21 @@ _PURPOSE_MODEL_KEYS: dict[LlmPurpose, str | None] = {
 }
 
 
+_PROVIDER_PREFIXES = ["opencode/", "openrouter/", "openai/"]
+
+
+def _strip_provider_prefix(model: str) -> str:
+    for prefix in _PROVIDER_PREFIXES:
+        if model.startswith(prefix):
+            return model[len(prefix):]
+    return model
+
+
 def resolve_model(purpose: LlmPurpose) -> str:
     override = _PURPOSE_MODEL_KEYS.get(purpose)
     if override:
-        return override
-    return settings.LLM_MODEL
+        return _strip_provider_prefix(override)
+    return _strip_provider_prefix(settings.LLM_MODEL)
 
 
 def resolve_fallback_chain(purpose: LlmPurpose) -> list[str]:

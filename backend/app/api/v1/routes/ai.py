@@ -21,6 +21,8 @@ from app.services import user_service
 from app.schemas import AIAnalyzeResponse, ResumeExtractionResponse, ResumeTailorResponse
 from app.services.ai_limiter import ai_limiter
 from app.workflow.graph import analyze_compiled, tailor_compiled
+from app.workflow.scorer import has_salary_info
+from app.models.models import Application
 from app.services.pdf_service import ResumePDF
 
 
@@ -124,6 +126,8 @@ async def extract_resume(
 async def analyze_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
+    application_id: str = Form(None),
+    penalize_missing_salary: bool = Form(False),
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
@@ -143,6 +147,8 @@ async def analyze_resume(
     if not has_credits:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient credits. Please upgrade your plan.")
 
+    salary_detected = has_salary_info(job_description)
+
     await ai_limiter.acquire()
     try:
         state = {
@@ -159,10 +165,28 @@ async def analyze_resume(
             "error": None,
             "retries": 0,
             "mode": "analyze",
+            "has_salary": salary_detected,
+            "writing_style": None,
         }
         result_state = await run_in_threadpool(analyze_compiled.invoke, state)
         analysis = result_state.get("analysis_result", {})
         await run_in_threadpool(user_service.deduct_credit, db, user_id)
+
+        if application_id:
+            try:
+                app_uuid = uuid.UUID(application_id)
+                app = db.query(Application).filter(
+                    Application.id == app_uuid,
+                    Application.user_id == user_id,
+                ).first()
+                if app:
+                    app.suitability_score = result_state.get("before_score", 0)
+                    app.suitability_reason = analysis.get("summary", "")
+                    app.score_breakdown = result_state.get("score_breakdown")
+                    db.commit()
+            except Exception as persist_err:
+                logger.warning(f"Failed to persist analysis to application {application_id}: {persist_err}")
+
         return {
             "match_score": analysis.get("match_score") or analysis.get("matchScore") or result_state.get("before_score", 0),
             "summary": analysis.get("summary", ""),
@@ -184,6 +208,10 @@ async def tailor_resume(
     resume_file: UploadFile = File(None),
     job_description: str = Form(...),
     resume_text: str = Form(None),
+    application_id: str = Form(None),
+    tone: str = Form("professional"),
+    formality: str = Form("neutral"),
+    output_language: str = Form("en"),
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
@@ -209,6 +237,8 @@ async def tailor_resume(
 
     if not resume_text.strip():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resume text is empty")
+
+    salary_detected = has_salary_info(job_description)
 
     await ai_limiter.acquire()
     try:
@@ -237,9 +267,39 @@ async def tailor_resume(
             "structured_tailor": None,
             "extracted_resume": None,
             "structured_tailor_resume": None,
+            "has_salary": salary_detected,
+            "writing_style": {
+                "tone": tone,
+                "formality": formality,
+                "output_language": output_language,
+            },
         }
         result_state = await run_in_threadpool(tailor_compiled.invoke, state)
         await run_in_threadpool(user_service.deduct_credit, db, user_id)
+
+        if application_id:
+            try:
+                app_uuid = uuid.UUID(application_id)
+                app = db.query(Application).filter(
+                    Application.id == app_uuid,
+                    Application.user_id == user_id,
+                ).first()
+                if app:
+                    structured = result_state.get("structured_tailor_resume") or {}
+                    app.tailored_headline = structured.get("headline", "")
+                    app.tailored_summary = structured.get("summary", "")
+                    existing_skills = structured.get("skills", [])
+                    if isinstance(existing_skills, list):
+                        app.tailored_skills = {"skills": existing_skills}
+                    elif isinstance(existing_skills, dict):
+                        app.tailored_skills = existing_skills
+                    app.tailored_resume_json = structured
+                    app.suitability_score = result_state.get("after_score", 0)
+                    app.score_breakdown = result_state.get("score_breakdown")
+                    db.commit()
+            except Exception as persist_err:
+                logger.warning(f"Failed to persist tailoring to application {application_id}: {persist_err}")
+
         return {
             "improved_points": [
                 p.get("improved", p) if isinstance(p, dict) else p
@@ -268,6 +328,10 @@ async def tailor_resume(
 async def optimize_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
+    application_id: str = Form(None),
+    tone: str = Form("professional"),
+    formality: str = Form("neutral"),
+    output_language: str = Form("en"),
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
@@ -287,6 +351,8 @@ async def optimize_resume(
     if not resume_text.strip():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resume text is empty")
 
+    salary_detected = has_salary_info(job_description)
+
     await ai_limiter.acquire()
     try:
         analyze_state = {
@@ -303,6 +369,8 @@ async def optimize_resume(
             "error": None,
             "retries": 0,
             "mode": "analyze",
+            "has_salary": salary_detected,
+            "writing_style": None,
         }
         analyze_result = await run_in_threadpool(analyze_compiled.invoke, analyze_state)
         analysis = analyze_result.get("analysis_result", {})
@@ -321,10 +389,40 @@ async def optimize_resume(
             "error": None,
             "retries": 0,
             "mode": "tailor",
+            "has_salary": salary_detected,
+            "writing_style": {
+                "tone": tone,
+                "formality": formality,
+                "output_language": output_language,
+            },
         }
         tailor_result = await run_in_threadpool(tailor_compiled.invoke, tailor_state)
 
         await run_in_threadpool(user_service.deduct_credit, db, user_id)
+
+        if application_id:
+            try:
+                app_uuid = uuid.UUID(application_id)
+                app = db.query(Application).filter(
+                    Application.id == app_uuid,
+                    Application.user_id == user_id,
+                ).first()
+                if app:
+                    structured = tailor_result.get("structured_tailor_resume") or {}
+                    app.tailored_headline = structured.get("headline", "")
+                    app.tailored_summary = structured.get("summary", "")
+                    existing_skills = structured.get("skills", [])
+                    if isinstance(existing_skills, list):
+                        app.tailored_skills = {"skills": existing_skills}
+                    elif isinstance(existing_skills, dict):
+                        app.tailored_skills = existing_skills
+                    app.tailored_resume_json = structured
+                    app.suitability_score = tailor_result.get("after_score", 0)
+                    app.score_breakdown = tailor_result.get("score_breakdown")
+                    db.commit()
+            except Exception as persist_err:
+                logger.warning(f"Failed to persist optimize results to application {application_id}: {persist_err}")
+
         return {
             "analysis": {
                 "matchScore": analysis.get("match_score", analyze_result.get("before_score", 0)),
@@ -406,6 +504,7 @@ async def download_tailored(
 async def score_resume(
     resume_file: UploadFile = File(...),
     job_description: str = Form(...),
+    penalize_missing_salary: bool = Form(False),
     user_id: uuid.UUID = Depends(get_current_user),
 ):
     logger.info("AI: Scoring resume", extra={"extra_info": {
@@ -456,6 +555,9 @@ async def score_resume(
     keyword_score = ((len(req_match) * 2 + len(opt_match)) / total_weight) * 100
     final_score = max(0, min(100, int(keyword_score)))
 
+    if penalize_missing_salary and not has_salary_info(job_description):
+        final_score = max(0, final_score - settings.MISSING_SALARY_PENALTY)
+
     suggestions = []
     if missing_req:
         top_missing = list(missing_req)[:3]
@@ -478,3 +580,26 @@ async def score_resume(
         "missing_keywords": all_missing,
         "suggestions": suggestions,
     }
+
+
+@router.post("/select-projects")
+async def select_projects(
+    job_description: str = Form(...),
+    projects_json: str = Form(...),
+    desired_count: int = Form(3),
+    user_id: uuid.UUID = Depends(get_current_user),
+):
+    from app.services.project_selection import select_projects as _select_projects
+
+    logger.info("AI: Selecting projects", extra={"extra_info": {
+        "user_id": str(user_id), "jd_length": len(job_description), "desired_count": desired_count,
+    }})
+    try:
+        projects = json.loads(projects_json)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid projects_json format")
+    if not isinstance(projects, list):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="projects_json must be a JSON array")
+
+    selected = _select_projects(job_description, projects, desired_count)
+    return {"selected_project_ids": selected}
