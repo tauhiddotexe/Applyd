@@ -1,20 +1,24 @@
-ANALYZE_SYSTEM = """You are a senior ATS (Applicant Tracking System) expert and technical recruiter.
+ANALYZE_SYSTEM = """You are evaluating a job listing for a candidate. Score how suitable this job is for the candidate on a scale of 0-100.
 
-Analyze how well the given resume matches the job description. Be honest and critical — do NOT inflate scores.
+SCORING CRITERIA:
+- Skills match (technologies, frameworks, languages): 0-30 points
+- Experience level match: 0-25 points
+- Location/remote work alignment: 0-15 points
+- Industry/domain fit: 0-15 points
+- Career growth potential: 0-15 points
 
 RULES:
-- Score 0-100 based on keyword overlap, experience relevance, and skill alignment
+- Score 0-100 based ONLY on the criteria above
 - Only credit skills and experience that are EXPLICITLY mentioned in the resume
 - Do NOT infer or assume skills
 - Strengths must be genuinely present in the resume
 - Missing keywords should be real requirements from the JD that are absent from the resume
 - Improvements must be actionable
-- Pay attention to the structured sections below (skills, experience, education detected in the resume)
 
 Return JSON only:
 {
   "match_score": <0-100>,
-  "summary": "<2-3 sentence evaluation>",
+  "reason": "<1-2 sentence explanation>",
   "strengths": ["<strength 1>", "<strength 2>", ...],
   "missing_keywords": ["<keyword 1>", "<keyword 2>", ...],
   "improvements": ["<improvement 1>", "<improvement 2>", ...]
@@ -78,100 +82,62 @@ Return JSON matching this schema exactly:
 }"""
 
 
-TAILOR_SYSTEM = """You are a senior resume optimization specialist.
+TAILOR_SYSTEM = """You are an expert resume writer tailoring a profile for a specific job application.
+You must return a JSON object with three fields: "headline", "summary", and "skills".
 
-Your job is to rewrite the user's EXISTING resume to better match a target job description.
-You receive the resume as a structured JSON and must return the SAME structure with improved content.
+JOB DESCRIPTION (JD):
+{job_description}
 
-GROUND TRUTH — This is the complete set of factual claims from the user's resume.
-You may ONLY reference skills, tools, metrics, and experience listed below.
-You CANNOT add anything not found here.
+MY PROFILE:
+{profile_json}
 
-{ground_truth}
+INSTRUCTIONS:
 
-CRITICAL RULES — Metadata Preservation:
-- PRESERVE ALL metadata exactly as-is: job titles, company names, dates, locations, degree names, school names, GPA, project names
-- ONLY rewrite these fields: summary, each bullet point in experience/projects, reorder/prioritize skills
-- NEVER change a job title, company name, or date
-- NEVER add a skill, tool, or technology not in GROUND TRUTH
-- NEVER invent numbers, percentages, or metrics
-- NEVER claim a job title, company, or degree not in the original
+1. "headline" (String):
+   - CRITICAL: This is the #1 ATS factor.
+   - It must match the Job Title from the JD exactly (e.g., if JD says "Senior React Dev", use "Senior React Dev").
+   - Do NOT translate, localize, or paraphrase the headline, even if the rest of the output is in {output_language}.
 
-CONTENT RULES:
-- If the original is vague ("helped with", "worked on"), make it more specific using ONLY context from the full resume
-- Prioritize matching JD keywords that align with the user's actual experience
-- Use strong action verbs (developed, built, designed, led, optimized)
-- Keep each bullet to 1-2 lines
-- Maintain truthful scope — if the original says "part of a team", do not say "led the team"
-- Reorder skills so the most relevant to the JD appear first
+2. "summary" (String):
+   - The Hook. This needs to mirror the company's "About You" / "What we're looking for" section.
+   - Keep it concise, warm, and confident.
+   - Do NOT invent experience.
+   - Use the profile to add context.
+   - Write the summary in {output_language}.
 
-Return the COMPLETE structured resume JSON with improved content:
+3. "skills" (Array of Objects):
+   - Review my existing skills section structure.
+   - Keyword Stuffing: Swap synonyms to match the JD exactly (e.g. "TDD" -> "Unit Testing", "ReactJS" -> "React").
+   - Keep my original skill levels and categories, just rename/reorder keywords to prioritize JD terms.
+   - Return the full "items" array for the skills section, preserving the structure: {{ "name": "Frontend", "keywords": [...] }}.
+   - Write user-visible skill text in {output_language} when natural, but keep exact JD terms, acronyms, and technology names when that helps ATS matching.
 
+WRITING STYLE PREFERENCES:
+- Tone: {tone}
+- Formality: {formality}
+- Output language for summary and skills: {output_language}
+
+ATS SAFETY:
+- Keep "headline" in the exact original job-title wording from the JD.
+- Do not translate the headline, even when summary and skills are written in {output_language}.
+
+OUTPUT FORMAT (JSON):
 {{
-  "contact": {{
-    "name": "PRESERVE",
-    "email": "PRESERVE",
-    "phone": "PRESERVE",
-    "location": "PRESERVE",
-    "linkedin": "PRESERVE",
-    "website": "PRESERVE"
-  }},
-  "summary": "REWRITE to be more compelling and JD-aligned (2-3 sentences)",
-  "experiences": [
-    {{
-      "job_title": "PRESERVE EXACTLY",
-      "company": "PRESERVE EXACTLY",
-      "location": "PRESERVE",
-      "start_date": "PRESERVE",
-      "end_date": "PRESERVE",
-      "bullets": ["REWRITE each bullet to be more impactful and keyword-rich"]
-    }}
-  ],
-  "education": [
-    {{
-      "degree": "PRESERVE",
-      "school": "PRESERVE",
-      "location": "PRESERVE",
-      "start_date": "PRESERVE",
-      "end_date": "PRESERVE",
-      "gpa": "PRESERVE"
-    }}
-  ],
-  "skills": ["REORDER by JD relevance, never add new skills"],
-  "projects": [
-    {{
-      "name": "PRESERVE",
-      "description": "REWRITE if present",
-      "bullets": ["REWRITE each bullet"]
-    }}
-  ],
-  "certifications": ["PRESERVE"],
-  "languages": ["PRESERVE"],
-  "tailoring_strategy": "<brief 1-2 sentence explanation of the tailoring approach>",
-  "suggestions": ["<honest gap-based suggestion for the user>"]
+  "headline": "...",
+  "summary": "...",
+  "skills": [ ... ]
 }}"""
 
 
 VALIDATE_SYSTEM = """You are a quality control checker for resume tailoring.
 
-Your job is to verify that tailored resume bullets do NOT contain any fabricated information.
-
-GROUND TRUTH — These are the ONLY factual claims the user's resume actually makes:
-{ground_truth}
-
-Check each tailored bullet for:
-1. Any skill, tool, or technology NOT in GROUND TRUTH
-2. Any number, percentage, or metric NOT in the original
-3. Any job title, company name, or credential NOT in the original
-4. Any claim of leadership ("led", "managed") if original only says "participated" or "assisted"
+Check the tailored content for fabricated information. Only flag claims not supported by the original resume.
 
 Return JSON:
-{{
+{
   "is_clean": true/false,
-  "violations": ["<description of each violation found>"],
-  "clean_points": [<indices of points that pass>],
-  "violating_points": [<indices of points that fail>]
-}}
+  "violations": ["<description of each violation found>"]
+}
 
 If is_clean is true, the tailoring passed quality control.
 If is_clean is false, describe each violation so the system can retry.

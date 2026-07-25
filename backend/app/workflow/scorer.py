@@ -5,11 +5,6 @@ from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-_SEMANTIC_WEIGHT = 0.35
-_KEYWORD_WEIGHT = 0.25
-_LLM_WEIGHT = 0.30
-_SECTION_CVRG_WEIGHT = 0.10
-
 _SKILL_TAXONOMY: dict | None = None
 
 _STOP_WORDS = {
@@ -81,18 +76,27 @@ def section_coverage_score(resume_sections: dict) -> float:
 
 
 def compute_final_score(
-    keyword_score: int,
-    semantic_score: float,
     llm_score: int,
-    section_coverage: float,
+    has_salary: bool = True,
+    penalize_missing_salary: bool = False,
+    missing_salary_penalty: int = 10,
 ) -> int:
-    raw = (
-        keyword_score * _KEYWORD_WEIGHT
-        + semantic_score * 100 * _SEMANTIC_WEIGHT
-        + llm_score * _LLM_WEIGHT
-        + section_coverage * 100 * _SECTION_CVRG_WEIGHT
-    )
-    return max(0, min(100, int(round(raw))))
+    score = max(0, min(100, llm_score))
+    if penalize_missing_salary and not has_salary:
+        score = max(0, score - missing_salary_penalty)
+    return score
+
+
+def has_salary_info(text: str) -> bool:
+    patterns = [
+        r'\$\s*\d+[kK,.]?\s*[-–to]+\s*\$?\s*\d+[kK,.]?',
+        r'\$\s*\d{2,3}[kK]',
+        r'\£\s*\d+[kK,.]?',
+        r'\€\s*\d+[kK,.]?',
+        r'\bsalary\b', r'\bcompensation\b', r'\bpay\b',
+        r'\bhourly\b', r'\bannually\b', r'\b(?:per|/)\s*(?:year|hr|hour|month|annum)\b',
+    ]
+    return any(re.search(p, text, re.IGNORECASE) for p in patterns)
 
 
 def get_score_breakdown(
@@ -101,6 +105,7 @@ def get_score_breakdown(
     llm_score: int,
     section_cvg: float,
     final_score: int,
+    salary_penalty_applied: bool = False,
 ) -> dict:
     return {
         "keyword_match": keyword_score,
@@ -108,4 +113,5 @@ def get_score_breakdown(
         "llm_analysis": llm_score,
         "section_coverage": int(round(section_cvg * 100)),
         "final": final_score,
+        "salary_penalty_applied": salary_penalty_applied,
     }

@@ -19,7 +19,6 @@ class ResumeState(TypedDict):
     mode: str
 
     parsed_resume: Optional[dict]
-    parsed_jd: Optional[dict]
     matched_keywords: list[str]
     missing_keywords: list[str]
     semantic_score: float
@@ -29,3 +28,6 @@ class ResumeState(TypedDict):
     structured_tailor: Optional[dict]
     extracted_resume: Optional[dict]
     structured_tailor_resume: Optional[dict]
+
+    writing_style: Optional[dict]
+    has_salary: bool
