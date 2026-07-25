@@ -1,42 +1,75 @@
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="ignore",
+    )
+
     DATABASE_URL: str
-    # Production: Set these via environment variables
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,https://applyd-mark2.vercel.app"
     FRONTEND_URL: str = "https://applyd-mark2.vercel.app"
     LOG_LEVEL: str = "INFO"
-    OPENROUTER_API_KEY: str | None = None
-    OPENROUTER_MODEL: str = "openrouter/free"
-    OPENROUTER_FALLBACK_MODELS: str = (
-        "meta-llama/llama-3.3-70b-instruct:free,"
-        "nvidia/nemotron-3-nano-30b-a3b:free,"
-        "qwen/qwen3-next-80b-a3b-instruct:free"
-    )
+    LLM_PROVIDER: str = "opencode"
+    LLM_API_KEY: str | None = None
+    LLM_BASE_URL: str | None = None
+    LLM_MODEL: str = "opencode/deepseek-v4-flash-free"
+    LLM_FALLBACK_MODELS: str = ""
+    MODEL_SCORER: str | None = None
+    MODEL_TAILOR: str | None = None
+    PENALIZE_MISSING_SALARY: bool = False
+    MISSING_SALARY_PENALTY: int = 10
+
+    @property
+    def active_llm_base_url(self) -> str:
+        if self.LLM_BASE_URL:
+            return self.LLM_BASE_URL
+        defaults = {
+            "opencode": "https://opencode.ai/zen/v1",
+            "openrouter": "https://openrouter.ai/api/v1",
+            "openai": "https://api.openai.com/v1",
+        }
+        return defaults.get(self.LLM_PROVIDER, defaults["opencode"])
+
+    @property
+    def active_llm_api_key(self) -> str:
+        if self.LLM_API_KEY:
+            return self.LLM_API_KEY
+        env_keys = {
+            "opencode": "OPENCODE_API_KEY",
+            "openrouter": "OPENROUTER_API_KEY",
+            "openai": "OPENAI_API_KEY",
+            "opencode-zen": "OPENCODE_ZEN_API_KEY",
+        }
+        import os
+        return os.getenv(env_keys.get(self.LLM_PROVIDER, ""), "sk-no-key-required")
 
     @property
     def model_fallback_chain(self) -> list[str]:
-        models = [self.OPENROUTER_MODEL]
-        extras = [m.strip() for m in self.OPENROUTER_FALLBACK_MODELS.split(",") if m.strip()]
+        models = [self.MODEL_SCORER or self.LLM_MODEL]
+        extras = [m.strip() for m in self.LLM_FALLBACK_MODELS.split(",") if m.strip()]
         models.extend(m for m in extras if m not in models)
         return models
-    
+
     STRIPE_API_KEY: str | None = None
     STRIPE_WEBHOOK_SECRET: str | None = None
     STRIPE_BASIC_PRICE_ID: str | None = None
     STRIPE_PRO_PRICE_ID: str | None = None
-    
-    # AWS S3 Configuration
+
     AWS_ACCESS_KEY_ID: str | None = None
     AWS_SECRET_ACCESS_KEY: str | None = None
     AWS_REGION: str = "us-east-1"
     AWS_S3_BUCKET: str | None = None
+
+    DEV_SECRET: str = "applyd-dev-secret-change-in-production"
+    DEV_MODE: bool = False
 
     @property
     def cors_origins_list(self) -> list[str]:
@@ -64,15 +97,6 @@ class Settings(BaseSettings):
     @property
     def supabase_jwks_url(self) -> str:
         return f"https://{self.supabase_project_ref}.supabase.co/auth/v1/.well-known/jwks.json"
-
-    # Dev mode: secret for local JWT signing (bypasses Supabase)
-    # Must be overridden via env var in production
-    DEV_SECRET: str = "applyd-dev-secret-change-in-production"
-    DEV_MODE: bool = False
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
 
 
 settings = Settings()
